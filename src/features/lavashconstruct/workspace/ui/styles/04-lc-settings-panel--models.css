@@ -1,0 +1,401 @@
+/* LavashConstruct workspace styles — lc-settings-panel--models */
+.lc-settings-panel--models .lc-models-table__th,
+.lc-settings-panel--models .lc-models-table__td {
+  padding-inline: 6px;
+}
+
+.lc-settings-panel--models .lc-models-table__th--chat,
+.lc-settings-panel--models .lc-models-table__td--chat {
+  width: 32px;
+  white-space: nowrap;
+}
+
+.lc-settings-panel--models .lc-models-table__th--provider,
+.lc-settings-panel--models .lc-models-table__td--provider {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.lc-settings-panel--models .lc-models-table__th--actions,
+.lc-settings-panel--models .lc-models-table__td--actions {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.lc-settings-panel--models .lc-models-table__th--actions {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.lc-settings-panel__models {
+  min-width: 0;
+  min-height: 0;
+}
+
+.lc-settings-panel__models .lc-model-panel {
+  padding: 0 0 8px;
+}
+
+.lc-settings-workspace-drawer__header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px 0 6px;
+  border-bottom: none;
+  background: transparent;
+  color: var(--theme-text-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lc-settings-workspace-drawer__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.lc-settings-workspace-drawer__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.lc-settings-workspace-drawer__back:hover {
+  color: var(--theme-text-primary);
+  background: color-mix(in srgb, white 8%, transparent);
+}
+
+.lc-settings-workspace-drawer__back:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
+  outline-offset: 1px;
+}
+
+.lc-unified-shell__workspace .lc-settings-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Чат у правій колонці: без подвійних відступів і без обрізання закруглень композера */
+.lc-unified-shell__chat .lc-unified-cell__body {
+  padding: 0;
+  overflow: hidden;
+}
+
+.lc-unified-shell__chat .lc-chat-panel__tab-bar {
+  padding-top: 0;
+}
+
+/* Селектор моделі над чатом прибрано — налаштування лише в rail «Моделі». */
+.lc-unified-shell__chat .lc-chat-panel__settings-wrap,
+.lc-unified-shell__chat .lc-chat-panel__model-btn {
+  display: none !important;
+}
+
+.lc-unified-shell__chat .lc-chat-panel {
+  min-width: 0;
+  max-height: 100%;
+  border: none;
+  border-left: 1px solid color-mix(in srgb, var(--theme-border) 72%, transparent);
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--lc-chat-surface);
+  margin: 0;
+  padding: 0;
+}
+
+.lc-unified-shell__bottom {
+  display: grid;
+  gap: 0;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* Роздільники: вузька зона, тонка лінія з легким блиском; трохи «наїжджають» на панелі */
+.lc-unified-split {
+  flex-shrink: 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  z-index: 10;
+  background: transparent;
+  transition:
+    background-color var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease),
+    box-shadow var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease);
+}
+
+.lc-unified-split::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 1px;
+  opacity: 0.38;
+  background: color-mix(in srgb, var(--color-accent-primary, #ffb800) 52%, transparent);
+  box-shadow: 0 0 5px color-mix(in srgb, var(--color-accent-primary, #ffb800) 22%, transparent);
+  animation: lc-unified-split-glint 2.75s ease-in-out infinite;
+}
+
+.lc-unified-split--col::after {
+  top: 7%;
+  bottom: 7%;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+/* Між артбордом і чатом: без золотої лінії (не для chat-seam). */
+.lc-unified-shell > .lc-unified-split--col:not(.lc-unified-split--chat-seam)::after {
+  display: none;
+  animation: none;
+}
+
+.lc-unified-shell > .lc-unified-split--col:not(.lc-unified-split--chat-seam):hover::after,
+.lc-unified-shell > .lc-unified-split--col:not(.lc-unified-split--chat-seam):focus-visible::after {
+  display: block;
+  opacity: 0.24;
+}
+
+html[data-lc-split-dragging="1"] .lc-unified-shell > .lc-unified-split--col:not(.lc-unified-split--chat-seam)::after {
+  display: block;
+  opacity: 0.55;
+}
+
+.lc-unified-split--bottom-col::after {
+  top: 7%;
+  bottom: 7%;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+.lc-unified-split--horiz::after {
+  left: 6%;
+  right: 6%;
+  top: 50%;
+  height: 1px;
+  width: auto;
+  transform: translateY(-50%);
+}
+
+@keyframes lc-unified-split-glint {
+  0%,
+  100% {
+    opacity: 0.26;
+    filter: brightness(0.92);
+  }
+  35% {
+    opacity: 0.5;
+    filter: brightness(1.08);
+  }
+  60% {
+    opacity: 0.42;
+    filter: brightness(1.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lc-unified-split::after {
+    animation: none;
+    opacity: 0.34;
+  }
+
+  .lc-unified-shell > .lc-unified-split--col::after {
+    display: none;
+  }
+
+  .lc-settings-workspace-drawer,
+  .lc-user-lib-drawer,
+  .lavash-artboard-settings-popover,
+  .lc-artboard-tool-popover {
+    transition: none;
+  }
+
+  .lc-settings-workspace-drawer,
+  .lc-user-lib-drawer,
+  .lavash-artboard-settings-popover,
+  .lc-artboard-tool-popover {
+    transform: none;
+  }
+
+  .lc-settings-workspace-drawer[data-entered="true"],
+  .lc-user-lib-drawer[data-entered="true"],
+  .lavash-artboard-settings-popover[data-entered="true"],
+  .lc-artboard-tool-popover[data-entered="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lc-unified-split:hover,
+.lc-unified-split:focus-visible {
+  outline: none;
+  background: color-mix(in srgb, var(--color-accent-primary, #ffb800) 12%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent-primary, #ffb800) 10%, transparent);
+}
+
+.lc-unified-split:hover::after,
+.lc-unified-split:focus-visible::after {
+  opacity: 0.62;
+}
+
+.lc-unified-split:active {
+  background: color-mix(in srgb, var(--color-accent-primary, #ffb800) 18%, transparent);
+}
+
+.lc-unified-split--col {
+  box-sizing: border-box;
+  min-width: 0;
+  width: calc(100% + 6px);
+  margin-left: -3px;
+  margin-right: -3px;
+  cursor: ew-resize;
+  border-radius: 0;
+  align-self: stretch;
+  justify-self: center;
+  min-height: 0;
+}
+
+/* Сплітер артборд↔чат: на рівні shell, щоб не обрізався overflow чату. */
+.lc-unified-split--chat-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: var(--lc-chat-column-width, 300px);
+  width: 10px;
+  margin: 0;
+  padding: 0;
+  transform: translateX(50%);
+  z-index: 50;
+  cursor: ew-resize;
+  touch-action: none;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.lc-unified-split--chat-seam::before,
+.lc-unified-split--chat-seam::after {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+.lc-unified-split--chat-seam:hover,
+.lc-unified-split--chat-seam:focus,
+.lc-unified-split--chat-seam:focus-visible,
+.lc-unified-split--chat-seam:active,
+html[data-lc-split-dragging="1"] .lc-unified-split--chat-seam {
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.lc-unified-split--horiz {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: 5px;
+  margin-top: -2px;
+  margin-bottom: -2px;
+  width: 100%;
+  cursor: ns-resize;
+  border-radius: 2px;
+}
+
+.lc-unified-split--bottom-col {
+  box-sizing: border-box;
+  min-width: 0;
+  width: calc(100% + 6px);
+  margin-left: -3px;
+  margin-right: -3px;
+  cursor: ew-resize;
+  border-radius: 2px;
+  align-self: stretch;
+  justify-self: center;
+  min-height: 0;
+}
+
+.lc-unified-cell {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 85%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--window-surface-bg, #ffffff) 96%, var(--theme-text-primary) 4%);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  isolation: isolate;
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.lc-unified-cell--lavash-applied {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 72%, var(--theme-border));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 28%, transparent),
+    0 8px 28px color-mix(in srgb, var(--color-accent-primary) 22%, transparent);
+  animation: lc-unified-cell-lavash-pulse 1.5s ease-out;
+}
+
+@keyframes lc-unified-cell-lavash-pulse {
+  0% {
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--color-accent-primary) 55%, transparent),
+      0 10px 32px color-mix(in srgb, var(--color-accent-primary) 35%, transparent);
+  }
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 28%, transparent),
+      0 8px 28px color-mix(in srgb, var(--color-accent-primary) 22%, transparent);
+  }
+}
+
+/* User Lib drawer styles live above (.lc-user-lib-drawer). */
+
+.lc-unified-cell__header {
+  flex-shrink: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 72%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--window-surface-bg, white) 36%, transparent),
+    color-mix(in srgb, var(--window-surface-bg, white) 18%, transparent)
+  );
+  color: var(--theme-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lc-unified-cell__header-label {
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

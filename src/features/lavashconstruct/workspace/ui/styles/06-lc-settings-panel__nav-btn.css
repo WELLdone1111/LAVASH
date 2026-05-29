@@ -1,0 +1,400 @@
+/* LavashConstruct workspace styles — lc-settings-panel__nav-btn */
+
+.lc-settings-panel__nav-btn {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 10px 12px;
+  margin-bottom: -1px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-micro, 160ms) ease,
+    color var(--motion-duration-micro, 160ms) ease,
+    border-color var(--motion-duration-micro, 160ms) ease;
+}
+
+.lc-settings-panel__nav-btn:hover {
+  color: var(--theme-text-primary);
+}
+
+.lc-settings-panel__nav-btn--active {
+  color: var(--theme-text-primary);
+  border-bottom-color: var(--color-accent-primary);
+  background: transparent;
+  box-shadow: none;
+}
+
+.lc-settings-panel__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px 12px 14px;
+}
+
+.lc-settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lc-settings-section--empty {
+  justify-content: center;
+  min-height: 180px;
+}
+
+.lc-settings-section__lead {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--theme-text-secondary);
+}
+
+.lc-settings-section__lead--in-card {
+  padding: 14px 16px;
+}
+
+.lc-settings-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.lc-settings-swatch-grid--wallpapers {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lc-settings-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 70%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--palette-surface-2) 40%, transparent);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color var(--motion-duration-micro, 160ms) ease,
+    box-shadow var(--motion-duration-micro, 160ms) ease;
+}
+
+.lc-settings-swatch:hover {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 40%, var(--theme-border));
+}
+
+.lc-settings-swatch--active {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 55%, var(--theme-border));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 28%, transparent);
+}
+
+.lc-settings-swatch__preview {
+  display: block;
+  width: 100%;
+  height: 44px;
+  border-radius: 7px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 45%, transparent);
+}
+
+.lc-settings-swatch__preview--wallpaper {
+  height: 52px;
+}
+
+.lc-settings-swatch__label {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--theme-text-primary);
+}
+
+.lc-settings-lang-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lc-settings-lang-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 70%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--palette-surface-2) 35%, transparent);
+  color: var(--theme-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lc-settings-lang-btn--active {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 55%, var(--theme-border));
+  background: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
+}
+
+.lc-history-popover {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: 280px;
+  border-radius: 12px;
+  border: 1px solid var(--theme-border);
+  background: color-mix(in srgb, var(--window-surface-bg, white) 92%, transparent);
+  backdrop-filter: blur(18px);
+  padding: 10px 12px;
+  z-index: 20;
+}
+
+.lc-history-popover h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.lc-history-popover p {
+  margin: 0;
+  padding: 4px 0;
+  font-size: 12px;
+  color: var(--theme-text-secondary);
+}
+
+.lc-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(520px, 1fr) minmax(200px, 250px);
+  gap: 12px;
+  overflow: hidden;
+}
+
+.lc-center-stack {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lavash-artboard-edit-shell--browser-split {
+  display: flex;
+  flex-direction: column;
+}
+
+.lc-unified-shell__workspace .lavash-artboard-edit-shell {
+  display: flex;
+  flex-direction: column;
+}
+
+.lc-unified-shell__workspace .lavash-artboard-edit-shell > .lc-artboard-workspace-split {
+  flex: 1 1 0;
+  min-height: 0;
+  height: 100%;
+  align-self: stretch;
+}
+
+.lavash-artboard-edit-shell--browser-split > .lc-artboard-workspace-split {
+  flex: 1 1 0;
+  min-height: 0;
+  height: 100%;
+}
+
+.lavash-artboard-edit-shell {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.lc-unified-shell__workspace .lc-unified-cell__body > .lavash-artboard-edit-shell {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.lc-unified-shell__workspace .lavash-artboard-edit-shell--editing {
+  gap: 0;
+}
+
+.lc-unified-shell__workspace .lavash-artboard {
+  border-radius: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  gap: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.lc-unified-shell__workspace .lavash-artboard-main {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.lc-unified-shell__workspace .lavash-artboard-board {
+  width: 100%;
+  max-width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Артборд = повна ширина оболонки (жовтий highlight DevTools = рожевий контейнер) */
+.lc-unified-shell__workspace .lavash-artboard-edit-shell > .lavash-artboard {
+  box-sizing: border-box;
+}
+
+.lc-unified-shell__workspace .lavash-artboard-window-drag-rail {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  flex: 0 0 0 !important;
+}
+
+.lc-unified-shell__workspace .lavash-artboard-edit-shell > .lc-component-edit-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+}
+
+.lc-unified-shell__chat .lc-chat-panel__composer--boxed {
+  margin: 0 6px 0 6px;
+  border-radius: 12px;
+}
+
+.lc-unified-shell__chat .lc-chat-panel__messages {
+  padding: 8px 6px 0 8px;
+}
+
+.lavash-artboard-edit-shell .lavash-artboard {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;
+}
+
+.lavash-artboard-edit-shell--editing .lavash-artboard {
+  transform: none;
+}
+
+.lc-component-edit-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  flex: none;
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: color-mix(in srgb, white 16%, transparent);
+  box-sizing: border-box;
+  transition:
+    width var(--motion-duration-medium, 340ms) var(--motion-ease-out-strong),
+    opacity var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease),
+    border-color var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease);
+  transform: translateX(12px);
+}
+
+.lc-component-edit-panel[data-open="true"] {
+  width: min(360px, 34vw);
+  opacity: 1;
+  pointer-events: auto;
+  border-color: var(--theme-border);
+  padding: 12px;
+  transform: translateX(0);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.lc-component-edit-panel[data-open="true"]::-webkit-scrollbar {
+  width: var(--scrollbar-size, 9px);
+}
+
+.lc-component-edit-panel[data-open="true"]::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 8px;
+  border: 1px solid var(--scrollbar-track-border);
+}
+
+.lc-component-edit-panel[data-open="true"]::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background: var(--scrollbar-thumb);
+}
+
+.lc-component-edit-panel[data-open="true"]::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  background-clip: padding-box;
+}
+
+.lc-component-edit-panel__header h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.lc-component-edit-panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lc-component-edit-panel__section h4 {
+  margin: 0;
+  font-size: 12px;
+  color: var(--theme-text-secondary);
+}
+
+.lc-component-edit-panel__preview-wrap {
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 150px;
+  background: color-mix(in srgb, white 12%, transparent);
+}
+
+.lc-component-edit-panel__preview {
+  width: 100%;
+  height: 180px;
+  border: none;
+  background: transparent;
+}
+
+.lc-component-edit-panel__slider-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  font-size: 12px;
+}

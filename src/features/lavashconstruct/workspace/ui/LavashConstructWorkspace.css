@@ -1,0 +1,2 @@
+/* Re-exports split workspace styles from ./styles/ */
+@import "./styles/index.css";

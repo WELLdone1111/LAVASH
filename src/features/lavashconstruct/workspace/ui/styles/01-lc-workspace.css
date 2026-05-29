@@ -1,0 +1,433 @@
+/* LavashConstruct workspace styles — lc-workspace */
+.lc-workspace {
+  width: 100%;
+  max-width: none;
+  flex: 1;
+  align-self: stretch;
+  height: 100%;
+  min-height: 0;
+  border-radius: 0;
+  border: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  box-sizing: border-box;
+  margin-inline: 0;
+  /* як ARTBOARD_INFINITE_PX — великий артборд під dots + clamp панорами */
+  --lavash-artboard-dot-field: 8192px;
+  background: var(--palette-surface);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.lc-workspace *::selection {
+  background: transparent;
+  color: inherit;
+}
+
+/* Поля з вільним текстом у лабі: видиме виділення (у стилі референсу — теплий акцент на темному). */
+.lc-workspace .lc-code-editor__textarea::selection,
+.lc-workspace .lc-chat-panel ::selection {
+  background: color-mix(in srgb, var(--palette-accent) 42%, var(--palette-surface-2));
+  color: var(--palette-text);
+}
+
+.lc-workspace .lc-bottom-panel {
+  background: color-mix(in srgb, var(--palette-surface-2) 92%, transparent);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
+}
+
+.lc-workspace .lc-mode-switch {
+  background: color-mix(in srgb, var(--palette-surface-2) 92%, transparent);
+}
+
+.lc-workspace .lc-toolbar-select {
+  background: color-mix(in srgb, var(--palette-surface-2) 88%, transparent);
+}
+
+.lc-workspace .lc-toolbar-select:hover {
+  background: color-mix(in srgb, var(--color-accent-primary) 12%, var(--palette-surface-2));
+  border-color: color-mix(in srgb, var(--color-accent-primary) 38%, var(--theme-border));
+}
+
+.lc-workspace .lc-toolbar-select:focus {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 50%, var(--theme-border));
+}
+
+.lc-workspace .lc-chat-panel__send {
+  background: var(--color-accent-primary);
+  border-color: var(--color-accent-primary);
+  color: var(--palette-on-accent);
+}
+
+.lc-workspace .lc-chat-panel__send:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent-primary) 88%, #000000);
+  border-color: color-mix(in srgb, var(--color-accent-primary) 88%, #000000);
+  color: var(--palette-on-accent);
+}
+
+.lc-workspace .lc-chat-panel__send:focus-visible {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--color-accent-primary) 45%, transparent),
+    0 4px 14px color-mix(in srgb, var(--color-accent-primary) 28%, transparent);
+}
+
+.lc-workspace input,
+.lc-workspace textarea,
+.lc-workspace [contenteditable="true"],
+.lc-workspace .cm-content,
+.lc-workspace .lc-imported-text {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* Єдине вікно ЛавашКонструкт: колонки/рядки задаються inline у LavashConstructWorkspace (перетягування). */
+.lc-unified-shell {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) minmax(208px, var(--lc-chat-column-width, 300px));
+  grid-template-rows: minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  gap: 0;
+  padding: 0 !important;
+  margin: 0;
+  position: relative;
+  align-content: stretch;
+  align-items: stretch;
+  --lc-chat-column-width: 300px;
+}
+
+.lc-unified-shell[data-chat-collapsed="1"] {
+  grid-template-columns: 48px minmax(0, 1fr) 32px;
+}
+
+/* Внутрішні сплітери + ресайз кута вікна: без transition-лагів на сітці/артборді */
+html[data-lc-split-dragging="1"] .lc-unified-shell,
+html[data-lc-split-dragging="1"] .lc-unified-cell,
+html[data-lc-split-dragging="1"] .lavash-artboard-edit-shell .lavash-artboard,
+html[data-window-resizing="1"] .lc-unified-shell {
+  transition: none !important;
+}
+
+html[data-lc-split-dragging="1"] .lavash-artboard-grid-overlay {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+html[data-lc-split-dragging="1"] .lavash-artboard-cinematic-overlay,
+html[data-window-resizing="1"] .lavash-artboard-cinematic-overlay {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html[data-window-resizing="1"] .lc-chat-panel,
+html[data-window-resizing="1"] .lc-chat-panel__messages {
+  animation: none !important;
+  background: var(--palette-surface);
+}
+
+html[data-window-resizing="1"] .lc-chat-panel__composer,
+html[data-window-resizing="1"] .lc-chat-panel__composer--boxed {
+  animation: none !important;
+  background: var(--palette-surface-2);
+  overflow: hidden;
+}
+
+html[data-window-resizing="1"] .lc-chat-panel__messages {
+  scrollbar-width: none;
+}
+
+html[data-window-resizing="1"] .lc-chat-panel__messages::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.lc-design-tabs-wrap {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  padding: 0 2px 6px;
+}
+
+.lc-design-tabs {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--palette-border) 55%, transparent);
+  background: color-mix(in srgb, var(--palette-surface-2) 72%, transparent);
+}
+
+.lc-design-tabs__btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-micro, 160ms) ease,
+    color var(--motion-duration-micro, 160ms) ease;
+}
+
+.lc-design-tabs__btn:hover {
+  color: var(--theme-text-primary);
+}
+
+.lc-design-tabs__btn--active {
+  background: color-mix(in srgb, var(--color-accent-primary) 18%, transparent);
+  color: var(--theme-text-primary);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 35%, transparent);
+}
+
+.lc-unified-shell__design-placeholder {
+  min-width: 0;
+  min-height: 0;
+}
+
+.lc-design-tab-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.lc-design-tab-placeholder p {
+  margin: 0;
+  max-width: 28ch;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--theme-text-secondary);
+}
+
+.lc-unified-shell__wallpapers {
+  min-width: 0;
+  min-height: 0;
+}
+
+.lc-wallpapers-pane-body {
+  overflow: auto;
+}
+
+.lc-wallpapers-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  padding: 10px 12px 16px;
+}
+
+.lc-wallpapers-pane__letter {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--theme-text-secondary) 18%, transparent);
+  background: color-mix(in srgb, var(--theme-surface-elevated, #1a1a1a) 88%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, #fff 6%, transparent) inset;
+}
+
+.lc-wallpapers-pane__letter-title {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--theme-text-primary);
+}
+
+.lc-wallpapers-pane__letter-body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--theme-text-secondary);
+}
+
+.lc-wallpapers-pane__letter-sign {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-style: italic;
+  color: color-mix(in srgb, var(--theme-text-secondary) 85%, transparent);
+  text-align: right;
+}
+
+.lc-wallpapers-pane__drop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 148px;
+  padding: 18px 16px;
+  border-radius: 14px;
+  border: 1.5px dashed color-mix(in srgb, var(--color-accent-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--color-accent-primary) 6%, transparent);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.lc-wallpapers-pane__drop--over {
+  border-color: var(--color-accent-primary);
+  background: color-mix(in srgb, var(--color-accent-primary) 14%, transparent);
+}
+
+.lc-wallpapers-pane__drop--busy {
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.lc-wallpapers-pane__file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lc-wallpapers-pane__drop-icon {
+  color: var(--color-accent-primary);
+  opacity: 0.9;
+}
+
+.lc-wallpapers-pane__drop-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--theme-text-primary);
+}
+
+.lc-wallpapers-pane__drop-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--theme-text-secondary);
+}
+
+.lc-wallpapers-pane__upload-btn {
+  margin-top: 4px;
+}
+
+.lc-wallpapers-pane__status {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--color-accent-primary);
+}
+
+.lc-wallpapers-pane__error {
+  margin: 6px 0 0;
+  max-width: 36ch;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #f87171;
+}
+
+.lc-wallpapers-pane__empty {
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--theme-text-secondary);
+}
+
+.lc-wallpapers-pane__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.lc-wallpapers-pane__card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.lc-wallpapers-pane__preview {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+}
+
+.lc-wallpapers-pane__preview--active {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 40%, transparent);
+}
+
+.lc-wallpapers-pane__preview-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--color-accent-primary);
+  color: #111;
+}
+
+.lc-wallpapers-pane__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  min-width: 0;
+}
+
+.lc-wallpapers-pane__card-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--theme-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lc-wallpapers-pane__badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-accent-primary) 22%, transparent);
+  color: var(--color-accent-primary);
+}
+
+.lc-wallpapers-pane__card-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.lc-wallpapers-pane__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--theme-text-secondary) 12%, transparent);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+}

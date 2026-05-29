@@ -1,0 +1,38 @@
+.lc-workspace-status {
+  gap: 8px;
+}
+
+.lc-resources-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 70%, transparent);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--palette-surface-2) 88%, transparent);
+  color: color-mix(in srgb, var(--theme-text-primary) 82%, transparent);
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease,
+    transform 120ms ease;
+  -webkit-app-region: no-drag;
+}
+
+.lc-resources-btn:hover:not(:disabled) {
+  color: var(--color-accent-primary);
+  border-color: color-mix(in srgb, var(--color-accent-primary) 42%, var(--theme-border));
+  background: color-mix(in srgb, var(--color-accent-primary) 10%, var(--palette-surface-2));
+}
+
+.lc-resources-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.lc-resources-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

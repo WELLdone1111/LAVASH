@@ -1,0 +1,14 @@
+/* LavashConstruct workspace styles — split by section (~400 lines max) */
+@import "./01-lc-workspace.css";
+@import "./02-lc-wallpapers-pane__icon-btn.css";
+@import "./03-lc-rail-search__item.css";
+@import "./04-lc-settings-panel--models.css";
+@import "./05-lc-unified-cell__header--brand.css";
+@import "./06-lc-settings-panel__nav-btn.css";
+@import "./07-lc-component-edit-panel__slider-row.css";
+@import "./08-lc-inspector-import-meta.css";
+@import "./09-lc-library-preview-frame--shadcn-slider.css";
+@import "./10-lc-preset-save-button.css";
+@import "./11-lc-artboard-toolbar__btn.css";
+@import "./12-lc-imported-image.css";
+@import "./13-lc-library-pointer-drag-floater__title.css";

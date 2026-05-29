@@ -1,0 +1,417 @@
+/* LavashConstruct workspace styles — lc-preset-save-button */
+
+.lc-preset-save-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.lc-preset-save-button:focus-visible:not(:disabled) {
+  outline: 2px solid color-mix(in srgb, var(--color-accent-primary) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.lc-toolbar-select {
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, white 16%, transparent);
+  color: var(--theme-text-primary);
+  padding: 6px 10px;
+  min-width: 168px;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    border-color var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease),
+    background-color var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease),
+    color var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease),
+    box-shadow var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease),
+    transform var(--motion-duration-micro, 160ms) var(--motion-ease-out-smooth, ease);
+}
+
+.lc-toolbar-select:hover {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 42%, var(--theme-border));
+  background: color-mix(in srgb, var(--color-accent-primary) 10%, transparent);
+  color: color-mix(in srgb, var(--color-accent-primary) 22%, var(--theme-text-primary));
+}
+
+.lc-toolbar-select:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--color-accent-primary) 55%, var(--theme-border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent-primary) 16%, transparent);
+}
+
+.lc-toolbar-select:active {
+  transform: scale(0.985);
+}
+
+.lc-history-actions--artboard {
+  margin-left: 0;
+}
+
+.lavash-artboard-board {
+  flex: 1;
+  min-height: 0;
+  border: 1px dashed color-mix(in srgb, var(--theme-border) 56%, transparent);
+  border-radius: 0;
+  background-color: color-mix(in srgb, var(--window-surface-bg, white) 10%, transparent);
+  position: relative;
+  overflow: hidden;
+  /* WebView2: blur+transform дає «волосінні» шви; tint без blur латає */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  touch-action: none;
+  isolation: isolate;
+}
+
+/* Після базового .lavash-artboard-board — впритул до rail/низу/чату; лінія розділу лише зліва у чату. */
+.lc-unified-shell__workspace .lavash-artboard-board {
+  border: none;
+}
+
+.lavash-artboard-cinematic-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, white 4%, transparent) 0%,
+      transparent 38%,
+      transparent 62%,
+      color-mix(in srgb, black 6%, transparent) 100%
+    ),
+    radial-gradient(
+      ellipse at 50% 45%,
+      transparent 0%,
+      transparent 62%,
+      color-mix(in srgb, black 10%, transparent) 100%
+    ),
+    radial-gradient(
+      ellipse at 50% 0%,
+      color-mix(in srgb, var(--color-accent-primary) 5%, transparent) 0%,
+      transparent 68%
+    );
+  opacity: 0.65;
+  mix-blend-mode: normal;
+}
+
+.lavash-artboard-board--pan-mid {
+  cursor: grabbing;
+}
+
+.lavash-artboard-board--drop-active {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 70%, var(--theme-border));
+  background-color: color-mix(in srgb, var(--color-accent-primary) 8%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 46%, transparent);
+}
+
+.lavash-artboard-grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.lavash-artboard-grid-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.lavash-artboard-board-content {
+  position: absolute;
+  inset: unset;
+  left: 0;
+  top: 0;
+  width: max(100%, var(--lavash-artboard-dot-field, 8192px));
+  height: max(100%, var(--lavash-artboard-dot-field, 8192px));
+  pointer-events: auto;
+  transform-origin: 0 0;
+  z-index: 1;
+  background-color: color-mix(in srgb, var(--window-surface-bg, white) 2.5%, transparent);
+}
+
+.lavash-artboard-marquee {
+  position: absolute;
+  border: 1px solid color-mix(in srgb, var(--color-accent-primary) 80%, white);
+  background: color-mix(in srgb, var(--color-accent-primary) 22%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 40%, transparent);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.lavash-artboard-board-content--density-compact .lc-draggable-panel {
+  padding: 6px 8px;
+  gap: 4px;
+}
+
+.lavash-artboard-board-content--density-balanced .lc-draggable-panel {
+  padding: 8px 10px;
+  gap: 6px;
+}
+
+.lavash-artboard-board-content--density-spacious .lc-draggable-panel {
+  padding: 10px 12px;
+  gap: 8px;
+}
+
+.lavash-artboard-board-content--density-compact .lc-draggable-panel header {
+  font-size: 11px;
+}
+
+.lavash-artboard-board-content--density-spacious .lc-draggable-panel header {
+  font-size: 13px;
+}
+
+.lavash-artboard-board-content--no-grid {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--window-surface-bg, white) 2.5%, transparent);
+}
+
+.lavash-artboard-zoom-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.lavash-artboard-zoom-nudge {
+  box-sizing: border-box;
+  min-width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--theme-border);
+  background: color-mix(in srgb, var(--palette-surface-2) 88%, var(--palette-bg));
+  color: var(--palette-text);
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lavash-artboard-zoom-nudge:hover {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 40%, var(--theme-border));
+  background: color-mix(in srgb, var(--palette-surface-2) 100%, var(--palette-bg));
+}
+
+.lavash-artboard-zoom-nudge:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.lavash-artboard-zoom-label {
+  font-size: 12px;
+  color: var(--theme-text-secondary);
+  min-width: 5.5em;
+}
+
+.lavash-artboard-view-button {
+  border: 1px solid var(--theme-border);
+  background: color-mix(in srgb, white 16%, transparent);
+  color: var(--theme-text-primary);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lavash-artboard-view-button:hover {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 35%, var(--theme-border));
+}
+
+.lavash-artboard-view-button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.lc-draggable-panel--player-board {
+  min-height: 120px;
+}
+
+/*
+  Composition children live in `.lc-player-board-body`. The Alt-drag overlay must NOT sit above the body:
+  otherwise `pointerdown` targets the overlay, nested panels never become the event target, and Alt-drag
+  inside the board breaks. Keep the overlay below the body (pointer-events none when “active”) so hits
+  reach slots; capture on the board root still moves the board from the header / chrome.
+*/
+.lc-draggable-panel--player-board > header {
+  position: relative;
+  z-index: 6;
+}
+
+.lc-draggable-panel--player-board > .lc-player-board-body {
+  position: relative;
+  z-index: 4;
+}
+
+.lc-draggable-panel--player-board > .lc-panel-drag-surface {
+  z-index: 3;
+}
+
+.lc-draggable-panel--player-board > .lc-panel-drag-surface.lc-panel-drag-surface--active {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.lc-draggable-panel--player-board > .lc-panel-resize-handle {
+  z-index: 7;
+}
+
+.lc-player-board-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  pointer-events: auto;
+  isolation: isolate;
+}
+
+.lc-player-board-body--clip {
+  overflow: hidden;
+}
+
+/* під час drag дитина може малюватися за clip (undock на артборд) */
+.lc-player-board-body.lc-player-board-body--clip:has(.lc-draggable-panel--dragging) {
+  overflow: visible;
+}
+
+.lc-board-child-slot {
+  flex-shrink: 0;
+}
+
+.lc-board-nested-player-board {
+  flex-shrink: 0;
+  min-height: 0;
+}
+
+.lc-player-board-chrome {
+  flex-shrink: 0;
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--theme-border) 35%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--theme-border) 75%, transparent);
+}
+
+.lc-player-board-chrome-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--theme-text-secondary);
+}
+
+.lc-draggable-panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--window-surface-bg, white) 86%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  padding: 8px 10px;
+  cursor: default;
+  user-select: none;
+  touch-action: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 12;
+  --lc-panel-hover-scale: 1.02;
+  transition:
+    box-shadow var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease-in-out),
+    border-color var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease-in-out);
+}
+
+.lc-draggable-panel--active {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 58%, white);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.12),
+    0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 50%, transparent);
+}
+
+.lc-draggable-panel--marked {
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.12),
+    0 0 0 2px color-mix(in srgb, #f59e0b 72%, var(--color-accent-primary));
+}
+
+.lc-draggable-panel--marked.lc-draggable-panel--active {
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.12),
+    0 0 0 2px color-mix(in srgb, #f59e0b 82%, var(--color-accent-primary)),
+    0 0 0 3px color-mix(in srgb, var(--color-accent-primary) 40%, transparent);
+}
+
+.lavash-artboard-board--mark-mode {
+  cursor: crosshair;
+}
+
+.lavash-artboard-board--mark-mode .lc-draggable-panel {
+  cursor: crosshair;
+}
+
+.lavash-artboard-edit-shell--mark-mode .lc-mark-mode-hint {
+  position: absolute;
+  top: 52px;
+  right: 10px;
+  left: auto;
+  transform: none;
+  z-index: 40;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: color-mix(in srgb, var(--theme-text-primary) 92%, white);
+  background: color-mix(in srgb, var(--theme-surface-elevated, #1a1a1a) 88%, transparent);
+  border: 1px solid color-mix(in srgb, #f59e0b 45%, var(--theme-border));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Панель інструментів артборду — правий верх, рухається з ресайзом чату */
+.lc-artboard-toolbar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 45;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--palette-border) 55%, transparent);
+  background: color-mix(in srgb, var(--palette-surface) 92%, transparent);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  pointer-events: auto;
+}
+
+.lc-artboard-toolbar__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  color: var(--palette-muted);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    transform 100ms ease;
+}

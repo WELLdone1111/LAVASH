@@ -1,0 +1,280 @@
+.lc-artboard-workspace-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  flex: 1 1 0;
+  align-self: stretch;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.lc-artboard-workspace-split[data-browser-open="true"] {
+  grid-template-columns: minmax(280px, var(--lc-browser-split, 50%)) minmax(0, 1fr);
+}
+
+.lc-artboard-workspace-main {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.lc-artboard-workspace-split[data-browser-open="true"] .lc-artboard-workspace-main {
+  grid-column: 2;
+}
+
+.lavash-artboard-edit-shell--browser-split .lc-artboard-workspace-main > .lavash-artboard {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.lc-ide-browser {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-right: 1px solid color-mix(in srgb, var(--theme-border) 88%, transparent);
+  background: color-mix(in srgb, var(--palette-bg) 92%, #0a0c10);
+}
+
+.lc-ide-browser__chrome {
+  flex-shrink: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 82%, transparent);
+  background: color-mix(in srgb, var(--palette-surface) 94%, #000);
+}
+
+.lc-ide-browser__tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 8px 8px 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.lc-ide-browser__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: min(200px, 36vw);
+  flex-shrink: 0;
+  padding: 0 2px 0 0;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  color: color-mix(in srgb, var(--theme-text-secondary) 88%, transparent);
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.lc-ide-browser__tab--active {
+  border-color: color-mix(in srgb, var(--theme-border) 82%, transparent);
+  background: color-mix(in srgb, var(--palette-surface-2) 92%, var(--palette-bg));
+  color: var(--theme-text-primary);
+}
+
+.lc-ide-browser__tab-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px 4px 6px 10px;
+  border: none;
+  border-radius: 8px 0 0 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.lc-ide-browser__tab-close {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 2px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  opacity: 0.65;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.lc-ide-browser__tab-close:hover {
+  opacity: 1;
+  background: color-mix(in srgb, var(--color-accent-primary) 14%, transparent);
+}
+
+.lc-ide-browser__tab-add {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 2px;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: color-mix(in srgb, var(--theme-text-secondary) 88%, transparent);
+  cursor: pointer;
+}
+
+.lc-ide-browser__tab-add:hover {
+  border-color: color-mix(in srgb, var(--theme-border) 78%, transparent);
+  background: color-mix(in srgb, var(--color-accent-primary) 10%, transparent);
+  color: var(--theme-text-primary);
+}
+
+.lc-ide-browser__tab-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4285f4, #34a853);
+  flex-shrink: 0;
+}
+
+.lc-ide-browser__tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lc-ide-browser__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px 8px;
+}
+
+.lc-ide-browser__address {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.lc-ide-browser__address-input {
+  width: 100%;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 78%, transparent);
+  background: color-mix(in srgb, var(--palette-bg) 70%, transparent);
+  color: var(--theme-text-primary);
+  font-size: 11px;
+  outline: none;
+}
+
+.lc-ide-browser__address-input:focus {
+  border-color: color-mix(in srgb, #4285f4 42%, var(--theme-border));
+  box-shadow: 0 0 0 1px color-mix(in srgb, #4285f4 14%, transparent);
+}
+
+.lc-ide-browser__icon-btn {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: color-mix(in srgb, var(--theme-text-secondary) 90%, transparent);
+  cursor: pointer;
+}
+
+.lc-ide-browser__icon-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
+  color: var(--theme-text-primary);
+}
+
+.lc-ide-browser__icon-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.lc-ide-browser__viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #202124;
+}
+
+.lc-ide-browser__viewport--native {
+  background: #202124;
+}
+
+.lc-ide-browser__native-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 120px;
+  background: #202124;
+}
+
+.lc-ide-browser__frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+.lc-ide-browser__blocked {
+  display: grid;
+  place-content: center;
+  gap: 12px;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
+  color: var(--theme-text-secondary);
+  font-size: 13px;
+  background: color-mix(in srgb, var(--palette-surface-2) 88%, var(--palette-bg));
+}
+
+.lc-ide-browser__blocked-btn {
+  justify-self: center;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 82%, transparent);
+  background: color-mix(in srgb, var(--color-accent-primary) 14%, transparent);
+  color: var(--theme-text-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.lc-ide-browser__split-handle {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 4;
+}
+
+html[data-lc-browser-split-dragging="1"] {
+  cursor: col-resize;
+  user-select: none;
+}
+
+html[data-lc-browser-split-dragging="1"] .lc-ide-browser__frame {
+  pointer-events: none;
+}

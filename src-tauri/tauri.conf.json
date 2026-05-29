@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "LAVASH",
+  "version": "0.1.0-alpha.1",
+  "identifier": "com.lllll.lavash",
+  "build": {
+    "beforeDevCommand": "node ./node_modules/vite/bin/vite.js",
+    "devUrl": "http://localhost:1421/",
+    "beforeBuildCommand": "node ./node_modules/typescript/lib/tsc.js && node ./node_modules/vite/bin/vite.js build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "LAVASH",
+        "url": "index.html",
+        "width": 1280,
+        "height": 800,
+        "visible": true,
+        "center": true,
+        "decorations": false,
+        "backgroundColor": "#00000000",
+        "shadow": false,
+        "transparent": true,
+        "dragDropEnabled": false,
+        "resizable": true,
+        "maximizable": true,
+        "devtools": true
+      }
+    ],
+    "security": {
+      "capabilities": ["default"],
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

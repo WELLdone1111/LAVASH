@@ -1,0 +1,410 @@
+/* LavashConstruct workspace styles — lc-unified-cell__header--brand */
+
+.lc-unified-cell__header--brand {
+  gap: 8px;
+}
+
+.lc-unified-cell__header-brand-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.lc-unified-cell__body {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  padding: 8px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.lc-unified-cell__body--center {
+  gap: 8px;
+  /* Артборд ширший за в’юпорт (pan/zoom); зовнішній горизонтальний скрол не потрібен. */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.lc-unified-cell__body--flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+.lc-design-code-split {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.lc-design-code-split .lavash-artboard-edit-shell--split {
+  flex: 1 1 58%;
+  min-height: 0;
+}
+
+.lc-design-code-split .lc-project-code {
+  flex: 0 0 42%;
+}
+
+.lc-design-code-split--code-only .lc-project-code {
+  flex: 1 1 auto;
+  border-top: none;
+}
+
+.lc-unified-cell__body > .lc-left-panel,
+.lc-unified-cell__body > .lc-chat-panel,
+.lc-unified-cell__body > .lc-bottom-panel,
+.lc-unified-cell__body > .lc-code-editor {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  margin: 0;
+  max-width: none;
+  align-self: stretch;
+}
+
+.lc-shell-panel {
+  position: absolute;
+  min-width: 160px;
+  min-height: 120px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 85%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--window-surface-bg, #ffffff) 96%, var(--theme-text-primary) 4%);
+  backdrop-filter: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.lc-shell-panel__drag {
+  height: 28px;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 72%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--window-surface-bg, white) 36%, transparent),
+    color-mix(in srgb, var(--window-surface-bg, white) 18%, transparent)
+  );
+  color: var(--theme-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: grab;
+}
+
+.lc-shell-panel__drag:active {
+  cursor: grabbing;
+}
+
+.lc-shell-panel__resize {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 82%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-accent-primary) 28%, transparent);
+  cursor: nwse-resize;
+  z-index: 5;
+  padding: 0;
+}
+
+.lc-shell-panel__resize:hover {
+  background: color-mix(in srgb, var(--color-accent-primary) 42%, transparent);
+}
+
+.lc-shell-panel__content {
+  min-height: 0;
+  min-width: 0;
+  flex: 1;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.lc-shell-panel__content--center {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lc-shell-panel__content > .lc-left-panel,
+.lc-shell-panel__content > .lc-chat-panel,
+.lc-shell-panel__content > .lc-right-panel,
+.lc-shell-panel__content > .lavash-artboard,
+.lc-shell-panel__content > .lc-bottom-panel {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  max-width: none;
+  align-self: stretch;
+}
+
+.lc-workspace[data-animation="enter"] {
+  animation: lc-workspace-soft-in var(--motion-duration-medium, 320ms) var(--motion-ease-out-smooth, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
+}
+
+@keyframes lc-workspace-soft-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.lc-workspace[data-animation="exit"] {
+  animation: dock-tab-exit var(--dock-tab-exit-duration) var(--dock-tab-exit-easing) forwards;
+}
+
+.lc-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.lc-workspace-hint {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+  padding: 0 2px 4px;
+  box-sizing: border-box;
+}
+
+.lc-workspace-hint__text {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--theme-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+
+.lc-mode-switch {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  padding: 3px;
+  background: color-mix(in srgb, white 28%, transparent);
+  isolation: isolate;
+}
+
+.lc-mode-switch__thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc((100% - 6px) / 2);
+  border-radius: 999px;
+  background: var(--color-accent-primary);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #fff 22%, transparent),
+    0 4px 14px color-mix(in srgb, var(--color-accent-primary) 35%, transparent);
+  z-index: 0;
+  pointer-events: none;
+  transition: transform var(--motion-duration-medium, 340ms) var(--motion-ease-out-strong);
+  will-change: transform;
+}
+
+.lc-mode-switch__thumb[data-mode="mini"] {
+  transform: translateX(100%);
+}
+
+.lc-mode-switch--triple .lc-mode-switch__thumb {
+  width: calc((100% - 6px) / 3);
+}
+
+.lc-mode-switch--triple .lc-mode-switch__thumb[data-mode="mini"] {
+  transform: translateX(100%);
+}
+
+.lc-mode-switch--triple .lc-mode-switch__thumb[data-mode="app"] {
+  transform: translateX(200%);
+}
+
+.lc-mode-switch__btn {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 0;
+  min-width: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+  transition:
+    color var(--motion-duration-short, 240ms) var(--motion-ease-out-strong),
+    transform var(--motion-duration-micro, 160ms) var(--motion-ease-out-smooth, ease);
+}
+
+.lc-mode-switch__btn:hover:not([data-active="true"]) {
+  color: color-mix(in srgb, var(--theme-text-primary) 82%, var(--theme-text-secondary));
+}
+
+.lc-mode-switch__btn[data-active="true"] {
+  color: var(--palette-on-accent, #0d0d0d);
+}
+
+.lc-mode-switch__btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lc-mode-switch__thumb {
+    transition: none;
+  }
+
+  .lc-mode-switch__btn {
+    transition: none;
+  }
+}
+
+.lc-history-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.lc-pill-button {
+  border-color: var(--theme-border);
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.lc-pill-button .material-symbols-outlined {
+  font-size: 16px;
+}
+
+.lc-icon-only-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  justify-content: center;
+}
+
+.lavash-artboard-settings-anchor {
+  position: relative;
+}
+
+.lavash-artboard-settings-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: min(420px, calc(100vw - 48px));
+  min-height: 360px;
+  max-height: min(72vh, 560px);
+  border: 1px solid color-mix(in srgb, var(--theme-border) 78%, transparent);
+  border-radius: 12px;
+  /* glass як у float-панелях: blur, не суцільний білий */
+  background: color-mix(in srgb, var(--window-surface-bg, white) 22%, transparent);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: top left;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--motion-duration-micro, 160ms) var(--motion-ease-out-strong),
+    transform var(--motion-duration-micro, 160ms) var(--motion-ease-out-strong),
+    visibility 0s linear var(--motion-duration-micro, 160ms);
+}
+
+.lavash-artboard-settings-popover[data-entered="true"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity var(--motion-duration-short, 240ms) var(--motion-ease-out-strong),
+    transform var(--motion-duration-short, 240ms) var(--motion-ease-out-strong),
+    visibility 0s linear 0s;
+}
+
+.lavash-artboard-settings-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 10px 8px;
+  background: color-mix(in srgb, var(--window-surface-bg, white) 12%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 55%, transparent);
+}
+
+.lavash-artboard-settings-popover__body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--window-surface-bg, white) 8%, transparent);
+}
+
+.lavash-artboard-settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lc-settings-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.lc-settings-panel__nav {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 0 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 55%, transparent);
+  background: color-mix(in srgb, var(--window-surface-bg, white) 8%, transparent);
+  overflow-x: auto;
+}

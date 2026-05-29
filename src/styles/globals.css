@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/**
+ * Глобальна кінетика UI: одна шкала тривалостей і кривих для узгоджених плавних переходів.
+ * У компонентах задавайте transition через var(--motion-*) замість «магічних» ms.
+ */
+:root {
+  /* Помітне гальмування в кінці — без різких зупинок */
+  --motion-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-out-smooth: cubic-bezier(0.33, 1, 0.68, 1);
+  --motion-ease-out-strong: cubic-bezier(0.22, 1, 0.42, 1);
+  --motion-ease-in-out-soft: cubic-bezier(0.45, 0, 0.2, 1);
+  --motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --motion-duration-instant: 80ms;
+  --motion-duration-micro: 160ms;
+  --motion-duration-short: 240ms;
+  --motion-duration-medium: 340ms;
+  --motion-duration-panel-enter: 400ms;
+  --motion-duration-panel-exit: 340ms;
+  --motion-duration-chrome: 720ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-instant: 1ms;
+    --motion-duration-micro: 1ms;
+    --motion-duration-short: 1ms;
+    --motion-duration-medium: 1ms;
+    --motion-duration-panel-enter: 1ms;
+    --motion-duration-panel-exit: 1ms;
+    --motion-duration-chrome: 1ms;
+    --dock-expand-duration: 1ms;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

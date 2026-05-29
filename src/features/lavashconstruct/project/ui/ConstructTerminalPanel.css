@@ -1,0 +1,16 @@
+.lc-terminal-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  padding: 4px;
+}
+
+.lc-terminal-panel__host {
+  flex: 1;
+  min-height: 120px;
+}
+
+.lc-terminal-panel__host .xterm {
+  height: 100%;
+}

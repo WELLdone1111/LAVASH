@@ -1,0 +1,65 @@
+.ide-web-browser-btn {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 82%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--palette-surface-2) 88%, var(--palette-bg));
+  color: color-mix(in srgb, var(--theme-text-secondary) 90%, transparent);
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.ide-web-browser-btn:hover {
+  color: var(--theme-text-primary);
+  border-color: color-mix(in srgb, #4285f4 38%, var(--theme-border));
+  background: color-mix(in srgb, var(--palette-surface-2) 96%, var(--palette-bg));
+  box-shadow: 0 0 0 1px color-mix(in srgb, #4285f4 14%, transparent);
+}
+
+.ide-web-browser-btn--active {
+  color: #4285f4;
+  border-color: color-mix(in srgb, #4285f4 42%, var(--theme-border));
+  background: color-mix(in srgb, #4285f4 12%, var(--palette-surface-2));
+}
+
+.ide-web-browser-btn[data-tooltip] {
+  position: relative;
+}
+
+.ide-web-browser-btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 80;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--palette-text);
+  background: var(--palette-surface-2);
+  border: 1px solid color-mix(in srgb, var(--palette-border) 60%, transparent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -4px);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.ide-web-browser-btn[data-tooltip]:hover::after,
+.ide-web-browser-btn[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

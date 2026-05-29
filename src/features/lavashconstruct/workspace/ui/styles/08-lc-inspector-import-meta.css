@@ -1,0 +1,401 @@
+/* LavashConstruct workspace styles — lc-inspector-import-meta */
+
+.lc-inspector-import-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.lc-inspector-import-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--theme-text-secondary);
+}
+
+.lc-inspector-import-kind {
+  font-size: 12px;
+  color: var(--theme-text-primary);
+}
+
+.lc-import-warnings {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--theme-text-secondary);
+}
+
+.lc-import-warnings li + li {
+  margin-top: 4px;
+}
+
+.lc-search-input {
+  width: 100%;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, white 18%, transparent);
+  color: var(--theme-text-primary);
+  padding: 8px 10px;
+}
+
+.lc-chip-row {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lc-chip-row--elements {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.lc-library-tabs {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.lc-library-tabs button {
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  padding: 7px 8px;
+  line-height: 1;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  background: color-mix(in srgb, white 16%, transparent);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+}
+
+.lc-library-tabs button[data-active="true"] {
+  border-color: var(--color-accent-primary);
+  background: color-mix(in srgb, var(--color-accent-primary) 16%, transparent);
+  color: color-mix(in srgb, var(--color-accent-primary) 90%, var(--theme-text-primary));
+}
+
+.lc-library-section-title {
+  margin: 12px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--theme-text-secondary);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.lc-library-section-title--inline {
+  margin-top: 14px;
+}
+
+.lc-chip-row span {
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--theme-text-secondary);
+}
+
+.lc-chip-row .lc-library-chip {
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 11px;
+  color: var(--theme-text-secondary);
+  background: color-mix(in srgb, white 16%, transparent);
+  cursor: pointer;
+}
+
+.lc-chip-row .lc-library-chip--active {
+  color: var(--palette-on-accent);
+  border-color: var(--color-accent-primary);
+  background: var(--color-accent-primary);
+}
+
+.lc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: clamp(260px, 52vh, 640px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-right: 2px;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.lc-list::-webkit-scrollbar {
+  width: var(--scrollbar-size, 9px);
+}
+
+.lc-list::-webkit-scrollbar-track {
+  border-radius: 999px;
+  border: 1px solid var(--scrollbar-track-border);
+  background: var(--scrollbar-track);
+}
+
+.lc-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background: var(--scrollbar-thumb);
+}
+
+.lc-list::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  background-clip: padding-box;
+}
+
+.lc-list-scroll-shell {
+  margin-top: 10px;
+  display: block;
+}
+
+.lc-library-item {
+  position: relative;
+}
+
+.lc-library-item--preview-open {
+  z-index: 3;
+}
+
+.lc-library-item--user-row {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.lc-library-item--user-row .lc-library-template-button {
+  flex: 1;
+  min-width: 0;
+}
+
+.lc-library-user-remove {
+  flex-shrink: 0;
+  width: 38px;
+  min-height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, #dc2626 42%, var(--theme-border));
+  background: color-mix(in srgb, white 14%, transparent);
+  color: color-mix(in srgb, #dc2626 78%, var(--theme-text-primary));
+  cursor: pointer;
+  transition:
+    border-color var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease),
+    background var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease),
+    transform var(--motion-duration-micro, 160ms) var(--motion-ease-out-smooth, ease);
+}
+
+.lc-library-user-remove:hover {
+  background: color-mix(in srgb, #dc2626 12%, transparent);
+  border-color: color-mix(in srgb, #dc2626 58%, var(--theme-border));
+}
+
+.lc-library-user-remove-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.lc-list button,
+.lc-action-group button {
+  border: 1px solid var(--theme-border);
+  background: color-mix(in srgb, white 16%, transparent);
+  color: var(--theme-text-primary);
+  border-radius: 10px;
+  padding: 9px 10px;
+  text-align: left;
+}
+
+.lc-list .lc-library-user-remove {
+  padding: 0;
+  width: 38px;
+  min-height: 58px;
+  text-align: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, #dc2626 42%, var(--theme-border));
+  background: color-mix(in srgb, white 14%, transparent);
+  color: color-mix(in srgb, #dc2626 78%, var(--theme-text-primary));
+}
+
+.lc-library-template-button {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  grid-template-areas:
+    "preview title"
+    "preview meta";
+  column-gap: 8px;
+  row-gap: 2px;
+  align-items: center;
+  width: 100%;
+  min-height: 58px;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: 1px solid var(--theme-border);
+  background: color-mix(in srgb, white 16%, transparent);
+  color: var(--theme-text-primary);
+  border-radius: 10px;
+  padding: 9px 10px;
+  text-align: left;
+  /* none треба: нативний HTML5 drag без нашого dataTransfer → дроп вважається «заборонено» */
+  -webkit-user-drag: none;
+  user-drag: none;
+  transition:
+    border-color var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease),
+    background var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease),
+    box-shadow var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease),
+    transform var(--motion-duration-micro, 160ms) var(--motion-ease-out-smooth, ease);
+}
+
+.lc-library-template-button:hover {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 40%, var(--theme-border));
+  background: color-mix(in srgb, white 18%, transparent);
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.lc-library-template-button--active {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 48%, var(--theme-border));
+  background: color-mix(in srgb, var(--color-accent-primary) 11%, transparent);
+}
+
+.lc-library-template-button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-accent-primary) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.lc-library-template-button:hover .lc-library-template-title {
+  color: color-mix(in srgb, var(--color-accent-primary) 88%, var(--theme-text-primary));
+}
+
+.lc-library-preview-frame {
+  grid-area: preview;
+  width: 52px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 85%, transparent);
+  background: color-mix(in srgb, var(--window-surface-bg, white) 78%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition:
+    transform var(--motion-duration-micro, 160ms) var(--motion-ease-out-expo, cubic-bezier(0.2, 0.9, 0.2, 1)),
+    border-color var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease),
+    background var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease);
+  transform-origin: center center;
+}
+
+.lc-library-template-button:hover .lc-library-preview-frame {
+  transform: scale(1.065);
+  border-color: color-mix(in srgb, var(--color-accent-primary) 52%, var(--theme-border));
+  background: color-mix(in srgb, var(--window-surface-bg, white) 86%, transparent);
+}
+
+.lc-library-preview-frame--nav {
+  flex-direction: column;
+}
+
+.lc-library-preview-pill {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-primary) 42%, transparent);
+  transition: transform var(--motion-duration-short, 240ms) var(--motion-ease-out-smooth, ease);
+}
+
+.lc-library-template-button:hover .lc-library-preview-pill:nth-child(2) {
+  transform: scaleX(1.08);
+}
+
+.lc-library-preview-frame--dock,
+.lc-library-preview-frame--playback {
+  border-radius: 999px;
+}
+
+.lc-library-preview-frame--mini-player {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 4px;
+  border-radius: 10px;
+}
+
+.lc-library-preview-mini-player-card {
+  width: 100%;
+  flex: 1;
+  min-height: 12px;
+  border-radius: 7px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--color-accent-primary) 35%, transparent),
+    color-mix(in srgb, var(--window-surface-bg, white) 52%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--theme-border) 72%, transparent);
+}
+
+.lc-library-preview-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-primary) 58%, transparent);
+  transition: transform var(--motion-duration-short, 240ms) var(--motion-ease-out-smooth, ease);
+}
+
+.lc-library-template-button:hover .lc-library-preview-dot:nth-child(2n) {
+  transform: scale(1.1);
+}
+
+.lc-library-preview-frame--split {
+  gap: 4px;
+}
+
+.lc-library-preview-column {
+  width: 12px;
+  height: 100%;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-accent-primary) 32%, transparent);
+  transition: background var(--motion-duration-micro, 160ms) var(--motion-ease-in-out-soft, ease);
+}
+
+.lc-library-template-button:hover .lc-library-preview-column {
+  background: color-mix(in srgb, var(--color-accent-primary) 48%, transparent);
+}
+
+.lc-library-preview-column--wide {
+  width: 26px;
+}
+
+.lc-library-preview-frame--shadcn-btn {
+  justify-content: center;
+}
+
+.lc-library-preview-frame--shadcn-btn span {
+  width: 18px;
+  height: 9px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--color-accent-primary) 58%, transparent);
+}
+
+.lc-library-preview-frame--shadcn-slider {
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 2px;
+}

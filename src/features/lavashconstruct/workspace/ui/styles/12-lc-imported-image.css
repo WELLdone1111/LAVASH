@@ -1,0 +1,406 @@
+/* LavashConstruct workspace styles — lc-imported-image */
+
+.lc-imported-image {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+  object-fit: contain;
+  border: none;
+  background: transparent;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.lc-imported-text {
+  margin: 0;
+  width: 100%;
+  max-height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--theme-text-primary);
+  font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  white-space: pre-wrap;
+  overflow: auto;
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* сильніше ніж глобальне вимикання селекту під Alt-drag */
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-imported-text,
+.lavash-artboard-board[data-lc-panel-dragging="true"] .lc-imported-text {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.lavash-artboard-board[data-lc-alt-held="true"] .lavash-artboard-board-content,
+.lavash-artboard-board[data-lc-panel-dragging="true"] .lavash-artboard-board-content {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.lc-imported-sandbox-frame {
+  width: 100%;
+  min-height: 132px;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  pointer-events: auto;
+  touch-action: auto;
+}
+
+.lc-draggable-panel--frameless .lc-imported-sandbox-frame {
+  min-height: 0;
+}
+
+.lc-draggable-panel--frameless.lc-draggable-panel--imported .lc-imported-content-wrap > * {
+  transform: scale(var(--lc-imported-scale, 1));
+  transform-origin: center center;
+  width: calc(100% / var(--lc-imported-scale, 1));
+  height: calc(100% / var(--lc-imported-scale, 1));
+  transition: transform var(--motion-duration-micro, 160ms) var(--motion-ease-out-smooth, ease);
+}
+
+/* Hover scale з інспектора — на картку превʼю, не на pan всередині iframe */
+.lc-draggable-panel--frameless.lc-draggable-panel--imported:hover:not(.lc-draggable-panel--locked)
+  .lc-imported-content-wrap
+  > * {
+  transform: scale(calc(var(--lc-imported-scale, 1) * var(--lc-panel-hover-scale, 1)));
+}
+
+.lc-draggable-panel--frameless .lc-panel-resize-handle {
+  right: 2px;
+  bottom: 2px;
+  z-index: 72;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-duration-micro, 160ms) ease;
+  cursor: nwse-resize;
+}
+
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-draggable-panel--frameless.lc-draggable-panel--imported .lc-panel-resize-handle {
+  opacity: 0.85;
+  pointer-events: auto;
+}
+
+.lc-panel-drag-surface {
+  position: absolute;
+  inset: 0;
+  border: none;
+  border-radius: inherit;
+  background: transparent;
+  cursor: default;
+  z-index: 3;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* вище drag-смуги (50) — Alt-рух ловить всю панель з рядком смуги */
+.lc-panel-drag-surface.lc-panel-drag-surface--active {
+  z-index: 56;
+  pointer-events: auto;
+}
+
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-panel-drag-surface.lc-panel-drag-surface--active {
+  cursor: grab;
+}
+
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-panel-drag-surface.lc-panel-drag-surface--active:active {
+  cursor: grabbing;
+}
+
+.setting-color-input {
+  width: 100%;
+  height: 34px;
+  padding: 2px 4px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, white 10%, transparent);
+  appearance: auto;
+}
+
+.lc-panel-resize-handle {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  z-index: 72;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 85%, transparent);
+  background: color-mix(in srgb, var(--color-accent-primary) 22%, transparent);
+  cursor: nwse-resize;
+}
+
+.lc-widget-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 28px;
+  border: 1px solid var(--theme-border);
+  background: color-mix(in srgb, var(--color-accent-primary) 18%, transparent);
+  display: grid;
+  place-items: center;
+  transition:
+    border-radius var(--motion-duration-short, 240ms) var(--motion-ease-out-smooth, ease),
+    width var(--motion-duration-short, 240ms) var(--motion-ease-out-smooth, ease),
+    opacity var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease),
+    transform var(--motion-duration-short, 240ms) var(--motion-ease-out-smooth, ease),
+    background var(--motion-duration-short, 240ms) var(--motion-ease-in-out-soft, ease);
+}
+
+.lc-widget-preview .material-symbols-outlined {
+  font-size: 52px;
+  color: var(--color-accent-primary);
+}
+
+.lc-widget-preview[data-mode="mini"] {
+  width: 86px;
+  height: 86px;
+  border-radius: 999px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--color-accent-primary) 36%, transparent),
+    color-mix(in srgb, var(--color-accent-primary) 16%, transparent)
+  );
+}
+
+.lc-widget-preview[data-mode="mini"]:hover {
+  width: 126px;
+  border-radius: 999px;
+  transform: scale(1.02);
+}
+
+.lc-widget-preview[data-mode="mini"][data-idle="true"] {
+  opacity: 0.5;
+}
+
+.lc-widget-preview[data-mode="mini"][data-idle="true"]:hover {
+  opacity: 1;
+}
+
+.lc-action-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.lc-version-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.lc-version-list span {
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--theme-text-secondary);
+}
+
+.lc-select-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lc-select-stack select,
+.lc-select-stack button {
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  background: color-mix(in srgb, white 16%, transparent);
+  color: var(--theme-text-primary);
+  padding: 8px 10px;
+}
+
+.lc-share-url {
+  margin: 0;
+  font-size: 11px;
+  color: var(--theme-text-secondary);
+  word-break: break-all;
+}
+
+.lc-control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  color: var(--theme-text-secondary);
+}
+
+.lc-toggle-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border);
+  background: rgba(140, 140, 140, 0.35);
+}
+
+.lc-toggle-dot--on {
+  background: var(--color-accent-primary);
+}
+
+.lc-toggle-dot-button {
+  border: 1px solid var(--theme-border);
+  background: color-mix(in srgb, white 14%, transparent);
+  border-radius: 999px;
+  min-width: 28px;
+  min-height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+  cursor: pointer;
+}
+
+.lc-toggle-dot-button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--color-accent-primary) 60%, var(--theme-border));
+}
+
+/* @keyframes dock-tab — в App.css (:root таймінги) */
+
+/* розумний paste: CSS clipboard → опційно body HTML */
+.lc-smart-paste-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: color-mix(in srgb, var(--theme-text-primary, #0f172a) 22%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.lc-smart-paste-dialog {
+  width: min(420px, 100%);
+  border-radius: 16px;
+  border: 1px solid var(--theme-border);
+  background: var(--window-surface-bg, rgba(255, 255, 255, 0.94));
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.lc-smart-paste-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--theme-text-secondary);
+  line-height: 1.45;
+}
+
+.lc-smart-paste-detected {
+  align-items: center;
+}
+
+.lc-smart-paste-emoji {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.lc-smart-paste-kind {
+  color: var(--theme-text-primary);
+  font-weight: 600;
+}
+
+.lc-smart-paste-label {
+  font-size: 12px;
+  color: var(--theme-text-secondary);
+}
+
+.lc-smart-paste-textarea {
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid var(--theme-border);
+  padding: 10px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--theme-text-primary);
+  background: color-mix(in srgb, var(--window-surface-bg, #fff) 88%, transparent);
+}
+
+.lc-smart-paste-textarea::placeholder {
+  color: color-mix(in srgb, var(--theme-text-secondary) 65%, transparent);
+}
+
+.lc-smart-paste-textarea:focus {
+  outline: 2px solid color-mix(in srgb, var(--color-accent-primary) 55%, transparent);
+  outline-offset: 1px;
+}
+
+.lc-smart-paste-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.lc-smart-paste-add {
+  border-color: var(--color-accent-primary);
+  background: var(--color-accent-primary);
+  color: var(--palette-on-accent);
+}
+
+.lc-smart-paste-add:hover {
+  filter: brightness(1.06);
+}
+
+/* ─── Ліба: pointer-драг, рука + міні-картка (слідує за курсором) ───────────────── */
+html.lc-library-pointer-dnd {
+  cursor: none !important;
+}
+
+.lc-library-pointer-drag-floater {
+  position: fixed;
+  z-index: 99999;
+  pointer-events: none;
+  transform: translate(-50%, 6px);
+}
+
+.lc-library-pointer-drag-floater__stack {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  filter:
+    drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.1));
+}
+
+.lc-library-pointer-drag-floater__card {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 6px 8px;
+  align-items: center;
+  min-width: 156px;
+  max-width: 220px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 70%, transparent);
+  background: color-mix(in srgb, var(--window-surface-bg, #fff) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(120%);
+  margin-bottom: -10px;
+}
+
+.lc-library-pointer-drag-floater__labels {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}

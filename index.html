@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LAVASH</title>
+  </head>
+  <body>
+    <script>
+      if (window.__TAURI_INTERNALS__ || window.__TAURI__) {
+        document.documentElement.dataset.lavashRoundedWindow = "1";
+      }
+    </script>
+    <div
+      id="lavash-boot"
+      style="
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        font-size: 13px;
+        color: #ffb800;
+        background: transparent;
+        pointer-events: none;
+      "
+    >
+      LAVASH завантажується…
+    </div>
+    <div id="root">
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          margin: 0;
+          font-family: system-ui, sans-serif;
+          font-size: 13px;
+          color: #9a9a9a;
+          background: transparent;
+        "
+      >
+        LAVASH…
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

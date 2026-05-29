@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Пошук</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --palette-bg: #121212;
+        --palette-surface: #1e1e1e;
+        --palette-surface-2: #252525;
+        --palette-border: #3a3a3a;
+        --palette-accent: #ffb800;
+        --palette-text: #e6e6e6;
+        --palette-muted: #9a9a9a;
+        --theme-border: color-mix(in srgb, var(--palette-border) 85%, transparent);
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--palette-bg);
+        color: var(--palette-text);
+      }
+
+      .search-container {
+        width: 100%;
+        max-width: 584px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 28px;
+        user-select: none;
+      }
+
+      .logo__mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid var(--theme-border);
+        background: color-mix(in srgb, var(--palette-surface-2) 92%, var(--palette-bg));
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+        display: grid;
+        place-items: center;
+      }
+
+      .logo__mark svg {
+        width: 22px;
+        height: 22px;
+        color: var(--palette-accent);
+      }
+
+      .logo__word {
+        font-size: 42px;
+        font-weight: 700;
+        letter-spacing: -1.5px;
+        line-height: 1;
+      }
+
+      .logo__word span:nth-child(1) {
+        color: var(--palette-accent);
+      }
+      .logo__word span:nth-child(2) {
+        color: color-mix(in srgb, var(--palette-text) 92%, white);
+      }
+      .logo__word span:nth-child(3) {
+        color: color-mix(in srgb, var(--palette-accent) 72%, var(--palette-text));
+      }
+      .logo__word span:nth-child(4) {
+        color: color-mix(in srgb, var(--palette-text) 88%, white);
+      }
+      .logo__word span:nth-child(5) {
+        color: color-mix(in srgb, var(--palette-accent) 55%, var(--palette-text));
+      }
+      .logo__word span:nth-child(6) {
+        color: color-mix(in srgb, var(--palette-text) 80%, var(--palette-muted));
+      }
+
+      .search-form {
+        display: flex;
+        width: 100%;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 14px 22px;
+        font-size: 16px;
+        line-height: 1.2;
+        border: 1px solid var(--theme-border);
+        border-radius: 24px;
+        background: color-mix(in srgb, var(--palette-surface-2) 88%, var(--palette-bg));
+        color: var(--palette-text);
+        outline: none;
+        transition:
+          background-color 160ms ease,
+          border-color 160ms ease,
+          box-shadow 160ms ease;
+      }
+
+      .search-input::placeholder {
+        color: color-mix(in srgb, var(--palette-muted) 88%, transparent);
+      }
+
+      .search-input:hover {
+        background: color-mix(in srgb, var(--palette-surface-2) 96%, var(--palette-bg));
+        border-color: color-mix(in srgb, var(--palette-border) 70%, var(--palette-accent));
+      }
+
+      .search-input:focus {
+        background: color-mix(in srgb, var(--palette-surface) 94%, var(--palette-bg));
+        border-color: color-mix(in srgb, var(--palette-accent) 42%, var(--theme-border));
+        box-shadow:
+          0 0 0 1px color-mix(in srgb, var(--palette-accent) 18%, transparent),
+          0 8px 24px rgba(0, 0, 0, 0.32);
+      }
+
+      .hint {
+        margin: 14px 0 0;
+        font-size: 11px;
+        line-height: 1.45;
+        color: var(--palette-muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="search-container">
+      <div class="logo" aria-hidden="true">
+        <div class="logo__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3.5-3.5" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="logo__word">
+          <span>L</span><span>A</span><span>V</span><span>A</span><span>S</span><span>H</span>
+        </div>
+      </div>
+
+      <form class="search-form" id="search-form">
+        <input
+          type="search"
+          class="search-input"
+          id="search-input"
+          placeholder="Пошук або URL…"
+          autofocus
+          required
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </form>
+
+      <p class="hint">Enter — результати у цій панелі. Прямі посилання на google.com відкривай у зовнішньому браузері.</p>
+    </div>
+
+    <script>
+      const form = document.getElementById("search-form");
+      const input = document.getElementById("search-input");
+      const URL_LIKE = /^(https?:\/\/|[a-z0-9-]+(\.[a-z0-9-]+)+([/?#]|$))/i;
+
+      function resolveTarget(raw) {
+        const query = raw.trim();
+        if (!query) return null;
+        if (/^https?:\/\//i.test(query)) return query;
+        if (URL_LIKE.test(query) && !query.includes(" ")) {
+          return query.startsWith("http") ? query : "https://" + query;
+        }
+        return "https://duckduckgo.com/?q=" + encodeURIComponent(query);
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const target = resolveTarget(input.value);
+        if (target) window.location.href = target;
+      });
+    </script>
+  </body>
+</html>

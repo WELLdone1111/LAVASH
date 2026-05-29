@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+dist/
+dist-ssr/
+
+# Tauri
+src-tauri/target/
+
+# Env
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.cursor/
+.uix/
+*.swp
+
+# Docs
+README.md
+**/README.md
+
+# Test output
+test-results/
+playwright-report/
+
+# One-shot local migration scripts
+scripts/
+
+# Secrets / local data
+*.pem
+*.key
+credentials.json
+
+# Build artifacts
+*.local

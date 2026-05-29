@@ -1,0 +1,62 @@
+/* LavashConstruct workspace styles — lc-library-pointer-drag-floater__title */
+
+.lc-library-pointer-drag-floater__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text-primary, #111);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lc-library-pointer-drag-floater__meta {
+  font-size: 11px;
+  color: var(--theme-text-secondary, #666);
+}
+
+.lc-library-pointer-drag-floater__preview {
+  width: 40px;
+  height: 36px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-accent-primary, #ffb800) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-primary) 28%, transparent);
+}
+
+.lc-library-pointer-drag-floater__preview--split {
+  display: flex;
+  gap: 3px;
+  padding: 5px;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+.lc-library-pointer-drag-floater__preview--split > span {
+  flex: 1;
+  min-width: 0;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--color-accent-primary) 22%, transparent);
+}
+
+.lc-library-pointer-drag-floater__preview-wide {
+  flex: 1.45;
+}
+
+.lc-library-pointer-drag-floater__hand-wrap {
+  display: flex;
+  justify-content: center;
+  animation: lc-library-pointer-drag-bob 0.85s ease-in-out infinite alternate;
+}
+
+.lc-library-pointer-drag-floater__hand {
+  color: color-mix(in srgb, var(--color-accent-primary) 78%, #1a1a1a);
+}
+
+@keyframes lc-library-pointer-drag-bob {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-4px);
+  }
+}

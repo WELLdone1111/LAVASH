@@ -1,0 +1,117 @@
+use tauri::WebviewWindow;
+
+#[cfg(windows)]
+fn hex_to_colorref(hex: &str) -> Option<u32> {
+    let hex = hex.trim().trim_start_matches('#');
+    if hex.len() != 6 {
+        return None;
+    }
+    let r = u32::from_str_radix(&hex[0..2], 16).ok()?;
+    let g = u32::from_str_radix(&hex[2..4], 16).ok()?;
+    let b = u32::from_str_radix(&hex[4..6], 16).ok()?;
+    Some(r | (g << 8) | (b << 16))
+}
+
+#[cfg(windows)]
+fn apply_caption_color(window: &WebviewWindow, color: &str) -> Result<(), String> {
+    use windows::Win32::Graphics::Dwm::{
+        DwmSetWindowAttribute, DWMWINDOWATTRIBUTE, DWMWA_USE_IMMERSIVE_DARK_MODE,
+    };
+
+    const DWMWA_CAPTION_COLOR: DWMWINDOWATTRIBUTE = DWMWINDOWATTRIBUTE(35);
+    const DWMWA_TEXT_COLOR: DWMWINDOWATTRIBUTE = DWMWINDOWATTRIBUTE(36);
+
+    let hwnd = window
+        .hwnd()
+        .map_err(|e| format!("window hwnd: {e}"))?;
+
+    let caption = hex_to_colorref(color).ok_or_else(|| format!("invalid color: {color}"))?;
+    // Білий текст/іконки кнопок на темному title bar (Windows 11+).
+    let caption_text: u32 = 0x00FF_FFFF;
+
+    unsafe {
+        let dark_mode: u32 = 1;
+        let _ = DwmSetWindowAttribute(
+            hwnd,
+            DWMWA_USE_IMMERSIVE_DARK_MODE,
+            &dark_mode as *const _ as *const _,
+            std::mem::size_of::<u32>() as u32,
+        );
+
+        DwmSetWindowAttribute(
+            hwnd,
+            DWMWA_CAPTION_COLOR,
+            &caption as *const _ as *const _,
+            std::mem::size_of::<u32>() as u32,
+        )
+        .map_err(|e| format!("DWMWA_CAPTION_COLOR: {e}"))?;
+
+        let _ = DwmSetWindowAttribute(
+            hwnd,
+            DWMWA_TEXT_COLOR,
+            &caption_text as *const _ as *const _,
+            std::mem::size_of::<u32>() as u32,
+        );
+    }
+
+    Ok(())
+}
+
+#[cfg(not(windows))]
+fn apply_caption_color(_window: &WebviewWindow, _color: &str) -> Result<(), String> {
+    Ok(())
+}
+
+pub fn sync_window_caption_color(window: &WebviewWindow, color: &str) -> Result<(), String> {
+    apply_caption_color(window, color)
+}
+
+#[cfg(windows)]
+fn apply_rounded_corners(window: &WebviewWindow, round: bool) -> Result<(), String> {
+    use windows::Win32::Graphics::Dwm::{DwmSetWindowAttribute, DWMWINDOWATTRIBUTE};
+
+    const DWMWA_WINDOW_CORNER_PREFERENCE: DWMWINDOWATTRIBUTE = DWMWINDOWATTRIBUTE(33);
+    const DWMWCP_DONOTROUND: u32 = 1;
+    const DWMWCP_ROUND: u32 = 2;
+
+    let hwnd = window
+        .hwnd()
+        .map_err(|e| format!("window hwnd: {e}"))?;
+    let preference = if round { DWMWCP_ROUND } else { DWMWCP_DONOTROUND };
+
+    unsafe {
+        DwmSetWindowAttribute(
+            hwnd,
+            DWMWA_WINDOW_CORNER_PREFERENCE,
+            &preference as *const _ as *const _,
+            std::mem::size_of::<u32>() as u32,
+        )
+        .map_err(|e| format!("DWMWA_WINDOW_CORNER_PREFERENCE: {e}"))?;
+    }
+
+    Ok(())
+}
+
+#[cfg(not(windows))]
+fn apply_rounded_corners(_window: &WebviewWindow, _round: bool) -> Result<(), String> {
+    Ok(())
+}
+
+pub fn sync_window_rounded_corners(window: &WebviewWindow, round: bool) -> Result<(), String> {
+    apply_rounded_corners(window, round)
+}
+
+#[tauri::command]
+pub fn lavash_reclaim_window_input() -> Result<(), String> {
+    Ok(())
+}
+
+#[tauri::command]
+pub fn set_window_rounded_corners(window: WebviewWindow, round: bool) -> Result<(), String> {
+    sync_window_rounded_corners(&window, round)
+}
+
+#[tauri::command]
+pub fn set_window_caption_color(window: WebviewWindow, color: String) -> Result<(), String> {
+    sync_window_caption_color(&window, &color)
+}

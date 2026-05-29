@@ -1,0 +1,402 @@
+/* LavashConstruct workspace styles — lc-artboard-toolbar__btn */
+
+.lc-artboard-toolbar__btn:hover {
+  color: var(--palette-text);
+  background: color-mix(in srgb, white 8%, transparent);
+}
+
+.lc-artboard-toolbar__btn--active {
+  color: var(--palette-text);
+  background: color-mix(in srgb, var(--color-accent-primary) 22%, transparent);
+}
+
+.lc-artboard-toolbar__btn--accent {
+  color: color-mix(in srgb, var(--color-accent-primary) 88%, white);
+}
+
+.lc-artboard-toolbar__btn--accent:hover {
+  background: color-mix(in srgb, var(--color-accent-primary) 18%, transparent);
+}
+
+.lc-artboard-toolbar__btn[data-tooltip] {
+  position: relative;
+}
+
+.lc-artboard-toolbar__btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 60;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--palette-text);
+  background: var(--palette-surface-2);
+  border: 1px solid color-mix(in srgb, var(--palette-border) 60%, transparent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.lc-artboard-toolbar__btn[data-tooltip]:hover::after,
+.lc-artboard-toolbar__btn[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lc-artboard-tool-popover {
+  position: absolute;
+  top: 52px;
+  right: 10px;
+  z-index: 44;
+  display: flex;
+  flex-direction: column;
+  width: min(280px, calc(100% - 20px));
+  max-height: min(56vh, 420px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--palette-border) 52%, transparent);
+  border-radius: 10px;
+  background: var(--palette-surface);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.42);
+  transform-origin: top right;
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  pointer-events: none;
+  transition:
+    opacity var(--motion-duration-micro, 160ms) var(--motion-ease-out-strong),
+    transform var(--motion-duration-short, 240ms) var(--motion-ease-out-strong);
+}
+
+.lc-artboard-tool-popover[data-entered="true"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.lc-artboard-tool-popover--layers {
+  width: min(300px, calc(100% - 20px));
+  max-height: min(64vh, 480px);
+}
+
+.lc-artboard-tool-popover__header {
+  flex-shrink: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--palette-border) 45%, transparent);
+  background: var(--palette-surface-2);
+  color: var(--palette-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lc-artboard-tool-popover__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: var(--palette-bg);
+}
+
+.lc-artboard-tool-popover--layers .lc-bottom-panel {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  min-height: 0;
+  height: 100%;
+}
+
+.lc-draggable-panel--locked {
+  opacity: 0.85;
+  border-style: dashed;
+}
+
+.lc-draggable-panel--dragging {
+  transition: none;
+}
+
+.lc-draggable-panel:hover:not(.lc-draggable-panel--locked) {
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.14),
+    0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 26%, transparent);
+}
+
+.lc-draggable-panel--imported:hover:not(.lc-draggable-panel--locked) {
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.14),
+    0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 26%, transparent);
+}
+
+/* Прев’ю в iframe: не наслідувати touch-action:none від .lc-draggable-panel — слайдери, скрол, драг усередині прев’ю. */
+.lc-draggable-panel.lc-draggable-panel--imported {
+  touch-action: auto;
+}
+
+.lc-draggable-panel header {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+}
+
+.lc-draggable-panel--element {
+  border: none;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  padding: 0;
+  box-shadow: none !important;
+}
+
+.lc-draggable-panel--frameless {
+  border: none;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  padding: 0;
+  cursor: default;
+  /* без синього «wash» виділення під драг / Alt-рух (нижче — оверрайд для plain-тексту) */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.lc-draggable-panel--element:hover:not(.lc-draggable-panel--locked) {
+  box-shadow: none !important;
+}
+
+.lc-draggable-panel--frameless:hover:not(.lc-draggable-panel--locked) {
+  box-shadow: none !important;
+}
+
+.lc-draggable-panel--frameless.lc-draggable-panel--active {
+  box-shadow: none !important;
+}
+
+.lc-draggable-panel--frameless.lc-draggable-panel--imported,
+.lc-draggable-panel--frameless.lc-draggable-panel--imported.lc-draggable-panel--active,
+.lc-draggable-panel--frameless.lc-draggable-panel--imported.lc-draggable-panel--marked,
+.lc-draggable-panel--frameless.lc-draggable-panel--imported.lc-draggable-panel--marked.lc-draggable-panel--active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.lc-draggable-panel--frameless.lc-draggable-panel--imported.lc-draggable-panel--marked {
+  box-shadow: 0 0 0 1px color-mix(in srgb, #f59e0b 50%, transparent) !important;
+}
+
+.lc-draggable-panel--frameless.lc-draggable-panel--imported.lc-draggable-panel--marked.lc-draggable-panel--active {
+  box-shadow: 0 0 0 1px color-mix(in srgb, #f59e0b 65%, transparent) !important;
+}
+
+.lc-draggable-panel--frameless:active {
+  cursor: default;
+}
+
+/* граб-курсор тільки коли Alt зажатий (як у useConstructArtboardInteraction) */
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-draggable-panel:not(.lc-draggable-panel--locked) {
+  cursor: grab;
+}
+
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-draggable-panel:not(.lc-draggable-panel--locked):active {
+  cursor: grabbing;
+}
+
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-draggable-panel--frameless:not(.lc-draggable-panel--locked) {
+  cursor: grab;
+}
+
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-draggable-panel--frameless:not(.lc-draggable-panel--locked):active {
+  cursor: grabbing;
+}
+
+.lc-draggable-panel p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--theme-text-secondary);
+}
+
+.lc-main-player-divider {
+  height: 1px;
+  margin: 2px 0 8px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-accent-primary) 45%, transparent),
+    color-mix(in srgb, var(--theme-border) 75%, transparent)
+  );
+  border-radius: 999px;
+}
+
+.lc-shadcn-widget-wrap {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 6;
+  pointer-events: auto;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+/* Alt-рух: оверлей бʼє Radix/framer по хіт-тесту всередині віджетів */
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-shadcn-widget-wrap {
+  pointer-events: none;
+}
+
+.lc-draggable-panel--element .lc-shadcn-widget-wrap {
+  align-self: stretch;
+}
+
+.lc-real-component-wrap.lc-shadcn-widget-wrap {
+  gap: 0;
+}
+
+.lc-shadcn-widget-wrap [role="tabpanel"] {
+  min-height: 0;
+}
+
+.lc-shadcn-widget-wrap[data-lc-accent="on"] [data-slot="button"][data-variant="default"] {
+  background-color: var(--lc-widget-accent) !important;
+  color: #fafafa !important;
+  border-color: color-mix(in srgb, var(--lc-widget-accent) 82%, #000) !important;
+}
+
+.lc-shadcn-widget-wrap[data-lc-accent="on"] [data-slot="button"][data-variant="default"]:hover {
+  background-color: color-mix(in srgb, var(--lc-widget-accent) 88%, #000) !important;
+}
+
+.lc-shadcn-widget-wrap[data-lc-accent="on"] [data-slot="button"][data-variant="outline"] {
+  border-color: var(--lc-widget-accent) !important;
+  color: var(--lc-widget-accent) !important;
+}
+
+.lc-shadcn-widget-wrap[data-lc-accent="on"] [data-slot="button"][data-variant="secondary"] {
+  background-color: color-mix(in srgb, var(--lc-widget-accent) 24%, transparent) !important;
+  color: var(--lc-widget-accent) !important;
+  border-color: color-mix(in srgb, var(--lc-widget-accent) 45%, transparent) !important;
+}
+
+.lc-shadcn-widget-wrap[data-lc-accent="on"] [role="slider"] > span:first-child > span {
+  background-color: var(--lc-widget-accent) !important;
+}
+
+.lc-shadcn-widget-wrap[data-lc-accent="on"] [role="slider"] > span:last-child {
+  border-color: var(--lc-widget-accent) !important;
+}
+
+.lc-shadcn-widget-wrap[data-lc-accent="on"] [role="tab"][data-state="active"] {
+  color: var(--lc-widget-accent) !important;
+}
+
+.lc-inspector-widget-accent-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lc-real-component-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.lc-draggable-panel--element .lc-real-component-wrap {
+  margin-top: 0;
+}
+
+.lc-real-component-wrap--fill {
+  flex: 1;
+  min-height: 0;
+  margin-top: 0;
+}
+
+.lc-real-component-wrap > [data-slot="button"] {
+  width: fit-content;
+}
+
+.lc-real-component-note {
+  margin: 0;
+  font-size: 11px;
+  color: var(--theme-text-secondary);
+}
+
+.lc-draggable-panel--frameless.lc-draggable-panel--imported:has(.lc-imported-drag-strip) {
+  --lc-imported-drag-strip-height: 14px;
+}
+
+.lc-imported-drag-strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--lc-imported-drag-strip-height, 14px);
+  z-index: 50;
+  cursor: default;
+  touch-action: none;
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-sizing: border-box;
+  pointer-events: auto;
+  border-bottom: none;
+  background: transparent;
+  opacity: 0;
+  transition: opacity var(--motion-duration-micro, 160ms) ease;
+}
+
+.lc-draggable-panel--frameless.lc-draggable-panel--imported:hover .lc-imported-drag-strip,
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-imported-drag-strip {
+  opacity: 1;
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 35%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--theme-border) 28%, transparent) 0%,
+    transparent 100%
+  );
+}
+
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-imported-drag-strip {
+  cursor: grab;
+}
+
+.lavash-artboard-board[data-lc-alt-held="true"] .lc-imported-drag-strip:active {
+  cursor: grabbing;
+}
+
+.lc-imported-content-wrap {
+  margin-top: 4px;
+  min-height: 0;
+  pointer-events: auto;
+}
+
+.lc-draggable-panel--frameless .lc-imported-content-wrap {
+  margin-top: 0;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/*
+ * Drag strip overlays the iframe (no layout gap). Strip is invisible until hover / Alt.
+ */
+.lc-draggable-panel--frameless.lc-draggable-panel--imported:has(.lc-imported-drag-strip) .lc-imported-content-wrap {
+  padding-top: 0;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 0;
+}
