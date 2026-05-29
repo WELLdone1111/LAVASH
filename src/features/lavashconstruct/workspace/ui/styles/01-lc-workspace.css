@@ -105,11 +105,12 @@
   grid-template-columns: 48px minmax(0, 1fr) 32px;
 }
 
-/* Внутрішні сплітери + ресайз кута вікна: без transition-лагів на сітці/артборді */
+/* Внутрішні сплітери + OS window resize: без transition-лагів */
 html[data-lc-split-dragging="1"] .lc-unified-shell,
 html[data-lc-split-dragging="1"] .lc-unified-cell,
 html[data-lc-split-dragging="1"] .lavash-artboard-edit-shell .lavash-artboard,
-html[data-window-resizing="1"] .lc-unified-shell {
+html[data-window-resizing="1"] .lc-unified-shell,
+html[data-window-resizing="1"] .lc-unified-cell {
   transition: none !important;
 }
 
@@ -118,33 +119,9 @@ html[data-lc-split-dragging="1"] .lavash-artboard-grid-overlay {
   pointer-events: none;
 }
 
-html[data-lc-split-dragging="1"] .lavash-artboard-cinematic-overlay,
-html[data-window-resizing="1"] .lavash-artboard-cinematic-overlay {
+html[data-lc-split-dragging="1"] .lavash-artboard-cinematic-overlay {
   opacity: 0 !important;
   pointer-events: none !important;
-}
-
-html[data-window-resizing="1"] .lc-chat-panel,
-html[data-window-resizing="1"] .lc-chat-panel__messages {
-  animation: none !important;
-  background: var(--palette-surface);
-}
-
-html[data-window-resizing="1"] .lc-chat-panel__composer,
-html[data-window-resizing="1"] .lc-chat-panel__composer--boxed {
-  animation: none !important;
-  background: var(--palette-surface-2);
-  overflow: hidden;
-}
-
-html[data-window-resizing="1"] .lc-chat-panel__messages {
-  scrollbar-width: none;
-}
-
-html[data-window-resizing="1"] .lc-chat-panel__messages::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
 }
 
 .lc-design-tabs-wrap {

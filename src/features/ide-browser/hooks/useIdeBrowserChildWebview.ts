@@ -79,6 +79,7 @@ export function useIdeBrowserChildWebview({
 
     let raf = 0;
     const scheduleSync = () => {
+      if (document.documentElement.hasAttribute("data-window-resizing")) return;
       if (raf) cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         raf = 0;
@@ -97,10 +98,20 @@ export function useIdeBrowserChildWebview({
     if (splitHost) ro.observe(splitHost);
 
     window.addEventListener("resize", scheduleSync);
-    const mo = new MutationObserver(scheduleSync);
+    const mo = new MutationObserver((records) => {
+      for (const record of records) {
+        if (record.attributeName === "data-window-resizing") {
+          if (document.documentElement.hasAttribute("data-window-resizing")) {
+            void hideIdeBrowserChildWebview();
+            return;
+          }
+        }
+      }
+      scheduleSync();
+    });
     mo.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-lc-browser-split-dragging", "data-window-maximized"],
+      attributeFilter: ["data-lc-browser-split-dragging", "data-window-maximized", "data-window-resizing"],
     });
 
     scheduleSync();

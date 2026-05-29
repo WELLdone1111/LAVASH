@@ -1,4 +1,3 @@
-import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useCallback, useEffect, useState } from "react";
 import { useI18n } from "@/i18n/context";
@@ -34,6 +33,7 @@ export default function WindowFrameControls() {
 
     const syncMaximized = async () => {
       if (disposed) return;
+      if (document.documentElement.hasAttribute("data-window-resizing")) return;
       try {
         const maximized = await win.isMaximized();
         setIsMaximized(maximized);
@@ -42,7 +42,6 @@ export default function WindowFrameControls() {
         } else {
           delete document.documentElement.dataset.windowMaximized;
         }
-        void invoke("set_window_rounded_corners", { round: !maximized }).catch(() => {});
       } catch {
         /* window gone */
       }

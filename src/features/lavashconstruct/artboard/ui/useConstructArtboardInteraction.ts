@@ -23,8 +23,8 @@ import {
   isPlayerBoardPanel,
   normalizeArtboardPanelsHierarchy,
 } from "@/features/lavashconstruct/artboard/model/panelHierarchy";
-import { WINDOW_RESIZE_END_EVENT } from "@/lib/windowResize";
 import { useConstructStore } from "@/features/lavashconstruct/artboard/model/store";
+import { WINDOW_RESIZE_END_EVENT } from "@/lib/windowResizeSession";
 import type { ArtboardPanel } from "@/features/lavashconstruct/artboard/ui/types";
 
 type UseConstructArtboardInteractionParams = {
@@ -223,7 +223,10 @@ export function useConstructArtboardInteraction(params: UseConstructArtboardInte
       });
     };
 
-    const ro = new ResizeObserver(applyClampOrInitialCenter);
+    const ro = new ResizeObserver(() => {
+      if (document.documentElement.hasAttribute("data-window-resizing")) return;
+      applyClampOrInitialCenter();
+    });
     ro.observe(board);
     applyClampOrInitialCenter();
     window.addEventListener(WINDOW_RESIZE_END_EVENT, applyClampOrInitialCenter);

@@ -1,17 +1,28 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
-/** Синхронізує фон вікна та колір нативного title bar з `--palette-surface`. */
+function hexToRgb(hex: string): { red: number; green: number; blue: number } | null {
+  const normalized = hex.trim().replace(/^#/, "");
+  if (normalized.length !== 6) return null;
+  const red = Number.parseInt(normalized.slice(0, 2), 16);
+  const green = Number.parseInt(normalized.slice(2, 4), 16);
+  const blue = Number.parseInt(normalized.slice(4, 6), 16);
+  if ([red, green, blue].some((v) => Number.isNaN(v))) return null;
+  return { red, green, blue };
+}
+
+/** Синхронізує непрозорий фон WebView2 + колір caption з `--palette-surface`. */
 export function syncWindowChromeBackground(surfaceColor: string): void {
   if (!isTauri()) return;
   const color = surfaceColor.trim();
   if (!color) return;
-  void getCurrentWindow()
-    .setBackgroundColor({ red: 0, green: 0, blue: 0, alpha: 0 })
-    .catch(() => {
-      /* ignore */
-    });
-  void invoke("set_window_caption_color", { color }).catch(() => {
-    /* ignore on non-Windows or older OS */
-  });
+
+  const rgb = hexToRgb(color);
+  if (rgb) {
+    void getCurrentWindow()
+      .setBackgroundColor({ ...rgb, alpha: 255 })
+      .catch(() => {});
+  }
+
+  void invoke("set_window_caption_color", { color }).catch(() => {});
 }

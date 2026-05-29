@@ -282,6 +282,7 @@ export function useAutosizeTextarea(value: string) {
 
     const ro = new ResizeObserver(() => {
       if (document.documentElement.hasAttribute("data-lc-split-dragging")) return;
+      if (document.documentElement.hasAttribute("data-window-resizing")) return;
       measure();
     });
     ro.observe(el);

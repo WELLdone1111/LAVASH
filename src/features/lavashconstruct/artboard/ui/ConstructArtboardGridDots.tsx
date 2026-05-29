@@ -143,6 +143,7 @@ export default function ConstructArtboardGridDots({
     const draw = () => {
       rafId = requestAnimationFrame(draw);
       if (document.documentElement.hasAttribute("data-lc-split-dragging")) return;
+      if (document.documentElement.hasAttribute("data-window-resizing")) return;
       const rect = host.getBoundingClientRect();
       const w = Math.ceil(rect.width);
       const h = Math.ceil(rect.height);

@@ -75,16 +75,18 @@ export default function ConstructMonacoEditor({
     if (!monacoEditor) return;
 
     const syncLayoutDuringResize = () => {
-      const splitting = document.documentElement.hasAttribute("data-lc-split-dragging");
-      monacoEditor.updateOptions({ automaticLayout: !splitting });
-      if (!splitting) monacoEditor.layout();
+      const root = document.documentElement;
+      const deferLayout =
+        root.hasAttribute("data-lc-split-dragging") || root.hasAttribute("data-window-resizing");
+      monacoEditor.updateOptions({ automaticLayout: !deferLayout });
+      if (!deferLayout) monacoEditor.layout();
     };
 
     syncLayoutDuringResize();
     const observer = new MutationObserver(syncLayoutDuringResize);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-lc-split-dragging"],
+      attributeFilter: ["data-lc-split-dragging", "data-window-resizing"],
     });
     return () => observer.disconnect();
   }, [monacoEditor]);

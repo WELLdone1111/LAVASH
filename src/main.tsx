@@ -36,7 +36,7 @@ async function bootstrap(): Promise<void> {
     document.documentElement.dataset.lavashRoundedWindow = "1";
     const win = getCurrentWebviewWindow();
     void win.setShadow(false).catch(() => {});
-    void win.setBackgroundColor({ red: 0, green: 0, blue: 0, alpha: 0 }).catch(() => {});
+    void win.setBackgroundColor({ red: 30, green: 30, blue: 30, alpha: 255 }).catch(() => {});
     void invoke("set_window_rounded_corners", { round: true }).catch(() => {});
   }
 

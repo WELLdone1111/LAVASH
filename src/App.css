@@ -60,6 +60,7 @@ body,
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background-color: var(--palette-surface);
 }
 
 body {
@@ -92,21 +93,13 @@ body {
   background-image: var(--lavash-app-wallpaper, none);
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
-}
-
-html[data-lavash-rounded-window="1"],
-html[data-lavash-rounded-window="1"] body,
-html[data-lavash-rounded-window="1"] #root {
-  background: transparent !important;
-  background-color: transparent !important;
+  background-attachment: scroll;
 }
 
 html[data-lavash-rounded-window="1"] .app-root {
   border-radius: var(--app-chrome-radius);
   overflow: hidden;
   isolation: isolate;
-  clip-path: inset(0 round var(--app-chrome-radius));
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--theme-border) 55%, transparent),
     0 18px 48px rgba(0, 0, 0, 0.5);
@@ -354,46 +347,18 @@ html[data-window-maximized="1"] .app-window-resize-edges {
   cursor: nwse-resize;
 }
 
+/* OS-native window resize: без transition/reflow cascade (West edge stretch fix). */
+html[data-window-resizing="1"] .lavash-main,
 html[data-window-resizing="1"] .lc-workspace,
 html[data-window-resizing="1"] .lc-unified-shell,
 html[data-window-resizing="1"] .lc-unified-cell {
+  transition: none !important;
   pointer-events: none;
 }
 
-/* Миттєвий layout у WebView, поки Tauri setSize відстає від курсора */
-html[data-window-resize-preview="1"] {
-  overflow: hidden;
-  background-color: var(--palette-surface) !important;
-}
-
-html[data-window-resize-preview="1"] body {
-  overflow: hidden;
-  background-color: var(--palette-surface) !important;
-}
-
-html[data-window-resize-preview="1"] #root {
-  box-sizing: border-box;
-  width: var(--lavash-resize-preview-w);
-  height: var(--lavash-resize-preview-h);
-  flex: none;
-  overflow: hidden;
-  transform: translate(var(--lavash-resize-preview-x, 0px), var(--lavash-resize-preview-y, 0px));
-  background-color: var(--palette-surface);
-  will-change: transform, width, height;
-}
-
-html[data-window-resize-preview="1"][data-lavash-rounded-window="1"]:not([data-window-maximized="1"]) #root {
-  border-radius: var(--app-chrome-radius);
-  clip-path: inset(0 round var(--app-chrome-radius));
-}
-
-html[data-window-resize-preview="1"] .app-root {
-  width: 100%;
-  height: 100%;
-  flex: 1;
-  min-height: 0;
-  transform: none;
-  will-change: auto;
+html[data-window-resizing="1"] .lavash-artboard-cinematic-overlay {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .app-window-titlebar {
