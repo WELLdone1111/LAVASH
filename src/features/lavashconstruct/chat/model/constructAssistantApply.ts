@@ -11,12 +11,15 @@ export type ConstructAssistantApplyOptions = {
   linkConstructPanelToScratchTabId?: string | null;
   /** Ask / Plan / Debug — без apply. */
   applyEnabled?: boolean;
+  /** CUE structured actions already handled panel/artboard apply. */
+  skipPanelAndArtboardFences?: boolean;
 };
 
 export type ConstructAssistantApplySummary = {
   codeFencesApplied: number;
   artboardApplied: boolean;
   constructPanelsSpawned: number;
+  cueActionsApplied: number;
 };
 
 function countCodeScratchFences(markdown: string): number {
@@ -33,6 +36,7 @@ export function applyConstructAssistantMarkdown(
       codeFencesApplied: 0,
       artboardApplied: false,
       constructPanelsSpawned: 0,
+      cueActionsApplied: 0,
     };
   }
   const fenceCount = countCodeScratchFences(markdown);
@@ -41,15 +45,20 @@ export function applyConstructAssistantMarkdown(
     preferScratchTabId: options?.preferScratchTabId,
   });
 
-  const artboardApplied = applyAssistantArtboardFromMarkdown(markdown);
-  const constructPanelsSpawned = applyAssistantConstructPanelFences(markdown, {
-    linkedScratchTabId: options?.linkConstructPanelToScratchTabId,
-  });
+  let artboardApplied = false;
+  let constructPanelsSpawned = 0;
+  if (!options?.skipPanelAndArtboardFences) {
+    artboardApplied = applyAssistantArtboardFromMarkdown(markdown);
+    constructPanelsSpawned = applyAssistantConstructPanelFences(markdown, {
+      linkedScratchTabId: options?.linkConstructPanelToScratchTabId,
+    });
+  }
 
   return {
     codeFencesApplied: fenceCount,
     artboardApplied,
     constructPanelsSpawned,
+    cueActionsApplied: 0,
   };
 }
 
@@ -62,6 +71,9 @@ export function formatConstructApplySyncNote(summary: ConstructAssistantApplySum
   if (summary.artboardApplied) bits.push("artboard: applied");
   if (summary.constructPanelsSpawned > 0) {
     bits.push(`construct-panel: ${summary.constructPanelsSpawned} panel(s)`);
+  }
+  if (summary.cueActionsApplied > 0) {
+    bits.push(`cue-actions: ${summary.cueActionsApplied} action(s)`);
   }
   if (bits.length === 0) return "";
   return `\n\n[LavashConstruct sync] ${bits.join("; ")}.`;

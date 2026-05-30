@@ -1,0 +1,153 @@
+.lc-unified-shell__workspace--devtools-host {
+  position: relative;
+}
+
+.lc-devtools-btn__icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.lc-devtools-btn--active {
+  color: var(--color-accent-primary);
+  border-color: color-mix(in srgb, var(--color-accent-primary) 42%, var(--theme-border));
+  background: color-mix(in srgb, var(--color-accent-primary) 12%, var(--palette-surface-2));
+}
+
+.lc-devtools-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  z-index: 24;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: min(42vh, 320px);
+  border-top: 1px solid color-mix(in srgb, var(--theme-border) 88%, transparent);
+  background: color-mix(in srgb, var(--palette-surface) 96%, var(--palette-bg));
+  box-shadow: 0 -8px 24px color-mix(in srgb, black 28%, transparent);
+}
+
+.lc-devtools-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  padding: 0 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 70%, transparent);
+}
+
+.lc-devtools-panel__tabs {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.lc-devtools-panel__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.lc-devtools-panel__tab--active {
+  color: var(--theme-text-primary);
+  border-color: color-mix(in srgb, var(--theme-border) 80%, transparent);
+  background: color-mix(in srgb, var(--palette-surface-2) 90%, transparent);
+}
+
+.lc-devtools-panel__actions {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 4px;
+}
+
+.lc-devtools-panel__icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 22px;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 70%, transparent);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--palette-surface-2) 88%, transparent);
+  color: var(--theme-text-secondary);
+  cursor: pointer;
+}
+
+.lc-devtools-panel__icon-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.lc-devtools-panel__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lc-devtools-panel__notice {
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--theme-text-secondary);
+}
+
+.lc-devtools-panel__notice--error {
+  color: color-mix(in srgb, #ff6b6b 88%, var(--theme-text-primary));
+}
+
+.lc-git-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.lc-git-panel__list {
+  margin: 0;
+  padding: 6px 8px 10px;
+  list-style: none;
+  overflow: auto;
+  flex: 1;
+}
+
+.lc-git-panel__row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 8px;
+  align-items: start;
+  padding: 4px 0;
+  font-size: 11px;
+}
+
+.lc-git-panel__status {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  color: var(--color-accent-primary);
+}
+
+.lc-git-panel__path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lc-git-panel__diff {
+  margin: 0 8px 8px;
+  padding: 8px;
+  max-height: 120px;
+  overflow: auto;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--palette-surface-2) 92%, transparent);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}

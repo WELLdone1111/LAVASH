@@ -62,7 +62,7 @@ export type ArtboardPanel = {
   importWarnings?: string[];
   importedCssPreviewMarkup?: string;
   importedHtmlPreviewExtraCss?: string;
-  /** id батьківської панелі, коли всередині PlayerBoard (тільки один рівень вкладеності). */
+  /** id батьківської панелі, коли всередині board container. */
   parentId?: string;
   /** Позначає root-панель як контейнер композиційної дошки. */
   isBoardContainer?: boolean;

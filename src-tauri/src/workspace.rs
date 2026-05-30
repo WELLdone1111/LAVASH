@@ -449,6 +449,36 @@ pub fn workspace_file_metadata(relative_path: String) -> Result<WorkspaceFileMet
 }
 
 #[tauri::command]
+pub fn workspace_create_dir(relative_path: String) -> Result<(), String> {
+    let path = resolve_workspace_file(&relative_path)?;
+    std::fs::create_dir_all(&path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn workspace_rename_entry(relative_path: String, new_name: String) -> Result<(), String> {
+    let trimmed_name = new_name.trim();
+    if trimmed_name.is_empty() || trimmed_name.contains('/') || trimmed_name.contains('\\') || trimmed_name.contains("..") {
+        return Err("Invalid entry name".to_string());
+    }
+    let old_path = resolve_workspace_file(&relative_path)?;
+    let parent = old_path
+        .parent()
+        .ok_or_else(|| "Cannot rename workspace root".to_string())?;
+    let new_path = parent.join(trimmed_name);
+    std::fs::rename(&old_path, &new_path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn workspace_delete_entry(relative_path: String, is_dir: bool) -> Result<(), String> {
+    let path = resolve_workspace_file(&relative_path)?;
+    if is_dir {
+        std::fs::remove_dir_all(&path).map_err(|e| e.to_string())
+    } else {
+        std::fs::remove_file(&path).map_err(|e| e.to_string())
+    }
+}
+
+#[tauri::command]
 pub fn fs_read_text(absolute_path: String) -> Result<String, String> {
     let path = PathBuf::from(absolute_path.trim());
     let canonical = path.canonicalize().map_err(|e| e.to_string())?;

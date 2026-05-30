@@ -4,7 +4,7 @@ import { ARTBOARD_INFINITE_PX } from "@/features/lavashconstruct/shared/model/co
 import { useConstructStore } from "@/features/lavashconstruct/artboard/model/store";
 import type { ConstructLibraryItem } from "@/features/lavashconstruct/shared/model/libraryItem";
 import {
-  findPlayerBoardAtWorldPoint,
+  findBoardContainerAtWorldPoint,
   getBoardInnerOriginWorld,
   getBoardInnerSize,
   normalizeArtboardPanelsHierarchy,
@@ -93,7 +93,7 @@ export function useWorkspacePasteImport({
       centerWorldY = (rect.height / 2 - artboardPan.y) / zoom;
     }
     const rootsOnly = panels.filter((p) => !p.parentId);
-    const hitBoard = findPlayerBoardAtWorldPoint(panels, centerWorldX, centerWorldY);
+    const hitBoard = findBoardContainerAtWorldPoint(panels, centerWorldX, centerWorldY);
 
     const spacing = 26;
 

@@ -156,7 +156,17 @@ fn resolve_server_spec(language: &str) -> Result<ServerSpec, String> {
         })
         .ok_or_else(|| "vscode-json-language-server not found.".to_string()),
 
-        "python" => Ok(path_command_spec("pyright-langserver", &["--stdio"], workspace)),
+        "python" => {
+            if let Some(pyright) = crate::python_runtime::resolve_pyright_langserver() {
+                Ok(path_command_spec(
+                    &pyright.to_string_lossy(),
+                    &["--stdio"],
+                    workspace,
+                ))
+            } else {
+                Ok(path_command_spec("pyright-langserver", &["--stdio"], workspace))
+            }
+        }
 
         "rust" => Ok(path_command_spec("rust-analyzer", &[], workspace)),
 

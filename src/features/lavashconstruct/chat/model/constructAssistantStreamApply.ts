@@ -1,11 +1,13 @@
 import { isAssistantPanelFence } from "@/features/lavashconstruct/chat/model/assistantFenceHints";
 import { parseCodeFencesFromMarkdown, useConstructCodeScratchStore } from "@/features/lavashconstruct/editor/model/codeScratchStore";
 import {
-  applyConstructAssistantMarkdown,
   type ConstructAssistantApplyOptions,
   type ConstructAssistantApplySummary,
 } from "@/features/lavashconstruct/chat/model/constructAssistantApply";
 import { emitLavashAppliedEvent } from "@/features/lavashconstruct/chat/model/constructAssistantDisplay";
+import { runCueApplyPipeline } from "@/features/lavashconstruct/cue/model/cueApplyPipeline";
+import type { CueValidationResult } from "@/features/lavashconstruct/cue/model/cueTypes";
+import type { ConstructChatAgentMode } from "@/features/lavashconstruct/chat/model/constructChatAgentMode";
 
 const APPLY_DEBOUNCE_MS = 90;
 
@@ -59,16 +61,22 @@ function applyOpenFencePartial(
   return key;
 }
 
+export type ConstructStreamApplyOptions = ConstructAssistantApplyOptions & {
+  mode?: ConstructChatAgentMode;
+  artboardPanelIds?: readonly string[];
+};
+
 export type ConstructStreamApplyController = {
   pushChunk: (fullBuffer: string) => void;
   flush: () => ConstructAssistantApplySummary;
   getBuffer: () => string;
   getLastSummary: () => ConstructAssistantApplySummary;
+  getLastValidation: () => CueValidationResult;
 };
 
 /** Інкрементальне застосування під час стріму (повні фенси + хвіст відкритого фенса). */
 export function createConstructStreamApplyController(
-  options?: ConstructAssistantApplyOptions,
+  options?: ConstructStreamApplyOptions,
 ): ConstructStreamApplyController {
   const applyEnabled = options?.applyEnabled !== false;
   let buffer = "";
@@ -78,7 +86,9 @@ export function createConstructStreamApplyController(
     codeFencesApplied: 0,
     artboardApplied: false,
     constructPanelsSpawned: 0,
+    cueActionsApplied: 0,
   };
+  let lastValidation: CueValidationResult = { ok: true, issues: [] };
   let debounce: ReturnType<typeof setTimeout> | undefined;
 
   const runApply = () => {
@@ -87,7 +97,9 @@ export function createConstructStreamApplyController(
     const sig = fenceSignature(buffer);
     if (sig !== fenceSig) {
       fenceSig = sig;
-      lastSummary = applyConstructAssistantMarkdown(buffer, options);
+      const result = runCueApplyPipeline(buffer, options);
+      lastSummary = result.summary;
+      lastValidation = result.validation;
       emitLavashAppliedEvent(lastSummary);
     }
     const nextOpenKey = applyOpenFencePartial(buffer, options, openKey);
@@ -109,7 +121,9 @@ export function createConstructStreamApplyController(
         debounce = undefined;
       }
       if (applyEnabled) {
-        lastSummary = applyConstructAssistantMarkdown(buffer, options);
+        const result = runCueApplyPipeline(buffer, options);
+        lastSummary = result.summary;
+        lastValidation = result.validation;
         emitLavashAppliedEvent(lastSummary);
         openKey = applyOpenFencePartial(buffer, options, openKey);
       }
@@ -117,5 +131,6 @@ export function createConstructStreamApplyController(
     },
     getBuffer: () => buffer,
     getLastSummary: () => lastSummary,
+    getLastValidation: () => lastValidation,
   };
 }

@@ -15,8 +15,8 @@ import { useI18n } from "@/i18n/context";
 import { ARTBOARD_ZOOM_MAX, ARTBOARD_ZOOM_MIN } from "@/features/lavashconstruct/shared/model/constants";
 import { buildImportedSandboxDocument } from "@/features/lavashconstruct/artboard/model/import";
 import { panelUsesAltEditMode } from "@/features/lavashconstruct/artboard/model/artboardPanelHitTest";
-import { PlayerBoardChrome } from "@/features/lavashconstruct/workspace/lib-components/containers/PlayerBoard";
-import { getPanelWorldBounds, isPlayerBoardPanel } from "@/features/lavashconstruct/artboard/model/panelHierarchy";
+import { BoardContainerChrome } from "@/features/lavashconstruct/workspace/lib-components/containers/BoardContainer";
+import { getPanelWorldBounds, isBoardContainerPanel } from "@/features/lavashconstruct/artboard/model/panelHierarchy";
 import type { ArtboardPanel, MainPanelDensity } from "@/features/lavashconstruct/artboard/ui/types";
 import { renderConstructShadcnWidget } from "@/features/lavashconstruct/artboard/ui/constructShadcnWidgetRegistry";
 import ConstructArtboardGridDots, { type ConstructArtboardGridPointer } from "@/features/lavashconstruct/artboard/ui/ConstructArtboardGridDots";
@@ -201,9 +201,9 @@ export default function ConstructArtboardBoard({
   };
 
   /** Р©РѕР± РїСЂРµРґРєРѕРІРёР№ PlayerBoard РЅРµ Р·вЂ™С—РґР°РІ pointerdrag Сѓ РІРєР»Р°РґРµРЅРёС… РґРѕС€РєР°С… / composition-СЃР»РѕС‚Р°С…. */
-  const shouldDeferPlayerBoardDragToDescendant = (event: ReactPointerEvent<HTMLElement>) => {
+  const shouldDeferBoardContainerDragToDescendant = (event: ReactPointerEvent<HTMLElement>) => {
     if (!(event.target instanceof Element)) return false;
-    const nestedBoardRoot = event.target.closest(".lc-board-nested-player-board");
+    const nestedBoardRoot = event.target.closest(".lc-board-nested-container");
     if (nestedBoardRoot && nestedBoardRoot !== event.currentTarget) return true;
     return Boolean(event.target.closest(".lc-board-child-slot"));
   };
@@ -211,7 +211,7 @@ export default function ConstructArtboardBoard({
   const handlePanelPointerDownCapture = (
     event: ReactPointerEvent<HTMLElement>,
     panel: ArtboardPanel,
-    options?: { deferPlayerBoardDrag?: boolean },
+    options?: { deferBoardContainerDrag?: boolean },
   ) => {
     const altHeld = event.altKey || altModifierSyncRef.current;
     const altEditPanel = panelUsesAltEditMode(panel);
@@ -237,7 +237,7 @@ export default function ConstructArtboardBoard({
     }
 
     if (event.button !== 0) return;
-    if (options?.deferPlayerBoardDrag && shouldDeferPlayerBoardDragToDescendant(event)) return;
+    if (options?.deferBoardContainerDrag && shouldDeferBoardContainerDragToDescendant(event)) return;
 
     if (altEditPanel && !altHeld) {
       if (markMode && onPanelMarkRequest) {
@@ -467,7 +467,7 @@ export default function ConstructArtboardBoard({
   };
 
   const renderBoardChildPanel = (child: ArtboardPanel) => {
-    if (isPlayerBoardPanel(child)) {
+    if (isBoardContainerPanel(child)) {
       const nestedBoardChildren = artboardPanels
         .filter((c) => c.parentId === child.id && c.isVisible)
         .sort((a, b) => a.zIndex - b.zIndex);
@@ -476,7 +476,7 @@ export default function ConstructArtboardBoard({
         <div
           key={child.id}
           data-lc-panel-id={child.id}
-          className={`lc-board-nested-player-board lc-draggable-panel lc-draggable-panel--player-board${isPanelSelected ? " lc-draggable-panel--active" : ""}${panelMarkedClass(child.id)}${child.isLocked ? " lc-draggable-panel--locked" : ""}${activeInteractionPanelId === child.id ? " lc-draggable-panel--dragging" : ""}`}
+          className={`lc-board-nested-container lc-draggable-panel lc-draggable-panel--board-container${isPanelSelected ? " lc-draggable-panel--active" : ""}${panelMarkedClass(child.id)}${child.isLocked ? " lc-draggable-panel--locked" : ""}${activeInteractionPanelId === child.id ? " lc-draggable-panel--dragging" : ""}`}
           style={{
             position: "absolute",
             left: `${child.localX ?? 0}px`,
@@ -495,14 +495,14 @@ export default function ConstructArtboardBoard({
           onDragOver={onArtboardDragOver}
           onDragEnter={onArtboardDragEnter}
           onPointerDownCapture={(event) =>
-            handlePanelPointerDownCapture(event, child, { deferPlayerBoardDrag: true })
+            handlePanelPointerDownCapture(event, child, { deferBoardContainerDrag: true })
           }
           onContextMenu={(event) => handlePanelContextMenu(event, child)}
           onDoubleClick={(event) => handlePanelSurfaceDoubleClick(event, child)}
         >
           <header>{child.title}</header>
           <div
-            className={`lc-player-board-body${child.clipChildren !== false ? " lc-player-board-body--clip" : ""}`}
+            className={`lc-board-container-body${child.clipChildren !== false ? " lc-board-container-body--clip" : ""}`}
             onDragOver={onArtboardDragOver}
             onDragEnter={onArtboardDragEnter}
             onDrop={(event) => {
@@ -511,7 +511,7 @@ export default function ConstructArtboardBoard({
               void onArtboardDrop(event);
             }}
           >
-            <PlayerBoardChrome />
+            <BoardContainerChrome />
             {nestedBoardChildren.map((ch) => renderBoardChildPanel(ch))}
           </div>
           <div
@@ -727,7 +727,7 @@ export default function ConstructArtboardBoard({
                 isMainMode && isMainAdaptiveLayoutEnabled
                   ? Math.max(0.9, Math.min(1.08, 1 + (1 - artboardZoom) * 0.16))
                   : 1;
-              if (isPlayerBoardPanel(panel)) {
+              if (isBoardContainerPanel(panel)) {
                 const boardChildren = artboardPanels
                   .filter((c) => c.parentId === panel.id && c.isVisible)
                   .sort((a, b) => a.zIndex - b.zIndex);
@@ -736,7 +736,7 @@ export default function ConstructArtboardBoard({
                   <div
                     key={panel.id}
                     data-lc-panel-id={panel.id}
-                    className={`lc-draggable-panel lc-draggable-panel--player-board${isPanelSelected ? " lc-draggable-panel--active" : ""}${panelMarkedClass(panel.id)}${panel.isLocked ? " lc-draggable-panel--locked" : ""}${activeInteractionPanelId === panel.id ? " lc-draggable-panel--dragging" : ""}`}
+                    className={`lc-draggable-panel lc-draggable-panel--board-container${isPanelSelected ? " lc-draggable-panel--active" : ""}${panelMarkedClass(panel.id)}${panel.isLocked ? " lc-draggable-panel--locked" : ""}${activeInteractionPanelId === panel.id ? " lc-draggable-panel--dragging" : ""}`}
                     style={{
                       width: `${panel.width}px`,
                       height: `${panel.height}px`,
@@ -753,14 +753,14 @@ export default function ConstructArtboardBoard({
                     onDragOver={onArtboardDragOver}
                     onDragEnter={onArtboardDragEnter}
                     onPointerDownCapture={(event) =>
-                      handlePanelPointerDownCapture(event, panel, { deferPlayerBoardDrag: true })
+                      handlePanelPointerDownCapture(event, panel, { deferBoardContainerDrag: true })
                     }
                     onContextMenu={(event) => handlePanelContextMenu(event, panel)}
                     onDoubleClick={(event) => handlePanelSurfaceDoubleClick(event, panel)}
                   >
                     <header>{panel.title}</header>
                     <div
-                      className={`lc-player-board-body${panel.clipChildren !== false ? " lc-player-board-body--clip" : ""}`}
+                      className={`lc-board-container-body${panel.clipChildren !== false ? " lc-board-container-body--clip" : ""}`}
                       onDragOver={onArtboardDragOver}
                       onDragEnter={onArtboardDragEnter}
                       onDrop={(event) => {
@@ -769,7 +769,7 @@ export default function ConstructArtboardBoard({
                         void onArtboardDrop(event);
                       }}
                     >
-                      <PlayerBoardChrome />
+                      <BoardContainerChrome />
                       {boardChildren.map((ch) => renderBoardChildPanel(ch))}
                     </div>
                     <div

@@ -1,4 +1,4 @@
-import type { ComponentProps, DragEvent as ReactDragEvent, Dispatch, ReactNode, RefObject, SetStateAction } from "react";
+import { useState, type ComponentProps, type DragEvent as ReactDragEvent, type Dispatch, type ReactNode, type RefObject, type SetStateAction } from "react";
 import type { ConstructSectionId } from "@/features/lavashconstruct/workspace/ui/ConstructSectionRail";
 import ConstructArtboardBoard from "@/features/lavashconstruct/artboard/ui/ConstructArtboardBoard";
 import ConstructWorkspaceArtboardShell from "@/features/lavashconstruct/workspace/ui/ConstructWorkspaceArtboardShell";
@@ -15,6 +15,8 @@ import type { ConstructSettingsSection } from "@/features/lavashconstruct/settin
 import ConstructSettingsWorkspaceDrawer from "@/features/lavashconstruct/workspace/ui/ConstructSettingsWorkspaceDrawer";
 import ConstructWorkspaceRail from "@/features/lavashconstruct/workspace/ui/ConstructWorkspaceRail";
 import IdeExpandedTimerChip from "@/shared/components/IdeExpandedTimerChip";
+import LavashDevToolsButton from "@/features/lavashconstruct/project/ui/LavashDevToolsButton";
+import ConstructDevToolsPanel from "@/features/lavashconstruct/project/ui/ConstructDevToolsPanel";
 import LavashResourcesButton from "@/features/resources/ui/LavashResourcesButton";
 import "@/features/ide-browser/ui/ConstructIdeBrowserPanel.css";
 import ConstructProjectCodePanel from "@/features/lavashconstruct/project/ui/ConstructProjectCodePanel";
@@ -170,6 +172,7 @@ export type ConstructWorkspaceMainViewProps = {
 
 export default function ConstructWorkspaceMainView(props: ConstructWorkspaceMainViewProps) {
   const { t } = useI18n();
+  const [devToolsOpen, setDevToolsOpen] = useState(false);
   const {
     animationState,
     dockPulseKey,
@@ -317,7 +320,7 @@ export default function ConstructWorkspaceMainView(props: ConstructWorkspaceMain
         />
 
         <section
-          className="lc-unified-cell lc-unified-shell__workspace"
+          className="lc-unified-cell lc-unified-shell__workspace lc-unified-shell__workspace--devtools-host"
           style={{ gridColumn: 2, gridRow: 1, minWidth: 0, minHeight: 0 }}
         >
           <div
@@ -439,8 +442,10 @@ export default function ConstructWorkspaceMainView(props: ConstructWorkspaceMain
           </div>
           <footer className="lc-workspace-status" aria-label={t("status.ideExpandedShort")}>
             <IdeExpandedTimerChip expanded={animationState === "enter"} />
+            <LavashDevToolsButton active={devToolsOpen} onToggle={() => setDevToolsOpen((open) => !open)} />
             <LavashResourcesButton />
           </footer>
+          {devToolsOpen ? <ConstructDevToolsPanel onClose={() => setDevToolsOpen(false)} /> : null}
           <ConstructSettingsWorkspaceDrawer
             isOpen={isArtboardSettingsOpen}
             wide={settingsSection === "models"}

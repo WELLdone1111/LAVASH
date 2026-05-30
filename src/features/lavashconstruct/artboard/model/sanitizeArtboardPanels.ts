@@ -7,7 +7,7 @@ import {
 } from "@/features/lavashconstruct/artboard/model/import";
 import {
   normalizeArtboardPanelsHierarchy,
-  stripAutoTitledRootPlayerBoards,
+  stripAutoTitledRootBoardContainers,
 } from "@/features/lavashconstruct/artboard/model/panelHierarchy";
 import { safeNumber } from "@/features/lavashconstruct/shared/model/utils";
 import type { ArtboardPanel } from "@/features/lavashconstruct/artboard/ui/types";
@@ -134,7 +134,7 @@ export function sanitizeArtboardPanels(value: unknown): ArtboardPanel[] | null {
     .filter((panel) => panel !== null) as ArtboardPanel[];
 
   const normalized = normalizeArtboardPanelsHierarchy(next);
-  const stripped = stripAutoTitledRootPlayerBoards(normalized);
+  const stripped = stripAutoTitledRootBoardContainers(normalized);
   const final = normalizeArtboardPanelsHierarchy(stripped);
 
   return final.length > 0 ? final : null;

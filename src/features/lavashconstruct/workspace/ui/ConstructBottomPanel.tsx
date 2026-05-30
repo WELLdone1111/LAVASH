@@ -4,7 +4,7 @@ import { Eye, EyeOff, Lock, Trash2, Unlock } from "lucide-react";
 import WindowDragSpacer from "@/components/WindowDragSpacer";
 import { useI18n } from "@/i18n/context";
 import { getPanelStackEdges } from "@/features/lavashconstruct/artboard/model/layerStack";
-import { isPlayerBoardPanel } from "@/features/lavashconstruct/artboard/model/panelHierarchy";
+import { isBoardContainerPanel } from "@/features/lavashconstruct/artboard/model/panelHierarchy";
 import type { ArtboardPanel } from "@/features/lavashconstruct/artboard/ui/types";
 
 const LAYER_ID_KEY = "text/layer-id";
@@ -299,7 +299,7 @@ export default function ConstructBottomPanel({
           onReorderDrop={onReorderDrop}
         />,
       );
-      if (isPlayerBoardPanel(kid)) {
+      if (isBoardContainerPanel(kid)) {
         nodes.push(...renderCompositionChildren(kid.id, depth + 1));
       }
     }
@@ -337,7 +337,7 @@ export default function ConstructBottomPanel({
             />
           );
 
-          if (!isPlayerBoardPanel(panel)) {
+          if (!isBoardContainerPanel(panel)) {
             return [rootRow];
           }
 

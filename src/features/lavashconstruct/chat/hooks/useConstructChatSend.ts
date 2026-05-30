@@ -10,12 +10,9 @@ import {
 } from "react";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import {
-  buildAgentModeSystemInstruction,
   parseConstructImageGenPrompt,
   shouldApplyAssistantOutput,
 } from "@/features/lavashconstruct/chat/model/constructChatAgentMode";
-import { buildConstructApplyFormatGuide } from "@/features/lavashconstruct/chat/model/constructChatApplyFormatGuide";
-import { buildConstructDebugContextForModel } from "@/features/lavashconstruct/chat/model/constructDebugContext";
 import { generateConstructGeminiImage } from "@/features/lavashconstruct/chat/model/constructGeminiImage";
 import {
   captureArtboardPanelImage,
@@ -34,8 +31,19 @@ import { formatConstructChatErrorDetail } from "@/features/lavashconstruct/chat/
 import { runConstructChatStream } from "@/features/lavashconstruct/chat/model/constructChatStreamClient";
 import { ollamaModelDisplayLabel } from "@/features/lavashconstruct/chat/model/constructChatModelCatalog";
 import { improvePrompt } from "@/features/lavashconstruct/chat/model/improvePrompt";
-import { buildConstructContextForModel } from "@/features/lavashconstruct/chat/model/constructContextForModel";
-import { buildAgentContextForModel, expandSlashCommandInDraft } from "@/features/lavashconstruct/settings/model/constructAgentContext";
+import type { ConstructChatThreadTurn } from "@/features/lavashconstruct/chat/model/constructChatThread";
+import type { CueValidationResult } from "@/features/lavashconstruct/cue/model/cueTypes";
+import {
+  appendCueApplyLog,
+  buildCuePlanApplyInstruction,
+  buildCueTurn,
+  extendApiThreadForCueRetry,
+  formatCueValidationNote,
+  resolveCueSendMode,
+  shouldCueRetry,
+} from "@/features/lavashconstruct/cue/model/cueEngine";
+import { resolveModelForAttempt } from "@/features/lavashconstruct/engine/model/lavashEngine";
+import { expandSlashCommandInDraft } from "@/features/lavashconstruct/settings/model/constructAgentContext";
 import { useProjectWorkspaceStore } from "@/features/lavashconstruct/project/model/projectWorkspaceStore";
 import {
   captureConstructChatRevertSnapshot,
@@ -261,8 +269,11 @@ export function useConstructChatSend({
         return;
       }
 
-      const mode = tab.agentMode ?? "agent";
+      const tabAgentMode = tab.agentMode ?? "agent";
+      const cueSend = resolveCueSendMode(tabAgentMode, text);
+      let mode = cueSend.mode;
       const applyEnabled = shouldApplyAssistantOutput(mode);
+      const textForModel = cueSend.userText;
 
       const imageGenPrompt = parseConstructImageGenPrompt(text);
       if (imageGenPrompt) {
@@ -348,7 +359,7 @@ export function useConstructChatSend({
         .filter((a): a is Extract<ChatAttachment, { kind: "image" }> => a.kind === "image")
         .map((a) => ({ mimeType: a.mimeType, data: a.base64 }));
 
-      let augmentedForModel = text.trim();
+      let augmentedForModel = textForModel.trim();
       for (const a of snapshot) {
         if (a.kind === "text") {
           augmentedForModel += `\n\n— ${a.name} —\n${a.text}`;
@@ -463,26 +474,20 @@ export function useConstructChatSend({
             : undefined;
         const linkScratchTabId = preferScratchTabId ?? scratchState.activeTabId;
 
-        const constructSnapshotBase = buildConstructContextForModel({
-          scratchTabs: scratchState.tabs,
-          activeScratchTabId: scratchState.activeTabId,
-          artboardPanels: panels,
-          selectedPanelId,
-          markedPanelId: tabMarkedPanelId,
+        const { constructSnapshot, capability } = await buildCueTurn({
+          mode,
+          projectRoot,
+          constructContext: {
+            scratchTabs: scratchState.tabs,
+            activeScratchTabId: scratchState.activeTabId,
+            artboardPanels: panels,
+            selectedPanelId,
+            markedPanelId: tabMarkedPanelId,
+          },
+          provider,
+          modelId: modelLabel.trim(),
+          planApplyInstruction: buildCuePlanApplyInstruction(cueSend.forcedApply, tabAgentMode),
         });
-        const modeInstruction = buildAgentModeSystemInstruction(mode);
-        const applyFormatGuide = buildConstructApplyFormatGuide(mode);
-        const debugBlock = mode === "debug" ? `${buildConstructDebugContextForModel()}\n\n` : "";
-        const agentContext = await buildAgentContextForModel(projectRoot);
-        const constructSnapshot = [
-          modeInstruction,
-          applyFormatGuide,
-          debugBlock,
-          agentContext.trim(),
-          constructSnapshotBase,
-        ]
-          .filter((block) => block.trim().length > 0)
-          .join("\n\n");
 
         let userBody = augmentedForModel.trim();
         if (!userBody && imagesForApi.length > 0) {
@@ -504,7 +509,7 @@ export function useConstructChatSend({
           userBody = ".";
         }
 
-        const apiThread = buildApiThreadForSend({
+        let apiThread: ConstructChatThreadTurn[] = buildApiThreadForSend({
           priorSlim,
           constructSnapshot,
           userBody,
@@ -515,11 +520,12 @@ export function useConstructChatSend({
         const replyInEnglish = useOllamaUkBridge;
         const preferUkrainian = !useOllamaUkBridge && userWroteUkrainian;
 
-        const msgPayload = apiThread.map((m) => ({
-          role: m.role,
-          content: m.content,
-          ...(m.images?.length ? { images: m.images } : {}),
-        }));
+        const toMsgPayload = (thread: readonly ConstructChatThreadTurn[]) =>
+          thread.map((m) => ({
+            role: m.role,
+            content: m.content,
+            ...(m.images?.length ? { images: m.images } : {}),
+          }));
 
         streamMsgId = `a-${crypto.randomUUID().slice(0, 12)}`;
         streamMsgIdRef.current = streamMsgId;
@@ -539,60 +545,118 @@ export function useConstructChatSend({
           onlyApply: t("construct.chat.applyNote.onlyApply"),
         };
 
-        const applyCtl = createConstructStreamApplyController({
-          preferScratchTabId,
-          linkConstructPanelToScratchTabId: linkScratchTabId,
-          applyEnabled,
-        });
-
         let lastApplySummary = {
           codeFencesApplied: 0,
           artboardApplied: false,
           constructPanelsSpawned: 0,
+          cueActionsApplied: 0,
         };
 
-        const updateStreamingBubble = (buffer: string) => {
-          if (!streamMsgId) return;
-          const prose = stripCodeFencesForChatDisplay(buffer).trim();
-          const bubbleText = buildLavashChatBubbleText({
-            modelMarkdown: prose || buffer,
-            summary: lastApplySummary,
-            labels: streamApplyLabels,
-            emptyFallback: "",
-          });
-          replaceLastMessage({
-            id: streamMsgId,
-            role: "assistant",
-            text: bubbleText,
-            streaming: true,
-            revertSnapshot: preApplySnapshot,
-          });
-        };
+        let trimmedEn = "";
+        let applySummary = lastApplySummary;
+        let finalValidation: CueValidationResult = { ok: true, issues: [] };
+        let attemptIndex = 0;
 
-        const streamId = crypto.randomUUID();
-        const replyEn = await runConstructChatStream({
-          streamId,
-          provider,
-          apiKey,
-          model: modelLabel.trim(),
-          baseUrl: def.baseUrl,
-          httpReferer: provider === "openrouter" ? "https://github.com/WELLdone1111/LAVASH" : null,
-          messages: msgPayload,
-          replyInEnglish,
-          preferUkrainian,
-          userSignedIn,
-          modelOverride: provider === "ollama" ? modelLabel.trim() || null : null,
-          signal: abortController.signal,
-          onDelta: (_delta, full) => {
-            applyCtl.pushChunk(full);
-            lastApplySummary = applyCtl.getLastSummary();
-            updateStreamingBubble(full);
-          },
-        });
+        while (true) {
+          const applyCtl = createConstructStreamApplyController({
+            preferScratchTabId,
+            linkConstructPanelToScratchTabId: linkScratchTabId,
+            applyEnabled,
+            mode,
+            artboardPanelIds: panels.map((p) => p.id),
+          });
 
-        const trimmedEn = replyEn.trim();
-        const applySummary = applyCtl.flush();
-        const syncNote = formatConstructApplySyncNote(applySummary);
+          const updateStreamingBubble = (buffer: string) => {
+            if (!streamMsgId) return;
+            const prose = stripCodeFencesForChatDisplay(buffer).trim();
+            const bubbleText = buildLavashChatBubbleText({
+              modelMarkdown: prose || buffer,
+              summary: lastApplySummary,
+              labels: streamApplyLabels,
+              emptyFallback: "",
+            });
+            replaceLastMessage({
+              id: streamMsgId,
+              role: "assistant",
+              text: bubbleText,
+              streaming: true,
+              revertSnapshot: preApplySnapshot,
+            });
+          };
+
+          const streamModel = resolveModelForAttempt({
+            provider,
+            primaryModel: modelLabel.trim(),
+            attemptIndex,
+          });
+
+          const streamId = crypto.randomUUID();
+          const replyEn = await runConstructChatStream({
+            streamId,
+            provider,
+            apiKey,
+            model: streamModel,
+            baseUrl: def.baseUrl,
+            httpReferer: provider === "openrouter" ? "https://github.com/WELLdone1111/LAVASH" : null,
+            messages: toMsgPayload(apiThread),
+            replyInEnglish,
+            preferUkrainian,
+            userSignedIn,
+            modelOverride: provider === "ollama" ? streamModel || null : null,
+            signal: abortController.signal,
+            onDelta: (_delta, full) => {
+              applyCtl.pushChunk(full);
+              lastApplySummary = applyCtl.getLastSummary();
+              updateStreamingBubble(full);
+            },
+          });
+
+          trimmedEn = replyEn.trim();
+          applySummary = applyCtl.flush();
+          lastApplySummary = applySummary;
+          const validation = applyCtl.getLastValidation();
+          finalValidation = validation;
+
+          const retry = shouldCueRetry({
+            mode,
+            applyEnabled,
+            validation,
+            summary: applySummary,
+            attemptIndex,
+            maxRetries: capability.maxApplyRetries,
+          });
+
+          if (!retry) break;
+
+          restoreConstructChatRevertSnapshot(preApplySnapshot);
+          const failedAssistant =
+            trimmedEn +
+            formatConstructApplySyncNote(applySummary) +
+            formatCueValidationNote(validation);
+          apiThread = extendApiThreadForCueRetry(apiThread, failedAssistant, validation);
+          attemptIndex += 1;
+        }
+
+        if (applyEnabled) {
+          appendCueApplyLog({
+            provider,
+            mode,
+            attempts: attemptIndex + 1,
+            applied:
+              applySummary.artboardApplied ||
+              applySummary.constructPanelsSpawned > 0 ||
+              applySummary.codeFencesApplied > 0 ||
+              applySummary.cueActionsApplied > 0,
+            validationOk: finalValidation.ok,
+            issueCodes: finalValidation.issues.map((i) => i.code),
+            summary: applySummary,
+            userText: textForModel,
+            assistantText: trimmedEn,
+          });
+        }
+
+        const syncNote =
+          formatConstructApplySyncNote(applySummary) + formatCueValidationNote(finalValidation);
         const ollamaThreadNext = appendSlimExchange(priorSlim, userBody, trimmedEn + syncNote);
 
         let displayReply = stripCodeFencesForChatDisplay(trimmedEn).trim();

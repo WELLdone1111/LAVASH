@@ -1,12 +1,5 @@
 /** Вкладки дока з повноекранною панеллю (повторний клік = pulse, не закриття). */
-export const DOCK_WORKSPACE_IDS = [
-  "profile",
-  "lavashconstruct",
-  "presets",
-  "player",
-  "store",
-  "settings",
-] as const;
+export const DOCK_WORKSPACE_IDS = ["lavashconstruct", "store", "settings"] as const;
 
 export type DockWorkspaceId = (typeof DOCK_WORKSPACE_IDS)[number];
 

@@ -6,7 +6,7 @@ import {
   clampChildLocalPosition,
   collectPanelSubtreeIds,
   getBoardInnerSize,
-  isPlayerBoardPanel,
+  isBoardContainerPanel,
   isValidChildParentRelation,
 } from "@/features/lavashconstruct/artboard/model/panelHierarchy";
 import { panelsInSameCohortSorted } from "@/features/lavashconstruct/artboard/model/layerStack";
@@ -282,7 +282,7 @@ export const useConstructStore = create<ConstructStoreState & ConstructStoreActi
           height: nextHeight,
         };
       });
-      const board = nextPanels.find((p) => p.id === id && isPlayerBoardPanel(p));
+      const board = nextPanels.find((p) => p.id === id && isBoardContainerPanel(p));
       if (board) {
         nextPanels = clampAllBoardChildren(nextPanels, board.id);
       }

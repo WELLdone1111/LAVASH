@@ -72,7 +72,7 @@ export function sanitizeUserLibraryItems(value: unknown): ConstructLibraryItem[]
       id,
       title,
       kind,
-      category: "player",
+      category: "import",
       keywords,
       defaultWidth: safeNumber(o.defaultWidth, 200, 40, 1600),
       defaultHeight: safeNumber(o.defaultHeight, 120, 40, 1600),

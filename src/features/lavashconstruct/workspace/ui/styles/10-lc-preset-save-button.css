@@ -236,7 +236,7 @@
 }
 
 /*
-  Composition children live in `.lc-player-board-body`. The Alt-drag overlay must NOT sit above the body:
+  Composition children live in `.lc-board-container-body`. The Alt-drag overlay must NOT sit above the body:
   otherwise `pointerdown` targets the overlay, nested panels never become the event target, and Alt-drag
   inside the board breaks. Keep the overlay below the body (pointer-events none when “active”) so hits
   reach slots; capture on the board root still moves the board from the header / chrome.
@@ -246,7 +246,7 @@
   z-index: 6;
 }
 
-.lc-draggable-panel--player-board > .lc-player-board-body {
+.lc-draggable-panel--player-board > .lc-board-container-body {
   position: relative;
   z-index: 4;
 }
@@ -264,7 +264,7 @@
   z-index: 7;
 }
 
-.lc-player-board-body {
+.lc-board-container-body {
   position: relative;
   flex: 1;
   min-height: 0;
@@ -275,12 +275,12 @@
   isolation: isolate;
 }
 
-.lc-player-board-body--clip {
+.lc-board-container-body--clip {
   overflow: hidden;
 }
 
 /* під час drag дитина може малюватися за clip (undock на артборд) */
-.lc-player-board-body.lc-player-board-body--clip:has(.lc-draggable-panel--dragging) {
+.lc-board-container-body.lc-board-container-body--clip:has(.lc-draggable-panel--dragging) {
   overflow: visible;
 }
 
@@ -293,7 +293,7 @@
   min-height: 0;
 }
 
-.lc-player-board-chrome {
+.lc-board-container-chrome {
   flex-shrink: 0;
   padding: var(--spacing-small) var(--spacing-medium);
   border-radius: 8px;
@@ -301,7 +301,7 @@
   border: 1px dashed color-mix(in srgb, var(--theme-border) 75%, transparent);
 }
 
-.lc-player-board-chrome-label {
+.lc-board-container-chrome-label {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.04em;

@@ -1,0 +1,15 @@
+[project]
+name = "lavash-runtime"
+version = "0.1.0"
+description = "Managed Python runtime for LAVASH IDE tooling"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "pyright>=1.1.400",
+]
+
+[tool.uv]
+managed = true
+python-preference = "only-managed"

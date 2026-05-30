@@ -72,6 +72,25 @@ function shouldMergeArtboardPayload(
  * застосовує його до артборду через той самий санітайзер, що й пресети.
  * @returns чи було застосовано оновлення
  */
+export function applyArtboardPayload(parsed: unknown): boolean {
+  const rawPanels = extractArtboardPanelsPayload(parsed);
+  if (!Array.isArray(rawPanels)) return false;
+  const panels = sanitizeArtboardPanels(rawPanels);
+  if (!panels) return false;
+
+  const mergeFlag = readArtboardMergeFlag(parsed);
+  const current = useConstructStore.getState().artboardPanels;
+  const merged =
+    shouldMergeArtboardPayload(mergeFlag, current, panels) && current.length > 0
+      ? mergeArtboardPanelsById(current, panels)
+      : panels;
+  const normalized = sanitizeArtboardPanels(merged);
+  if (!normalized) return false;
+
+  useConstructStore.getState().setArtboardPanelsDirect(normalized);
+  return true;
+}
+
 export function applyAssistantArtboardFromMarkdown(markdown: string): boolean {
   const fences = parseCodeFencesFromMarkdown(markdown);
   for (const f of fences) {
@@ -84,22 +103,7 @@ export function applyAssistantArtboardFromMarkdown(markdown: string): boolean {
     } catch {
       continue;
     }
-    const rawPanels = extractArtboardPanelsPayload(parsed);
-    if (!Array.isArray(rawPanels)) continue;
-    const panels = sanitizeArtboardPanels(rawPanels);
-    if (!panels) continue;
-
-    const mergeFlag = readArtboardMergeFlag(parsed);
-    const current = useConstructStore.getState().artboardPanels;
-    const merged =
-      shouldMergeArtboardPayload(mergeFlag, current, panels) && current.length > 0
-        ? mergeArtboardPanelsById(current, panels)
-        : panels;
-    const normalized = sanitizeArtboardPanels(merged);
-    if (!normalized) continue;
-
-    useConstructStore.getState().setArtboardPanelsDirect(normalized);
-    return true;
+    if (applyArtboardPayload(parsed)) return true;
   }
   return false;
 }
@@ -163,7 +167,7 @@ export function buildScratchCodeLibraryItem(args: BuildScratchCodeLibraryItemArg
     id: `code-${crypto.randomUUID().slice(0, 14)}`,
     title: title.slice(0, 200),
     kind: "panel",
-    category: "player",
+    category: "import",
     keywords: ["code"],
     defaultWidth: cssPreviewSize?.width ?? htmlPreviewSize?.width ?? 440,
     defaultHeight: cssPreviewSize?.height ?? htmlPreviewSize?.height ?? 340,
@@ -214,7 +218,11 @@ export function applyAssistantConstructPanelFences(
     });
     if (item) items.push(item);
   }
-  if (items.length === 0) return 0;
-  libraryPaster(items);
+  return pasteConstructLibraryItems(items);
+}
+
+export function pasteConstructLibraryItems(items: readonly ConstructLibraryItem[]): number {
+  if (!libraryPaster || items.length === 0) return 0;
+  libraryPaster([...items]);
   return items.length;
 }

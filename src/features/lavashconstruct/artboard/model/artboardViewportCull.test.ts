@@ -15,7 +15,7 @@ function panel(id: string, x: number, y: number): ArtboardPanel {
     isLocked: false,
     lockAspectRatio: false,
     opacity: 1,
-    category: "player",
+    category: "import",
     kind: "element",
   } as ArtboardPanel;
 }

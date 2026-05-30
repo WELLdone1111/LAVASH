@@ -237,11 +237,11 @@ export function analyzedImportToLibraryItemBase(analysis: AnalyzedClipboardImpor
   return {
     title: analysis.displayTitle.slice(0, 120),
     kind: "element",
-    category: "player",
+    category: "import",
     keywords:
       analysis.fidelity === "rich-html"
-        ? ["imported", "clipboard", "web-clip", "player"]
-        : ["imported", "clipboard", analysis.visualKind, "player"],
+        ? ["imported", "clipboard", "web-clip", "import"]
+        : ["imported", "clipboard", analysis.visualKind, "import"],
     defaultWidth: wide ? 400 : 260,
     defaultHeight: wide ? 260 : 190,
     importedSourceKind: "text",

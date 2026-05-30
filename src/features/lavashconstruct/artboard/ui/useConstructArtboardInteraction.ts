@@ -15,12 +15,12 @@ import {
 import { resolvePanelOverlap } from "@/features/lavashconstruct/artboard/model/collisionResolve";
 import {
   clampChildLocalPosition,
-  findPlayerBoardAtWorldPoint,
+  findBoardContainerAtWorldPoint,
   getBoardInnerOriginWorld,
   getBoardInnerSize,
   getPanelWorldBounds,
   isPanelDescendantOf,
-  isPlayerBoardPanel,
+  isBoardContainerPanel,
   normalizeArtboardPanelsHierarchy,
 } from "@/features/lavashconstruct/artboard/model/panelHierarchy";
 import { useConstructStore } from "@/features/lavashconstruct/artboard/model/store";
@@ -338,7 +338,7 @@ export function useConstructArtboardInteraction(params: UseConstructArtboardInte
             !panel.parentId &&
             panel.id !== moving.id &&
             panel.isVisible &&
-            !isPlayerBoardPanel(panel),
+            !isBoardContainerPanel(panel),
         );
         const targetsX = rootsOnlyOthers.flatMap((panel) => [
           panel.x,
@@ -438,7 +438,7 @@ export function useConstructArtboardInteraction(params: UseConstructArtboardInte
             const wb = getPanelWorldBounds(moving, currentPanels);
             const cx = wb.x + wb.width / 2;
             const cy = wb.y + wb.height / 2;
-            const hit = findPlayerBoardAtWorldPoint(
+            const hit = findBoardContainerAtWorldPoint(
               currentPanels,
               releaseProbeWx ?? cx,
               releaseProbeWy ?? cy,
@@ -458,14 +458,14 @@ export function useConstructArtboardInteraction(params: UseConstructArtboardInte
               currentPanels = normalizeArtboardPanelsHierarchy(
                 currentPanels.map((p) => (p.id === moving.id ? docked : p)),
               );
-              action = "Dock panel to PlayerBoard";
-              mergeKey = "dock-to-player-board";
+              action = "Dock panel to board container";
+              mergeKey = "dock-to-board-container";
             }
           } else if (moving?.parentId) {
             const wb = getPanelWorldBounds(moving, currentPanels);
             const cx = wb.x + wb.width / 2;
             const cy = wb.y + wb.height / 2;
-            const hit = findPlayerBoardAtWorldPoint(
+            const hit = findBoardContainerAtWorldPoint(
               currentPanels,
               releaseProbeWx ?? cx,
               releaseProbeWy ?? cy,
@@ -486,7 +486,7 @@ export function useConstructArtboardInteraction(params: UseConstructArtboardInte
               currentPanels = normalizeArtboardPanelsHierarchy(
                 currentPanels.map((p) => (p.id === moving.id ? docked : p)),
               );
-              action = "Move panel to nested PlayerBoard";
+              action = "Move panel to nested board container";
               mergeKey = "reparent-composition-panel";
             } else if (!hit) {
               const ls = useConstructStore.getState().constructState;

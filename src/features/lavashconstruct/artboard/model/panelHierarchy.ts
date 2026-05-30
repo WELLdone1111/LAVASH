@@ -14,22 +14,27 @@ export type AxisAlignedRect = {
 };
 
 export function resolvePanelTemplateId(panel: ArtboardPanel): string | null {
-  if (panel.id === "player-board-default" || panel.id.startsWith("player-board-")) {
-    return "player-board";
+  if (
+    panel.id === "board-container-default" ||
+    panel.id.startsWith("board-container-") ||
+    panel.id === "player-board-default" ||
+    panel.id.startsWith("player-board-")
+  ) {
+    return "board-container";
   }
   return null;
 }
 
-export function isPlayerBoardPanel(panel: ArtboardPanel): boolean {
+export function isBoardContainerPanel(panel: ArtboardPanel): boolean {
   if (panel.isBoardContainer) return true;
-  return resolvePanelTemplateId(panel) === "player-board";
+  return resolvePanelTemplateId(panel) === "board-container";
 }
 
-/** Батько вкладеної панелі має бути PlayerBoard (дошки можуть вкладатись в дошки). */
+/** Батько вкладеної панелі має бути board container (дошки можуть вкладатись в дошки). */
 export function isValidChildParentRelation(child: ArtboardPanel, parent: ArtboardPanel | undefined): boolean {
   if (!child.parentId) return true;
   if (!parent || parent.id !== child.parentId) return false;
-  return isPlayerBoardPanel(parent);
+  return isBoardContainerPanel(parent);
 }
 
 /** Так, якщо `descendantId` в піддереві під `ancestorId` (йдемо вгору по parentId). */
@@ -137,11 +142,11 @@ export function clampAllBoardChildren(panels: ArtboardPanel[], boardId: string):
 }
 
 /**
- * Найглибший PlayerBoard, чий inner-composition rect містить (wx, wy) у world-space.
+ * Найглибший board container, чий inner-composition rect містить (wx, wy) у world-space.
  * Пріоритет — глибша вкладеність, при рівності — вищий z-index.
  */
-export function findPlayerBoardAtWorldPoint(panels: ArtboardPanel[], wx: number, wy: number): ArtboardPanel | null {
-  const boards = panels.filter((p) => p.isVisible && isPlayerBoardPanel(p));
+export function findBoardContainerAtWorldPoint(panels: ArtboardPanel[], wx: number, wy: number): ArtboardPanel | null {
+  const boards = panels.filter((p) => p.isVisible && isBoardContainerPanel(p));
   const hits = boards.filter((b) => {
     const inner = getBoardInnerRectWorld(b, panels);
     return (
@@ -174,12 +179,12 @@ export function findPlayerBoardAtWorldPoint(panels: ArtboardPanel[], wx: number,
   return hits[hits.length - 1] ?? null;
 }
 
-/** Валідує вкладеність (тільки PlayerBoard як батьки) і клампить дітей у межі inner дошки. */
+/** Валідує вкладеність (тільки board container як батьки) і клампить дітей у межі inner дошки. */
 export function normalizeArtboardPanelsHierarchy(panels: ArtboardPanel[]): ArtboardPanel[] {
   let normalized = panels.map((panel) => {
     if (!panel.parentId) return panel;
     const parent = panels.find((p) => p.id === panel.parentId);
-    if (!parent || !isPlayerBoardPanel(parent)) {
+    if (!parent || !isBoardContainerPanel(parent)) {
       return { ...panel, parentId: undefined, localX: undefined, localY: undefined };
     }
     return panel;
@@ -196,17 +201,21 @@ export function normalizeArtboardPanelsHierarchy(panels: ArtboardPanel[]): Artbo
 }
 
 /**
- * Прибирає кореневі «порожні» PlayerBoard з типовими назвами/ід (застарілі пресети / автододавання),
+ * Прибирає кореневі «порожні» board container з типовими назвами/ід (застарілі пресети / автододавання),
  * разом із дочірніми панелями всередині цих дощок.
  */
-export function stripAutoTitledRootPlayerBoards(panels: ArtboardPanel[]): ArtboardPanel[] {
+export function stripAutoTitledRootBoardContainers(panels: ArtboardPanel[]): ArtboardPanel[] {
   const rootIdsToRemove: string[] = [];
   for (const p of panels) {
     if (p.parentId) continue;
-    if (!isPlayerBoardPanel(p)) continue;
+    if (!isBoardContainerPanel(p)) continue;
     const title = p.title.trim();
-    const defaultTitle = /^PlayerBoard(\s+\d+)?$/i.test(title);
-    const templateId = p.id === "player-board-default" || p.id.startsWith("player-board-");
+    const defaultTitle = /^(BoardContainer|PlayerBoard)(\s+\d+)?$/i.test(title);
+    const templateId =
+      p.id === "board-container-default" ||
+      p.id.startsWith("board-container-") ||
+      p.id === "player-board-default" ||
+      p.id.startsWith("player-board-");
     if (defaultTitle || templateId) {
       rootIdsToRemove.push(p.id);
     }

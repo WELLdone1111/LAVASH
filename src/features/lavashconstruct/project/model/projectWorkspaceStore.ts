@@ -10,6 +10,8 @@ import {
   ensureArtboardPanelForProjectFile,
   isProjectFilePreviewable,
 } from "@/features/lavashconstruct/project/model/projectArtboardLink";
+import { fetchGitStatus } from "@/features/lavashconstruct/project/model/projectToolsApi";
+import { gitStatusMapFromList } from "@/features/lavashconstruct/project/model/projectToolsModel";
 
 export type ProjectViewMode = "split" | "design" | "code";
 
@@ -163,8 +165,13 @@ export const useProjectWorkspaceStore = create<ProjectWorkspaceState>((set, get)
       set({ gitStatusMap: {} });
       return;
     }
-    // Git status UI is optional; keep empty until a dedicated command exists.
-    set({ gitStatusMap: {} });
+    try {
+      const rows = await fetchGitStatus();
+      set({ gitStatusMap: gitStatusMapFromList(rows) });
+    } catch (error) {
+      console.warn("[project] git status failed", error);
+      set({ gitStatusMap: {} });
+    }
   },
 
   async createFile(parentDir: string, name: string) {

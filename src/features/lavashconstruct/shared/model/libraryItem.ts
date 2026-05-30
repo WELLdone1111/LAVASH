@@ -6,8 +6,8 @@ export type ConstructLibraryItem = {
   id: string;
   title: string;
   kind: "panel" | "element";
-  /** User Lib лише для плеєрів / webview / імпортованого коду (не каталог UI-компонентів). */
-  category: "player";
+  /** User Lib для імпортованого коду / webview (не каталог UI-компонентів). */
+  category: "import";
   keywords: string[];
   defaultWidth: number;
   defaultHeight: number;
