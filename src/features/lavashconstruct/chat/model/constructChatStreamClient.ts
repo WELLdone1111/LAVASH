@@ -7,6 +7,7 @@ export const CONSTRUCT_CHAT_STREAM_EVENT = "lc-chat-stream";
 export type ConstructChatStreamPayload = {
   streamId: string;
   delta?: string;
+  thinkingDelta?: string;
   done?: boolean;
   error?: string;
 };
@@ -28,6 +29,7 @@ export type RunConstructChatStreamArgs = {
   userSignedIn: boolean;
   modelOverride?: string | null;
   onDelta?: (delta: string, full: string) => void;
+  onThinkingDelta?: (delta: string, full: string) => void;
   signal?: AbortSignal;
 };
 
@@ -38,6 +40,7 @@ export async function runConstructChatStream(args: RunConstructChatStreamArgs): 
 
   const def = getConstructProviderDef(args.provider);
   let full = "";
+  let thinkingFull = "";
   let settled = false;
   let resolveDone!: (value: string) => void;
   let rejectDone!: (reason: Error) => void;
@@ -70,6 +73,11 @@ export async function runConstructChatStream(args: RunConstructChatStreamArgs): 
       if (p.delta) {
         full += p.delta;
         args.onDelta?.(p.delta, full);
+      }
+
+      if (p.thinkingDelta) {
+        thinkingFull += p.thinkingDelta;
+        args.onThinkingDelta?.(p.thinkingDelta, thinkingFull);
       }
 
       if (p.done) {

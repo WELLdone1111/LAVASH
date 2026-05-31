@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { Copy, FileText, Paperclip, Pencil, Undo2 } from "lucide-react";
 import LavashThinkingStatus from "@/features/lavashconstruct/chat/ui/LavashThinkingStatus";
+import ConstructChatThinkingBlock from "@/features/lavashconstruct/chat/ui/ConstructChatThinkingBlock";
 import { ConstructChatRichContent } from "@/features/lavashconstruct/chat/ui/constructChatRichContent";
 import { VirtualScrollList } from "@/shared/components/VirtualScrollList";
 import { cn } from "@/lib/utils";
@@ -97,7 +98,13 @@ export function ConstructChatMessageList({
                 )}
               </div>
             ) : null}
-            {m.streaming && !m.text.trim() ? (
+            {m.thinking?.trim() ? (
+              <ConstructChatThinkingBlock
+                thinking={m.thinking}
+                active={Boolean(m.streaming && !m.text.trim())}
+              />
+            ) : null}
+            {m.streaming && !m.text.trim() && !m.thinking?.trim() ? (
               <LavashThinkingStatus
                 sessionKey={thinkingSessionKey}
                 className="lavash-thinking-status--in-bubble"

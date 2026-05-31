@@ -62,6 +62,7 @@ import { useConstructStore } from "@/features/lavashconstruct/artboard/model/sto
 import ConstructChatModelPickerButton from "@/features/lavashconstruct/chat/ui/ConstructChatModelPickerButton";
 import { ConstructChatRichContent } from "@/features/lavashconstruct/chat/ui/constructChatRichContent";
 import LavashThinkingStatus from "@/features/lavashconstruct/chat/ui/LavashThinkingStatus";
+import ConstructChatThinkingBlock from "@/features/lavashconstruct/chat/ui/ConstructChatThinkingBlock";
 import {
   getConstructChatTabsInitial,
   MAX_PENDING_ATTACHMENTS,
@@ -557,7 +558,13 @@ export default function ConstructChatPanel() {
                     )}
                   </div>
                 ) : null}
-                {m.streaming && !m.text.trim() ? (
+                {m.thinking?.trim() ? (
+                  <ConstructChatThinkingBlock
+                    thinking={m.thinking}
+                    active={Boolean(m.streaming && !m.text.trim())}
+                  />
+                ) : null}
+                {m.streaming && !m.text.trim() && !m.thinking?.trim() ? (
                   <LavashThinkingStatus sessionKey={thinkingSessionKey} className="lavash-thinking-status--in-bubble" />
                 ) : m.text.trim() ? (
                   <ConstructChatRichContent text={m.text} className="lc-chat-md lc-chat-md--in-bubble" />

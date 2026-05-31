@@ -1,6 +1,7 @@
 use crate::construct_chat::{
     build_anthropic_content, build_gemini_parts, build_openai_content, emit_delta, emit_done,
-    emit_error, format_http_error, message_text_content, system_prompt, trim_base_url, ChatMessage,
+    emit_error, emit_thinking_delta, format_http_error, message_text_content, system_prompt,
+    trim_base_url, ChatMessage,
 };
 use futures_util::StreamExt;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
@@ -357,6 +358,18 @@ async fn run_openai_compat_stream(
 
     read_sse_response(resp, |data| {
         let value: Value = serde_json::from_str(data).map_err(|e| e.to_string())?;
+        for path in [
+            "/choices/0/delta/reasoning_content",
+            "/choices/0/delta/reasoning",
+        ] {
+            if let Some(text) = value
+                .pointer(path)
+                .and_then(|v| v.as_str())
+                .filter(|s| !s.is_empty())
+            {
+                emit_thinking_delta(&app, &stream_id, text);
+            }
+        }
         if let Some(text) = value
             .pointer("/choices/0/delta/content")
             .and_then(|v| v.as_str())

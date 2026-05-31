@@ -11,6 +11,8 @@ pub struct StreamEventPayload {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delta: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub thinking_delta: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub done: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
@@ -42,6 +44,20 @@ pub fn emit_delta(app: &AppHandle, stream_id: &str, delta: &str) {
         StreamEventPayload {
             stream_id: stream_id.to_string(),
             delta: Some(delta.to_string()),
+            thinking_delta: None,
+            done: None,
+            error: None,
+        },
+    );
+}
+
+pub fn emit_thinking_delta(app: &AppHandle, stream_id: &str, delta: &str) {
+    emit_stream(
+        app,
+        StreamEventPayload {
+            stream_id: stream_id.to_string(),
+            delta: None,
+            thinking_delta: Some(delta.to_string()),
             done: None,
             error: None,
         },
@@ -54,6 +70,7 @@ pub fn emit_done(app: &AppHandle, stream_id: &str) {
         StreamEventPayload {
             stream_id: stream_id.to_string(),
             delta: None,
+            thinking_delta: None,
             done: Some(true),
             error: None,
         },
@@ -66,6 +83,7 @@ pub fn emit_error(app: &AppHandle, stream_id: &str, error: &str) {
         StreamEventPayload {
             stream_id: stream_id.to_string(),
             delta: None,
+            thinking_delta: None,
             done: None,
             error: Some(error.to_string()),
         },

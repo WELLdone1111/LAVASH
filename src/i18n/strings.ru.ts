@@ -1198,6 +1198,12 @@ export const STRINGS_RU: Record<string, string> = {
 
   "construct.chat.thinking": "Думает",
 
+  "construct.chat.thought": "Размышление",
+
+  "construct.chat.thinkingExpand": "Развернуть размышление",
+
+  "construct.chat.thinkingCollapse": "Свернуть размышление",
+
   "construct.chat.streaming": "Пишу ответ… код и артборд обновляются в реальном времени.",
 
   "construct.chat.placeholder": "контекст",

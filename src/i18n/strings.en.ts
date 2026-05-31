@@ -1198,6 +1198,12 @@ The app will reload. This cannot be undone.`,
 
   "construct.chat.thinking": "Thinking",
 
+  "construct.chat.thought": "Thought",
+
+  "construct.chat.thinkingExpand": "Expand thinking",
+
+  "construct.chat.thinkingCollapse": "Collapse thinking",
+
   "construct.chat.streaming": "Writing… CODE and artboard update live.",
 
   "construct.chat.placeholder": "context",

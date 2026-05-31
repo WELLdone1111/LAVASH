@@ -29,6 +29,7 @@ import { createConstructStreamApplyController } from "@/features/lavashconstruct
 import { translateOllamaEnReplyProseToUk } from "@/features/lavashconstruct/chat/model/constructChatOllamaBridge";
 import { formatConstructChatErrorDetail } from "@/features/lavashconstruct/chat/model/formatConstructChatErrorDetail";
 import { runConstructChatStream } from "@/features/lavashconstruct/chat/model/constructChatStreamClient";
+import { mergeStreamThinkingParts } from "@/features/lavashconstruct/chat/model/constructChatStreamThink";
 import { ollamaModelDisplayLabel } from "@/features/lavashconstruct/chat/model/constructChatModelCatalog";
 import { improvePrompt } from "@/features/lavashconstruct/chat/model/improvePrompt";
 import type { ImprovePromptIconMode } from "@/features/lavashconstruct/chat/ui/ConstructChatImprovePromptIcon";
@@ -565,8 +566,13 @@ export function useConstructChatSend({
         let applySummary = lastApplySummary;
         let finalValidation: CueValidationResult = { ok: true, issues: [] };
         let attemptIndex = 0;
+        let streamThinkingNative = "";
+        let savedThinking: string | undefined;
 
         while (true) {
+          streamThinkingNative = "";
+          let rawContentStream = "";
+
           const applyCtl = createConstructStreamApplyController({
             preferScratchTabId,
             linkConstructPanelToScratchTabId: linkScratchTabId,
@@ -575,11 +581,14 @@ export function useConstructChatSend({
             artboardPanelIds: panels.map((p) => p.id),
           });
 
-          const updateStreamingBubble = (buffer: string) => {
+          const updateStreamingBubble = (rawContent: string, nativeThinking: string) => {
             if (!streamMsgId) return;
-            const prose = stripCodeFencesForChatDisplay(buffer).trim();
+            const { thinking, content } = mergeStreamThinkingParts(nativeThinking, rawContent);
+            applyCtl.pushChunk(content);
+            lastApplySummary = applyCtl.getLastSummary();
+            const prose = stripCodeFencesForChatDisplay(content).trim();
             const bubbleText = buildLavashChatBubbleText({
-              modelMarkdown: prose || buffer,
+              modelMarkdown: prose || content,
               summary: lastApplySummary,
               labels: streamApplyLabels,
               emptyFallback: "",
@@ -588,9 +597,14 @@ export function useConstructChatSend({
               id: streamMsgId,
               role: "assistant",
               text: bubbleText,
+              thinking: thinking.trim() || undefined,
               streaming: true,
               revertSnapshot: preApplySnapshot,
             });
+          };
+
+          const pushStreamUpdate = () => {
+            updateStreamingBubble(rawContentStream, streamThinkingNative);
           };
 
           const streamModel = resolveModelForAttempt({
@@ -614,13 +628,19 @@ export function useConstructChatSend({
             modelOverride: provider === "ollama" ? streamModel || null : null,
             signal: abortController.signal,
             onDelta: (_delta, full) => {
-              applyCtl.pushChunk(full);
-              lastApplySummary = applyCtl.getLastSummary();
-              updateStreamingBubble(full);
+              rawContentStream = full;
+              pushStreamUpdate();
+            },
+            onThinkingDelta: (_delta, thinkingFull) => {
+              streamThinkingNative = thinkingFull;
+              pushStreamUpdate();
             },
           });
 
           trimmedEn = replyEn.trim();
+          const mergedFinal = mergeStreamThinkingParts(streamThinkingNative, trimmedEn);
+          trimmedEn = mergedFinal.content;
+          savedThinking = mergedFinal.thinking.trim() || undefined;
           applySummary = applyCtl.flush();
           lastApplySummary = applySummary;
           const validation = applyCtl.getLastValidation();
@@ -697,7 +717,9 @@ export function useConstructChatSend({
               ? {
                   ...x,
                   messages: x.messages.map((m) =>
-                    m.id === streamMsgId ? { ...m, text: bubbleText, streaming: undefined } : m,
+                    m.id === streamMsgId
+                      ? { ...m, text: bubbleText, thinking: savedThinking, streaming: undefined }
+                      : m,
                   ),
                   ollamaThread: ollamaThreadNext,
                 }

@@ -1,6 +1,6 @@
 use crate::construct_chat::{
-    emit_delta, emit_done, emit_error, message_text_content, ollama_image_payloads, system_prompt,
-    ChatMessage,
+    emit_delta, emit_done, emit_error, emit_thinking_delta, message_text_content,
+    ollama_image_payloads, system_prompt, ChatMessage,
 };
 use futures_util::StreamExt;
 use reqwest::Client;
@@ -238,6 +238,13 @@ async fn run_ollama_stream(
                     continue;
                 }
                 let value: Value = serde_json::from_str(&line).map_err(|e| e.to_string())?;
+                if let Some(thinking) = value
+                    .pointer("/message/thinking")
+                    .and_then(|v| v.as_str())
+                    .filter(|s| !s.is_empty())
+                {
+                    emit_thinking_delta(&app, &stream_id, thinking);
+                }
                 if let Some(delta) = value
                     .pointer("/message/content")
                     .and_then(|v| v.as_str())

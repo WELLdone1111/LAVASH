@@ -1198,6 +1198,12 @@ export const STRINGS_UK: Record<string, string> = {
 
   "construct.chat.thinking": "Міркує",
 
+  "construct.chat.thought": "Міркування",
+
+  "construct.chat.thinkingExpand": "Розгорнути міркування",
+
+  "construct.chat.thinkingCollapse": "Згорнути міркування",
+
   "construct.chat.streaming": "Пишу відповідь… код і артборд оновлюються на льоту.",
 
   "construct.chat.placeholder": "контекст",

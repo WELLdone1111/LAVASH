@@ -794,6 +794,75 @@ button.lc-chat-panel__settings-select {
   animation: none;
 }
 
+.lc-chat-thinking-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 8px;
+  border-left: 2px solid color-mix(in srgb, var(--palette-muted) 55%, transparent);
+  padding-left: 8px;
+}
+
+.lc-chat-thinking-block--active .lc-chat-thinking-block__label {
+  color: color-mix(in srgb, #c45f00 90%, var(--theme-text-primary));
+}
+
+.lc-chat-thinking-block__toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 2px 0;
+  border: none;
+  background: transparent;
+  color: var(--palette-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lc-chat-thinking-block__toggle:hover {
+  color: var(--theme-text-secondary);
+}
+
+.lc-chat-thinking-block__chevron {
+  flex-shrink: 0;
+  transition: transform 0.2s var(--motion-ease-out-strong, ease);
+}
+
+.lc-chat-thinking-block--open .lc-chat-thinking-block__chevron {
+  transform: rotate(90deg);
+}
+
+.lc-chat-thinking-block__label {
+  flex-shrink: 0;
+}
+
+.lc-chat-thinking-block__preview {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--palette-muted) 88%, transparent);
+  font-weight: 500;
+}
+
+.lc-chat-thinking-block__body {
+  margin-top: 6px;
+  padding-top: 4px;
+  color: color-mix(in srgb, var(--theme-text-secondary) 92%, var(--palette-muted));
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.lc-chat-md--thinking {
+  font-size: 11px;
+  line-height: 1.45;
+  color: inherit;
+}
+
 .lc-chat-panel__bubble-chips {
   display: flex;
   flex-wrap: wrap;

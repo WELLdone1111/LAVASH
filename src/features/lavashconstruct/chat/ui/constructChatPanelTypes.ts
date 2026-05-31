@@ -59,6 +59,8 @@ export type ChatMessage = {
   variant?: "error";
   /** Відповідь ще стрімиться — CODE/артборд оновлюються на льоту. */
   streaming?: boolean;
+  /** Reasoning / chain-of-thought (згорнуто в UI за замовчуванням). */
+  thinking?: string;
   /** Стан workspace до застосування цієї відповіді (для Revert). */
   revertSnapshot?: ConstructChatRevertSnapshot;
 };
