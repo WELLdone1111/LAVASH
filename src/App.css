@@ -116,11 +116,15 @@ html[data-lavash-rounded-window="1"] .app-window-titlebar {
 
 .lavash-main {
   flex: 1;
+  width: 100%;
+  max-width: 100%;
   min-height: 0;
   min-width: 0;
+  align-self: stretch;
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
 }
 
 .lavash-main > .lc-workspace {
@@ -342,6 +346,13 @@ html[data-window-resizing="1"] .lc-unified-shell,
 html[data-window-resizing="1"] .lc-unified-cell {
   transition: none !important;
   pointer-events: none;
+}
+
+html[data-window-resizing="1"] .lavash-main,
+html[data-window-resizing="1"] .lc-workspace,
+html[data-window-resizing="1"] .lc-unified-shell {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 html[data-window-resizing="1"] .lavash-artboard-cinematic-overlay {

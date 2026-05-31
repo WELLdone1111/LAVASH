@@ -3,11 +3,13 @@ import type { PointerEvent as ReactPointerEvent } from "react";
 import {
   readConstructUnifiedLayout,
   writeConstructUnifiedLayout,
+  clampConstructLayoutToShellWidth,
   CONSTRUCT_CHAT_PANEL_MIN_WIDTH_PX,
   CONSTRUCT_RAIL_WIDTH_PX,
   type ConstructUnifiedLayout,
 } from "@/features/lavashconstruct/workspace/model/constructUnifiedLayoutStorage";
 import { paintConstructShellGrid } from "@/features/lavashconstruct/workspace/model/constructShellLayoutDom";
+import { WINDOW_RESIZE_END_EVENT } from "@/lib/windowResizeSession";
 
 function clampConstructSplit(n: number, lo: number, hi: number) {
   return Math.min(hi, Math.max(lo, n));
@@ -28,6 +30,53 @@ export function useConstructUnifiedLayoutDrag(shellRef: RefObject<HTMLDivElement
     if (!shell) return;
     paintConstructShellGrid(shell, constructLayout);
   }, [constructLayout, shellRef]);
+
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return undefined;
+
+    let syncRaf = 0;
+    let persistOnEnd = false;
+
+    const applyShellSync = (persist: boolean) => {
+      const el = shellRef.current;
+      if (!el) return;
+      const clamped = clampConstructLayoutToShellWidth(constructLayoutRef.current, el.clientWidth);
+      const changed = clamped !== constructLayoutRef.current;
+      if (changed) {
+        constructLayoutRef.current = clamped;
+        setConstructLayout(clamped);
+        if (persist) writeConstructUnifiedLayout(clamped);
+        else persistOnEnd = true;
+      }
+      paintConstructShellGrid(el, constructLayoutRef.current);
+    };
+
+    const scheduleShellSync = (persist: boolean) => {
+      if (syncRaf !== 0) return;
+      syncRaf = requestAnimationFrame(() => {
+        syncRaf = 0;
+        applyShellSync(persist);
+      });
+    };
+
+    const ro = new ResizeObserver(() => scheduleShellSync(false));
+    ro.observe(shell);
+    scheduleShellSync(false);
+
+    const onWindowResizeEnd = () => {
+      applyShellSync(true);
+      persistOnEnd = false;
+    };
+    window.addEventListener(WINDOW_RESIZE_END_EVENT, onWindowResizeEnd);
+
+    return () => {
+      if (syncRaf !== 0) cancelAnimationFrame(syncRaf);
+      ro.disconnect();
+      window.removeEventListener(WINDOW_RESIZE_END_EVENT, onWindowResizeEnd);
+      if (persistOnEnd) writeConstructUnifiedLayout(constructLayoutRef.current);
+    };
+  }, [shellRef]);
 
   const scheduleConstructSplitPaint = useCallback(() => {
     if (splitPaintRafRef.current !== 0) return;
@@ -101,10 +150,11 @@ export function useConstructUnifiedLayoutDrag(shellRef: RefObject<HTMLDivElement
 
       attachUnifiedPointerDrag(e, (ev) => {
         const dx = ev.clientX - startX;
+        const nextW = clampConstructSplit(startW - dx, CONSTRUCT_CHAT_PANEL_MIN_WIDTH_PX, maxW);
         constructLayoutRef.current = {
           ...constructLayoutRef.current,
           chatCollapsed: false,
-          chatW: clampConstructSplit(startW - dx, CONSTRUCT_CHAT_PANEL_MIN_WIDTH_PX, maxW),
+          chatW: nextW,
         };
       });
     },

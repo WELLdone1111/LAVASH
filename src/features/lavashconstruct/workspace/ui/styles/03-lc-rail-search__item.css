@@ -147,8 +147,10 @@
 }
 
 .lc-unified-shell__workspace.lc-unified-cell {
+  grid-column: 2;
   min-width: 0;
   min-height: 0;
+  margin-right: var(--lc-chat-column-width, 300px);
   border: none;
   background: color-mix(in srgb, var(--window-surface-bg, white) 10%, transparent);
   position: relative;
@@ -157,14 +159,20 @@
 }
 
 .lc-unified-shell__chat.lc-unified-cell {
-  min-width: var(--lc-chat-panel-min-width, 208px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--lc-chat-column-width, 300px);
+  max-width: 100%;
+  min-width: 0;
   min-height: 0;
   border: none;
   border-radius: 0;
   box-shadow: none;
   background: transparent;
   overflow: hidden;
-  position: relative;
+  z-index: 2;
 }
 
 .lc-chat-resize-handle {

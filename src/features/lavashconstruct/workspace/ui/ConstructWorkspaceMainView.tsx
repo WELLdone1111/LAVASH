@@ -470,8 +470,6 @@ export default function ConstructWorkspaceMainView(props: ConstructWorkspaceMain
         <section
           className="lc-unified-cell lc-unified-shell__chat"
           style={{
-            gridColumn: 3,
-            gridRow: 1,
             minWidth: 0,
             minHeight: 0,
           }}

@@ -1,4 +1,4 @@
-export const CONSTRUCT_UNIFIED_LAYOUT_STORAGE_KEY = "lavash.construct.unifiedLayout.v1";
+﻿export const CONSTRUCT_UNIFIED_LAYOUT_STORAGE_KEY = "lavash.construct.unifiedLayout.v1";
 
 export type ConstructUnifiedLayout = {
   libW: number;
@@ -58,4 +58,22 @@ export function writeConstructUnifiedLayout(layout: ConstructUnifiedLayout): voi
   } catch {
     /* пофіг */
   }
+}
+
+const WORKSPACE_MIN_WIDTH_PX = 280;
+
+/** Стискає chatW, якщо вікно вужче за збережений layout (правий край чату = край shell). */
+export function clampConstructLayoutToShellWidth(
+  layout: ConstructUnifiedLayout,
+  shellWidthPx: number,
+): ConstructUnifiedLayout {
+  if (layout.chatCollapsed || shellWidthPx <= 0) return layout;
+  const available = shellWidthPx - CONSTRUCT_RAIL_WIDTH_PX;
+  const maxW = Math.min(
+    620,
+    Math.max(CONSTRUCT_CHAT_PANEL_MIN_WIDTH_PX, available - WORKSPACE_MIN_WIDTH_PX),
+  );
+  const chatW = clamp(layout.chatW, CONSTRUCT_CHAT_PANEL_MIN_WIDTH_PX, maxW);
+  if (chatW === layout.chatW) return layout;
+  return { ...layout, chatW };
 }
