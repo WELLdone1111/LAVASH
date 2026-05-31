@@ -40,6 +40,10 @@ export type CueSessionSummary = {
   streamModels: string[];
 };
 
+function lastCueAttempt(attempts: readonly CueAttemptRecord[]): CueAttemptRecord | undefined {
+  return attempts.length > 0 ? attempts[attempts.length - 1] : undefined;
+}
+
 export function createCueSession(config: CueSessionConfig): CueSessionState {
   return { config, attempts: [], done: false };
 }
@@ -57,7 +61,7 @@ export function resolveCueSessionStreamModel(session: CueSessionState): string {
 
 export function shouldContinueCueSession(session: CueSessionState): boolean {
   if (session.done) return false;
-  const last = session.attempts.at(-1);
+  const last = lastCueAttempt(session.attempts);
   if (!last) return true;
   return shouldCueRetry({
     mode: session.config.mode,
@@ -86,7 +90,7 @@ export function recordCueAttempt(
     { attemptIndex, streamModel, assistantMarkdown, applyResult },
   ];
   const next: CueSessionState = { ...session, attempts };
-  const last = attempts.at(-1)!;
+  const last = lastCueAttempt(attempts)!;
   const done = !shouldCueRetry({
     mode: session.config.mode,
     applyEnabled: session.config.applyEnabled,
@@ -103,7 +107,7 @@ export function buildCueSessionRetryThread(
   session: CueSessionState,
   formatSyncNote: (summary: ConstructAssistantApplySummary) => string,
 ): ConstructChatThreadTurn[] | null {
-  const last = session.attempts.at(-1);
+  const last = lastCueAttempt(session.attempts);
   if (!last || session.done) return null;
   const failedAssistant =
     last.assistantMarkdown.trim() +
@@ -112,7 +116,7 @@ export function buildCueSessionRetryThread(
 }
 
 export function summarizeCueSession(session: CueSessionState): CueSessionSummary | null {
-  const last = session.attempts.at(-1);
+  const last = lastCueAttempt(session.attempts);
   if (!last) return null;
   return {
     attempts: session.attempts.length,

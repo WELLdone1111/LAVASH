@@ -34,7 +34,6 @@ import {
 } from "@/features/lavashconstruct/chat/model/constructChatPersistence";
 import {
   getTabModelExplicit,
-  readConstructChatModel,
   writeConstructChatModel,
   writeConstructChatProvider,
 } from "@/features/lavashconstruct/chat/model/constructChatSettings";
