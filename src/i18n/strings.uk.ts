@@ -1206,7 +1206,11 @@ export const STRINGS_UK: Record<string, string> = {
 
   "construct.chat.improvePrompt": "Покращити промпт",
 
-  "construct.chat.improvePromptHint": "Покращити промпт (Ctrl+Shift+I). Потрібен Gemini API-ключ.",
+  "construct.chat.improvePromptHint": "Покращити промпт (Ctrl+Shift+I). Використовує модель з чату.",
+
+  "construct.chat.undoImprovePrompt": "Скасувати покращення промпту",
+
+  "construct.chat.undoImprovePromptHint": "Повернути попередній текст промпту",
 
   "construct.chat.modelPickerHint": "Швидкий вибір моделі",
 

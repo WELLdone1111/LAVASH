@@ -1206,7 +1206,11 @@ The app will reload. This cannot be undone.`,
 
   "construct.chat.improvePrompt": "Improve prompt",
 
-  "construct.chat.improvePromptHint": "Improve prompt (Ctrl+Shift+I). Requires a Gemini API key.",
+  "construct.chat.improvePromptHint": "Improve prompt (Ctrl+Shift+I). Uses the selected chat model.",
+
+  "construct.chat.undoImprovePrompt": "Undo prompt improvement",
+
+  "construct.chat.undoImprovePromptHint": "Restore the previous prompt text",
 
   "construct.chat.modelPickerHint": "Quick model switch",
 

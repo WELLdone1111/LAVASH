@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CONSTRUCT_OPEN_MODELS_SECTION_EVENT } from "@/features/lavashconstruct/chat/model/constructModelBus";
+import { useIdeBrowserStore } from "@/features/ide-browser/model/ideBrowserStore";
 import type { ConstructSettingsSection } from "@/features/lavashconstruct/settings/ui/ConstructSettingsPanel";
 import type { ConstructSectionId } from "@/features/lavashconstruct/workspace/ui/ConstructSectionRail";
 
@@ -12,23 +13,40 @@ export function useConstructWorkspaceRail() {
   const [isArtboardSettingsOpen, setIsArtboardSettingsOpen] = useState(false);
   const [settingsSection, setSettingsSection] = useState<ConstructSettingsSection>("basics");
 
+  const closeRailDrawers = useCallback(() => {
+    setUserLibOpen(false);
+    setProjectOpen(false);
+  }, []);
+
+  const closeIdeBrowser = useCallback(() => {
+    useIdeBrowserStore.getState().close();
+  }, []);
+
   const closeTransientRailPopovers = useCallback(() => {
     setSearchOpen(false);
     setLayersOpen(false);
     setMarkMode(false);
   }, []);
 
+  const closeOtherRailSections = useCallback(
+    (except?: "project" | "userLib" | "browser" | "settings") => {
+      closeTransientRailPopovers();
+      if (except !== "project" && except !== "userLib") closeRailDrawers();
+      if (except !== "settings") setIsArtboardSettingsOpen(false);
+      if (except !== "browser") closeIdeBrowser();
+    },
+    [closeIdeBrowser, closeRailDrawers, closeTransientRailPopovers],
+  );
+
   useEffect(() => {
     const openModels = () => {
-      closeTransientRailPopovers();
-      setUserLibOpen(false);
-      setProjectOpen(false);
+      closeOtherRailSections("settings");
       setSettingsSection("models");
       setIsArtboardSettingsOpen(true);
     };
     window.addEventListener(CONSTRUCT_OPEN_MODELS_SECTION_EVENT, openModels);
     return () => window.removeEventListener(CONSTRUCT_OPEN_MODELS_SECTION_EVENT, openModels);
-  }, [closeTransientRailPopovers]);
+  }, [closeOtherRailSections]);
 
   useEffect(() => {
     if (!markMode) return undefined;
@@ -39,26 +57,63 @@ export function useConstructWorkspaceRail() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [markMode]);
 
-  const handleSelectSection = useCallback((id: ConstructSectionId) => {
-    closeTransientRailPopovers();
-    if (id === "userLib") {
-      setUserLibOpen((open) => !open);
-      setProjectOpen(false);
+  useEffect(() => {
+    if (!userLibOpen && !projectOpen) return undefined;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeRailDrawers();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [closeRailDrawers, projectOpen, userLibOpen]);
+
+  const handleSelectSection = useCallback(
+    (id: ConstructSectionId) => {
+      if (id === "userLib") {
+        setUserLibOpen((open) => {
+          const next = !open;
+          if (next) closeOtherRailSections("userLib");
+          return next;
+        });
+        setProjectOpen(false);
+        return;
+      }
+      if (id === "project") {
+        setProjectOpen((open) => {
+          const next = !open;
+          if (next) closeOtherRailSections("project");
+          return next;
+        });
+        setUserLibOpen(false);
+        return;
+      }
+      closeOtherRailSections();
+    },
+    [closeOtherRailSections],
+  );
+
+  const handleToggleSettings = useCallback(() => {
+    setIsArtboardSettingsOpen((open) => {
+      const next = !open;
+      if (next) closeOtherRailSections("settings");
+      return next;
+    });
+  }, [closeOtherRailSections]);
+
+  const handleToggleBrowser = useCallback(() => {
+    const browser = useIdeBrowserStore.getState();
+    if (browser.open) {
+      browser.close();
       return;
     }
-    if (id === "project") {
-      setProjectOpen((open) => !open);
-      setUserLibOpen(false);
-      return;
-    }
-    setUserLibOpen(false);
-    setProjectOpen(false);
-  }, [closeTransientRailPopovers]);
+    closeOtherRailSections("browser");
+    browser.openHome();
+  }, [closeOtherRailSections]);
 
   const handleToggleSearch = useCallback(() => {
     setSearchOpen((open) => {
       const next = !open;
       if (next) {
+        closeOtherRailSections();
         setUserLibOpen(false);
         setProjectOpen(false);
         setLayersOpen(false);
@@ -66,12 +121,13 @@ export function useConstructWorkspaceRail() {
       }
       return next;
     });
-  }, []);
+  }, [closeOtherRailSections]);
 
   const handleToggleLayers = useCallback(() => {
     setLayersOpen((open) => {
       const next = !open;
       if (next) {
+        closeOtherRailSections();
         setUserLibOpen(false);
         setProjectOpen(false);
         setSearchOpen(false);
@@ -79,12 +135,13 @@ export function useConstructWorkspaceRail() {
       }
       return next;
     });
-  }, []);
+  }, [closeOtherRailSections]);
 
   const handleToggleMark = useCallback(() => {
     setMarkMode((open) => {
       const next = !open;
       if (next) {
+        closeOtherRailSections();
         setUserLibOpen(false);
         setProjectOpen(false);
         setSearchOpen(false);
@@ -92,13 +149,19 @@ export function useConstructWorkspaceRail() {
       }
       return next;
     });
-  }, []);
+  }, [closeOtherRailSections]);
 
   const openUserLibDrawer = useCallback(() => {
+    closeOtherRailSections("userLib");
     setUserLibOpen(true);
     setProjectOpen(false);
-    closeTransientRailPopovers();
-  }, [closeTransientRailPopovers]);
+  }, [closeOtherRailSections]);
+
+  const openProjectDrawer = useCallback(() => {
+    closeOtherRailSections("project");
+    setProjectOpen(true);
+    setUserLibOpen(false);
+  }, [closeOtherRailSections]);
 
   return {
     userLibOpen,
@@ -114,10 +177,13 @@ export function useConstructWorkspaceRail() {
     settingsSection,
     setSettingsSection,
     handleSelectSection,
+    handleToggleSettings,
+    handleToggleBrowser,
     handleToggleSearch,
     handleToggleLayers,
     handleToggleMark,
     openUserLibDrawer,
+    openProjectDrawer,
     closeTransientRailPopovers,
   };
 }

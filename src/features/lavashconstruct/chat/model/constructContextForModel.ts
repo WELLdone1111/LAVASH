@@ -1,11 +1,11 @@
-﻿import type { ConstructCodeTab } from "@/features/lavashconstruct/editor/model/codeScratchStore";
+import type { ConstructCodeTab } from "@/features/lavashconstruct/editor/model/codeScratchStore";
 import type { ArtboardPanel } from "@/features/lavashconstruct/artboard/ui/types";
 
-const MAX_CONTEXT_CHARS = 14_000;
+const MAX_CONTEXT_CHARS = 16_000;
 const MAX_TAB_CHARS_ACTIVE = 4_500;
 const MAX_TAB_CHARS_OTHER = 900;
-const MAX_PANEL_CODE_CHARS = 3_200;
-const MAX_PANELS_IN_JSON = 24;
+const MAX_PANEL_CODE_CHARS = 4_800;
+const MAX_PANELS_IN_JSON = 48;
 
 export type ConstructContextInput = {
   scratchTabs: ConstructCodeTab[];
@@ -70,12 +70,19 @@ function compactPanelForJson(p: ArtboardPanel, includeCode: boolean): Record<str
     isVisible: p.isVisible,
     isLocked: p.isLocked,
   };
+  if (p.lockAspectRatio) o.lockAspectRatio = p.lockAspectRatio;
   if (p.importedVisualKind) o.importedVisualKind = p.importedVisualKind;
   if (p.linkedScratchTabId) o.linkedScratchTabId = p.linkedScratchTabId;
   if (p.parentId) o.parentId = p.parentId;
   if (p.localX != null) o.localX = p.localX;
   if (p.localY != null) o.localY = p.localY;
+  if (p.isBoardContainer) o.isBoardContainer = p.isBoardContainer;
+  if (p.clipChildren) o.clipChildren = p.clipChildren;
   if (p.constructWidgetId) o.constructWidgetId = p.constructWidgetId;
+  if (p.rotationDeg != null && p.rotationDeg !== 0) o.rotationDeg = p.rotationDeg;
+  if (p.opacity != null && p.opacity !== 1) o.opacity = p.opacity;
+  if (p.borderRadiusPx != null && p.borderRadiusPx !== 12) o.borderRadiusPx = p.borderRadiusPx;
+  if (p.backgroundColor) o.backgroundColor = p.backgroundColor;
   if (includeCode && p.importedTextContent?.trim()) {
     o.importedTextContent = clip(p.importedTextContent, MAX_PANEL_CODE_CHARS);
   }
@@ -94,7 +101,7 @@ export function buildConstructContextForModel(input: ConstructContextInput): str
   const linkedScratchId = focusPanel?.linkedScratchTabId?.trim() || null;
 
   const parts: string[] = [
-    "[LavashConstruct snapshot — read-only; use for Code + artboard edits; user message is after the separator]",
+    "[LavashConstruct snapshot — Agent mode may mutate artboard via lavash-actions / lavash-artboard / lavash-panel]",
     "",
     "## Code scratch",
   ];
@@ -135,8 +142,8 @@ export function buildConstructContextForModel(input: ConstructContextInput): str
       parts.push(
         "",
         markedPanelId
-          ? "Marked panel (primary focus for this turn — use `json lavash-artboard` with `\"merge\": true` to patch by id):"
-          : "Selected / linked panel payload (use `json lavash-artboard` with `\"merge\": true` to patch by id):",
+          ? "Marked panel (primary focus — patch with merge:true or lavash-actions patch_artboard; partial fields OK):"
+          : "Artboard panels JSON (patch with merge:true — only include changed fields per id):",
         "```json",
         JSON.stringify({ merge: true, artboardPanels: jsonPanels }, null, 0),
         "```",

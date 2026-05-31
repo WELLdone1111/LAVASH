@@ -8,16 +8,27 @@ import "./IdeWebBrowserButton.css";
 type IdeWebBrowserButtonProps = {
   className?: string;
   variant?: "titlebar" | "rail";
+  /** Rail: toggle open/close + close інші розділи (координується з workspace). */
+  onRailToggle?: () => void;
 };
 
-export default function IdeWebBrowserButton({ className, variant = "titlebar" }: IdeWebBrowserButtonProps) {
+export default function IdeWebBrowserButton({
+  className,
+  variant = "titlebar",
+  onRailToggle,
+}: IdeWebBrowserButtonProps) {
   const { t } = useI18n();
   const openHome = useIdeBrowserStore((s) => s.openHome);
   const browserOpen = useIdeBrowserStore((s) => s.open);
+  const isRail = variant === "rail";
 
   const onClick = useCallback(() => {
+    if (isRail && onRailToggle) {
+      onRailToggle();
+      return;
+    }
     openHome();
-  }, [openHome]);
+  }, [isRail, onRailToggle, openHome]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -31,7 +42,6 @@ export default function IdeWebBrowserButton({ className, variant = "titlebar" }:
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [openHome]);
 
-  const isRail = variant === "rail";
   const label = t("ideBrowser.openButton");
   const tooltip = isRail ? label : `${label} (${t("ideBrowser.openShortcut")})`;
 

@@ -12,6 +12,10 @@ import type { ConstructLibraryItem } from "@/features/lavashconstruct/shared/mod
 import { parseCodeFencesFromMarkdown } from "@/features/lavashconstruct/editor/model/codeScratchStore";
 import { collectPanelFencesFromMarkdown } from "@/features/lavashconstruct/chat/model/assistantFenceParse";
 import { sanitizeArtboardPanels } from "@/features/lavashconstruct/artboard/model/sanitizeArtboardPanels";
+import {
+  mergeArtboardPanelPatches,
+  parseArtboardPanelPatches,
+} from "@/features/lavashconstruct/artboard/model/artboardPartialPatch";
 import { useConstructStore } from "@/features/lavashconstruct/artboard/model/store";
 import type { ArtboardPanel } from "@/features/lavashconstruct/artboard/ui/types";
 
@@ -34,60 +38,26 @@ function readArtboardMergeFlag(parsed: unknown): boolean | null {
   return null;
 }
 
-/** Оновлює/додає панелі за id; решту панелей артборду лишає без змін. */
-function mergeArtboardPanelsById(current: ArtboardPanel[], incoming: ArtboardPanel[]): ArtboardPanel[] {
-  const incomingById = new Map(incoming.map((p) => [p.id, p]));
-  const used = new Set<string>();
-  const next = current.map((c) => {
-    const inc = incomingById.get(c.id);
-    if (inc) {
-      used.add(c.id);
-      return inc;
-    }
-    return c;
-  });
-  for (const p of incoming) {
-    if (!used.has(p.id)) {
-      next.push(p);
-      used.add(p.id);
-    }
-  }
-  return next;
-}
-
-function shouldMergeArtboardPayload(
-  mergeFlag: boolean | null,
-  current: ArtboardPanel[],
-  incoming: ArtboardPanel[],
-): boolean {
-  if (mergeFlag === true) return true;
-  if (mergeFlag === false) return false;
-  if (incoming.length === 0) return false;
-  const currentIds = new Set(current.map((p) => p.id));
-  return incoming.every((p) => currentIds.has(p.id));
-}
-
-/**
- * Якщо у markdown є блок ```json lavash-artboard``` (або legacy hints) з полем `artboardPanels`,
- * застосовує його до артборду через той самий санітайзер, що й пресети.
- * @returns чи було застосовано оновлення
- */
 export function applyArtboardPayload(parsed: unknown): boolean {
   const rawPanels = extractArtboardPanelsPayload(parsed);
   if (!Array.isArray(rawPanels)) return false;
-  const panels = sanitizeArtboardPanels(rawPanels);
-  if (!panels) return false;
 
   const mergeFlag = readArtboardMergeFlag(parsed);
   const current = useConstructStore.getState().artboardPanels;
-  const merged =
-    shouldMergeArtboardPayload(mergeFlag, current, panels) && current.length > 0
-      ? mergeArtboardPanelsById(current, panels)
-      : panels;
-  const normalized = sanitizeArtboardPanels(merged);
-  if (!normalized) return false;
+  const shouldMerge =
+    mergeFlag === true || (mergeFlag !== false && current.length > 0 && parseArtboardPanelPatches(rawPanels).every(
+      (p) => current.some((c) => c.id === p.id),
+    ));
 
-  useConstructStore.getState().setArtboardPanelsDirect(normalized);
+  let merged: ArtboardPanel[] | null;
+  if (shouldMerge && current.length > 0) {
+    merged = mergeArtboardPanelPatches(current, parseArtboardPanelPatches(rawPanels));
+  } else {
+    merged = sanitizeArtboardPanels(rawPanels);
+  }
+  if (!merged) return false;
+
+  useConstructStore.getState().setArtboardPanelsDirect(merged);
   return true;
 }
 

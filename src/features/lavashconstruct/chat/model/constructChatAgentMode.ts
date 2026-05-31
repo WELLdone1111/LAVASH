@@ -46,9 +46,10 @@ export function buildAgentModeSystemInstruction(mode: ConstructChatAgentMode): s
     default:
       return [
         "[LAVASH mode: Agent]",
-        "User requests like «create button on artboard» MUST be fulfilled with complete apply fences in the SAME reply.",
-        "Use ```html lavash-panel Title``` for new UI (HTML+CSS in one fence). Use ```json lavash-artboard``` with merge:true to patch existing panel ids.",
-        "Do NOT give manual IDE steps — LAVASH applies fences automatically during streaming.",
+        "You have full programmatic control over the artboard via ```json lavash-actions``` or markdown fences.",
+        "Use lavash-actions for spawn, patch, replace, remove, clear, reorder, and select.",
+        "Use ```html lavash-panel Title``` for new UI. Use ```json lavash-artboard``` with merge:true for partial patches by id.",
+        "Do NOT give manual IDE steps — LAVASH applies automatically during streaming.",
       ].join("\n");
   }
 }

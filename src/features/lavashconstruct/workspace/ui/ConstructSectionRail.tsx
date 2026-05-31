@@ -12,6 +12,7 @@ type ConstructSectionRailProps = {
   onSelectSection: (id: ConstructSectionId) => void;
   settingsOpen: boolean;
   onToggleSettings: () => void;
+  onToggleBrowser: () => void;
 };
 
 type SectionDef = {
@@ -56,6 +57,7 @@ export default function ConstructSectionRail({
   onSelectSection,
   settingsOpen,
   onToggleSettings,
+  onToggleBrowser,
 }: ConstructSectionRailProps) {
   const { t } = useI18n();
 
@@ -76,7 +78,7 @@ export default function ConstructSectionRail({
       <div className="lc-section-rail__spacer" aria-hidden />
 
       <div className="lc-section-rail__footer">
-        <IdeWebBrowserButton variant="rail" />
+        <IdeWebBrowserButton variant="rail" onRailToggle={onToggleBrowser} />
         <RailIconButton label={t("construct.settings.title")} active={settingsOpen} onClick={onToggleSettings}>
           <Settings size={18} strokeWidth={1.75} aria-hidden />
         </RailIconButton>

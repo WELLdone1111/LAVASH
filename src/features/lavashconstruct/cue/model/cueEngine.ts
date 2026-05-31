@@ -25,6 +25,11 @@ export {
   type CueAction,
   type CueSpawnPanelAction,
   type CuePatchArtboardAction,
+  type CueReplaceArtboardAction,
+  type CueRemovePanelsAction,
+  type CueClearArtboardAction,
+  type CueReorderPanelsAction,
+  type CueSelectPanelAction,
 } from "@/features/lavashconstruct/cue/model/cueActionSchema";
 export {
   resolveCueSendMode,

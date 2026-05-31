@@ -18,6 +18,7 @@ type ConstructWorkspaceRailProps = {
   userLibraryItems: ConstructLibraryItem[];
   onSelectSection: ComponentProps<typeof ConstructSectionRail>["onSelectSection"];
   onToggleSettings: () => void;
+  onToggleBrowser: () => void;
   onNewDocument: () => void;
   onOpenDocument: () => void;
   onOpenProjectFolder: () => void;
@@ -33,6 +34,7 @@ export default function ConstructWorkspaceRail({
   userLibraryItems,
   onSelectSection,
   onToggleSettings,
+  onToggleBrowser,
   onNewDocument,
   onOpenDocument,
   onOpenProjectFolder,
@@ -50,6 +52,7 @@ export default function ConstructWorkspaceRail({
         onSelectSection={onSelectSection}
         settingsOpen={isArtboardSettingsOpen}
         onToggleSettings={onToggleSettings}
+        onToggleBrowser={onToggleBrowser}
       />
       <ConstructRailSectionDrawer isOpen={projectOpen} title={t("construct.project.title")} className="lc-project-drawer">
         <ConstructLavashDocumentStatus onNewDocument={onNewDocument} onOpenDocument={onOpenDocument} />

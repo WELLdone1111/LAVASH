@@ -60,6 +60,8 @@ export type ConstructWorkspaceMainViewProps = {
   isArtboardSettingsOpen: boolean;
   userLibraryItems: ConstructLibraryItem[];
   handleSelectSection: (id: ConstructSectionId) => void;
+  handleToggleSettings: () => void;
+  handleToggleBrowser: () => void;
   setIsArtboardSettingsOpen: Dispatch<SetStateAction<boolean>>;
   handleNewLavashDocument: () => void;
   handleOpenLavashDocumentPicker: () => void;
@@ -185,6 +187,8 @@ export default function ConstructWorkspaceMainView(props: ConstructWorkspaceMain
     isArtboardSettingsOpen,
     userLibraryItems,
     handleSelectSection,
+    handleToggleSettings,
+    handleToggleBrowser,
     setIsArtboardSettingsOpen,
     handleNewLavashDocument,
     handleOpenLavashDocumentPicker,
@@ -308,7 +312,8 @@ export default function ConstructWorkspaceMainView(props: ConstructWorkspaceMain
           isArtboardSettingsOpen={isArtboardSettingsOpen}
           userLibraryItems={userLibraryItems}
           onSelectSection={handleSelectSection}
-          onToggleSettings={() => setIsArtboardSettingsOpen((open) => !open)}
+          onToggleSettings={handleToggleSettings}
+          onToggleBrowser={handleToggleBrowser}
           onNewDocument={handleNewLavashDocument}
           onOpenDocument={handleOpenLavashDocumentPicker}
           onOpenProjectFolder={handleOpenProjectFolder}

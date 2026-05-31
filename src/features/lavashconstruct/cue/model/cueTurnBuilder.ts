@@ -3,6 +3,7 @@ import {
   type ConstructChatAgentMode,
 } from "@/features/lavashconstruct/chat/model/constructChatAgentMode";
 import { buildConstructApplyFormatGuide } from "@/features/lavashconstruct/chat/model/constructChatApplyFormatGuide";
+import { buildCueArtboardActionsGuide } from "@/features/lavashconstruct/cue/model/cueArtboardControlGuide";
 import { buildConstructDebugContextForModel } from "@/features/lavashconstruct/chat/model/constructDebugContext";
 import {
   buildConstructContextForModel,
@@ -39,37 +40,18 @@ function buildCueHeader(capability: CueCapabilityProfile): string {
 function buildLocalApplyAddon(capability: CueCapabilityProfile, mode: ConstructChatAgentMode): string {
   if (mode !== "agent" || capability.modelClass !== "local") return "";
   return [
-    "[CUE — local runtime (any Ollama model)]",
-    "- Prefer ```json lavash-actions``` with one spawn_panel or patch_artboard action.",
-    "- Or ONE markdown fence: lavash-panel OR lavash-artboard merge.",
+    "[CUE — local runtime]",
+    "- Prefer ```json lavash-actions``` (see artboard control guide).",
     "- Always close fences with a line containing only ```.",
     "- No manual IDE steps — LAVASH applies automatically.",
   ].join("\n");
 }
 
-function buildCueActionFormatAddon(mode: ConstructChatAgentMode, capability: CueCapabilityProfile): string {
-  if (mode !== "agent" || capability.modelClass !== "local") return "";
-  return [
-    "[CUE structured actions — preferred format for local models]",
-    "Instead of markdown panel fences you may output ONE block:",
-    "```json lavash-actions",
-    '[{"type":"spawn_panel","title":"My Button","html":"<!DOCTYPE html><html><head><style>...</style></head><body>...</body></html>"}]',
-    "```",
-    "Patch existing panels:",
-    "```json lavash-actions",
-    '[{"type":"patch_artboard","merge":true,"artboardPanels":[{"id":"panel-id","x":100,"y":80,"width":320,"height":240,"title":"Panel","zIndex":1,"isVisible":true,"isLocked":false}]}]',
-    "```",
-  ].join("\n");
-}
-
 function buildApplyFormatGuide(mode: ConstructChatAgentMode, capability: CueCapabilityProfile): string {
   const base = buildConstructApplyFormatGuide(mode);
-  if (capability.modelClass === "cloud") {
-    return base;
-  }
+  const artboardControl = buildCueArtboardActionsGuide(mode);
   const local = buildLocalApplyAddon(capability, mode);
-  const actions = buildCueActionFormatAddon(mode, capability);
-  return [base, local, actions].filter((block) => block.trim().length > 0).join("\n\n");
+  return [base, artboardControl, local].filter((block) => block.trim().length > 0).join("\n\n");
 }
 
 /**

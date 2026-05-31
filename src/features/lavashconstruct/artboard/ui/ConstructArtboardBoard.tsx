@@ -20,6 +20,7 @@ import { getPanelWorldBounds, isBoardContainerPanel } from "@/features/lavashcon
 import type { ArtboardPanel, MainPanelDensity } from "@/features/lavashconstruct/artboard/ui/types";
 import { renderConstructShadcnWidget } from "@/features/lavashconstruct/artboard/ui/constructShadcnWidgetRegistry";
 import ConstructArtboardGridDots, { type ConstructArtboardGridPointer } from "@/features/lavashconstruct/artboard/ui/ConstructArtboardGridDots";
+import ConstructArtboardZoomBadge from "@/features/lavashconstruct/artboard/ui/ConstructArtboardZoomBadge";
 import {
   nestedPanelLocalTransform,
   panelShellSurfaceStyle,
@@ -852,6 +853,7 @@ export default function ConstructArtboardBoard({
             }}
           />
         ) : null}
+        <ConstructArtboardZoomBadge artboardZoom={artboardZoom} />
       </div>
       {isTauri() && showWindowDragRail ? (
         <WindowDragSpacer className="lavash-artboard-window-drag-rail" />

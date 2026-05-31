@@ -13,7 +13,7 @@ function promptBehavior(runtime: ModelRuntime): Pick<
   if (runtime === "local") {
     return {
       strictFenceProtocol: true,
-      allowMultiPanelApply: false,
+      allowMultiPanelApply: true,
       simplifiedInstructions: true,
     };
   }

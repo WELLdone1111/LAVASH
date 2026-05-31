@@ -27,8 +27,9 @@ export function buildConstructApplyFormatGuide(mode: ConstructChatAgentMode): st
   return [
     ...sharedRules,
     "[Agent — output rules]",
+    "0. Preferred: ```json lavash-actions``` with spawn_panel | patch_artboard | replace_artboard | remove_panels | clear_artboard | reorder_panels | select_panel.",
     "1. For a NEW UI component on the artboard → one ```html lavash-panel Title``` fence with self-contained HTML+CSS (+ optional JS).",
-    "2. To move/resize/style existing panels by id → ```json lavash-artboard``` with {\"merge\":true,\"artboardPanels\":[...]}.",
+    "2. To move/resize/style existing panels by id → ```json lavash-artboard``` with {\"merge\":true,\"artboardPanels\":[{\"id\":\"…\", ...partial fields only…}]}.",
     "3. Optional extra code tab → plain ```css``` / ```html``` fence (no lavash-panel hint) goes to CODE scratch.",
     "4. Keep prose short (1–3 sentences). Put the real work inside fences.",
     "5. ALWAYS close every fence with a line containing only ``` (models often forget — unclosed fences may not apply).",

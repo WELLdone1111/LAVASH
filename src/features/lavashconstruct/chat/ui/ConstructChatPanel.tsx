@@ -15,12 +15,12 @@ import {
   Plus,
   Square,
   ArrowUp,
-  Sparkles,
   ExternalLink,
   Undo2,
   Pencil,
   X,
 } from "lucide-react";
+import ConstructChatImprovePromptIcon from "@/features/lavashconstruct/chat/ui/ConstructChatImprovePromptIcon";
 import {
   CONSTRUCT_CHAT_AGENT_MODES,
   CONSTRUCT_CHAT_AGENT_MODE_I18N,
@@ -34,12 +34,12 @@ import {
 } from "@/features/lavashconstruct/chat/model/constructChatPersistence";
 import {
   getTabModelExplicit,
+  readConstructChatModel,
   writeConstructChatModel,
   writeConstructChatProvider,
 } from "@/features/lavashconstruct/chat/model/constructChatSettings";
 import { isConstructChatProvider } from "@/features/lavashconstruct/chat/model/constructChatProviders";
 import { stripWelcomeMessages } from "@/features/lavashconstruct/chat/model/constructChatWelcomeMessage";
-import { improvePrompt } from "@/features/lavashconstruct/chat/model/improvePrompt";
 import {
   canExportConstructChatTab,
   exportConstructChatTabToFile,
@@ -290,7 +290,9 @@ export default function ConstructChatPanel() {
   const {
     isSending,
     isImprovingPrompt,
-    setIsImprovingPrompt,
+    improvePromptBeforeDraft,
+    improvePromptIconMode,
+    handleImprovePromptClick,
     editingUserMessage,
     setEditingUserMessage,
     thinkingSessionKey,
@@ -786,38 +788,44 @@ export default function ConstructChatPanel() {
             />
           </div>
           <div className="lc-chat-panel__composer-toolbar-right">
+          <div className="lc-chat-panel__composer-attach-group">
             <button
               type="button"
-              className="lc-chat-panel__attach lc-chat-panel__attach--toolbar"
-              disabled={isSending || isImprovingPrompt || !draft.trim()}
-              aria-label={t("construct.chat.improvePrompt")}
-              title={t("construct.chat.improvePromptHint")}
-              onClick={() => {
-                void (async () => {
-                  if (!draft.trim() || isImprovingPrompt) return;
-                  setIsImprovingPrompt(true);
-                  try {
-                    const improved = await improvePrompt(draft);
-                    patchActiveTab({ draft: improved });
-                  } catch (error) {
-                    console.warn("[chat] improve prompt failed", error);
-                  } finally {
-                    setIsImprovingPrompt(false);
-                  }
-                })();
-              }}
+              className={cn(
+                "lc-chat-panel__attach lc-chat-panel__attach--toolbar lc-chat-panel__attach--improve-prompt",
+                isImprovingPrompt && "lc-chat-panel__attach--improving",
+                improvePromptBeforeDraft !== null && "lc-chat-panel__attach--improve-undo",
+              )}
+              disabled={
+                isSending ||
+                isImprovingPrompt ||
+                (improvePromptBeforeDraft === null && !draft.trim())
+              }
+              aria-busy={isImprovingPrompt}
+              aria-label={
+                improvePromptBeforeDraft !== null
+                  ? t("construct.chat.undoImprovePrompt")
+                  : t("construct.chat.improvePrompt")
+              }
+              title={
+                improvePromptBeforeDraft !== null
+                  ? t("construct.chat.undoImprovePromptHint")
+                  : t("construct.chat.improvePromptHint")
+              }
+              onClick={handleImprovePromptClick}
             >
-              <Sparkles size={17} strokeWidth={2} />
+              <ConstructChatImprovePromptIcon mode={improvePromptIconMode} />
             </button>
             <button
               type="button"
-              className="lc-chat-panel__attach lc-chat-panel__attach--toolbar"
+              className="lc-chat-panel__attach lc-chat-panel__attach--toolbar lc-chat-panel__attach--clip"
               disabled={isSending || pendingAttachments.length >= MAX_PENDING_ATTACHMENTS}
               aria-label={t("construct.chat.addFile")}
               onClick={() => fileInputRef.current?.click()}
             >
               <Paperclip size={18} strokeWidth={2} />
             </button>
+          </div>
             <button
               type="button"
               className={cn("lc-chat-panel__send", isSending && "lc-chat-panel__send--stop")}

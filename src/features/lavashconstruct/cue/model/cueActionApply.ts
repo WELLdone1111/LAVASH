@@ -1,10 +1,17 @@
 import type { ConstructAssistantApplySummary } from "@/features/lavashconstruct/chat/model/constructAssistantApply";
 import {
-  applyArtboardPayload,
   buildScratchCodeLibraryItem,
   pasteConstructLibraryItems,
 } from "@/features/lavashconstruct/chat/model/assistantConstructSync";
 import type { CueAction } from "@/features/lavashconstruct/cue/model/cueActionSchema";
+import {
+  applyCueClearArtboard,
+  applyCuePatchArtboard,
+  applyCueRemovePanels,
+  applyCueReplaceArtboard,
+  applyCueReorderPanels,
+  applyCueSelectPanel,
+} from "@/features/lavashconstruct/cue/model/artboardCueApply";
 
 export type CueActionApplyOptions = {
   linkedScratchTabId?: string | null;
@@ -15,7 +22,7 @@ export type CueActionApplyResult = Pick<
   "artboardApplied" | "constructPanelsSpawned" | "cueActionsApplied"
 >;
 
-/** Applies structured CUE actions (spawn_panel, patch_artboard). */
+/** Applies structured CUE actions on the artboard and construct panels. */
 export function applyCueActions(
   actions: readonly CueAction[],
   options?: CueActionApplyOptions,
@@ -40,11 +47,47 @@ export function applyCueActions(
     }
 
     if (action.type === "patch_artboard") {
-      const payload = {
-        merge: action.merge,
-        artboardPanels: action.artboardPanels,
-      };
-      if (applyArtboardPayload(payload)) {
+      if (applyCuePatchArtboard(action.artboardPanels, action.merge)) {
+        artboardApplied = true;
+        cueActionsApplied += 1;
+      }
+      continue;
+    }
+
+    if (action.type === "replace_artboard") {
+      if (applyCueReplaceArtboard(action.artboardPanels)) {
+        artboardApplied = true;
+        cueActionsApplied += 1;
+      }
+      continue;
+    }
+
+    if (action.type === "remove_panels") {
+      if (applyCueRemovePanels(action.panelIds)) {
+        artboardApplied = true;
+        cueActionsApplied += 1;
+      }
+      continue;
+    }
+
+    if (action.type === "clear_artboard") {
+      if (applyCueClearArtboard()) {
+        artboardApplied = true;
+        cueActionsApplied += 1;
+      }
+      continue;
+    }
+
+    if (action.type === "reorder_panels") {
+      if (applyCueReorderPanels(action.orderedIds, action.parentId)) {
+        artboardApplied = true;
+        cueActionsApplied += 1;
+      }
+      continue;
+    }
+
+    if (action.type === "select_panel") {
+      if (applyCueSelectPanel(action.panelId)) {
         artboardApplied = true;
         cueActionsApplied += 1;
       }

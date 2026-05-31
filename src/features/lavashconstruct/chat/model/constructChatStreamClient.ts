@@ -27,7 +27,7 @@ export type RunConstructChatStreamArgs = {
   preferUkrainian: boolean;
   userSignedIn: boolean;
   modelOverride?: string | null;
-  onDelta: (delta: string, full: string) => void;
+  onDelta?: (delta: string, full: string) => void;
   signal?: AbortSignal;
 };
 
@@ -69,7 +69,7 @@ export async function runConstructChatStream(args: RunConstructChatStreamArgs): 
 
       if (p.delta) {
         full += p.delta;
-        args.onDelta(p.delta, full);
+        args.onDelta?.(p.delta, full);
       }
 
       if (p.done) {
@@ -91,7 +91,7 @@ export async function runConstructChatStream(args: RunConstructChatStreamArgs): 
     if (def.kind === "local") {
       await invoke("lavash_construct_chat_stream_ollama", {
         ...common,
-        model: args.modelOverride?.trim() || null,
+        model: args.modelOverride?.trim() || args.model?.trim() || null,
       });
     } else if (def.kind === "gemini") {
       await invoke("lavash_construct_chat_stream_gemini", {

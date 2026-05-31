@@ -70,7 +70,8 @@ function validateCueActionFences(markdown: string): CueValidationIssue[] {
     if (actions.length === 0) {
       issues.push({
         code: "empty_action",
-        message: "lavash-actions fence has no valid spawn_panel or patch_artboard actions",
+        message:
+          "lavash-actions fence has no valid action (spawn_panel, patch_artboard, replace_artboard, remove_panels, clear_artboard, reorder_panels, select_panel)",
       });
     }
   }

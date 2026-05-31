@@ -171,9 +171,9 @@ export default function LavashConstructWorkspace({ animationState, dockPulseKey 
   const pickProjectFolder = useProjectWorkspaceStore((s) => s.pickAndOpenFolder);
   const handleOpenProjectFolder = useCallback(() => {
     void pickProjectFolder().then((root) => {
-      if (root) rail.setProjectOpen(true);
+      if (root) rail.openProjectDrawer();
     });
-  }, [pickProjectFolder, rail.setProjectOpen]);
+  }, [pickProjectFolder, rail.openProjectDrawer]);
 
   const projectOpenFile = useProjectWorkspaceStore((s) => s.openFile);
   const projectViewMode = useProjectWorkspaceStore((s) => s.viewMode);
@@ -205,6 +205,8 @@ export default function LavashConstructWorkspace({ animationState, dockPulseKey 
       isArtboardSettingsOpen={rail.isArtboardSettingsOpen}
       userLibraryItems={paste.userLibraryItems}
       handleSelectSection={rail.handleSelectSection}
+      handleToggleSettings={rail.handleToggleSettings}
+      handleToggleBrowser={rail.handleToggleBrowser}
       setIsArtboardSettingsOpen={rail.setIsArtboardSettingsOpen}
       handleNewLavashDocument={lifecycle.handleNewLavashDocument}
       handleOpenLavashDocumentPicker={lifecycle.handleOpenLavashDocumentPicker}

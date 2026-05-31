@@ -36,6 +36,8 @@ import {
   filterCueApplyLogEntries,
 } from "@/features/lavashconstruct/cue/model/cueApplyLogExport";
 import { runCueApplyPipeline } from "@/features/lavashconstruct/cue/model/cueApplyPipeline";
+import { useConstructStore } from "@/features/lavashconstruct/artboard/model/store";
+import type { ArtboardPanel } from "@/features/lavashconstruct/artboard/ui/types";
 
 function installLocalStorageMock() {
   const memory = new Map<string, string>();
@@ -220,6 +222,29 @@ describe("cueActionSchema", () => {
     const result = validateCueAssistantOutput(md, "agent");
     expect(result.issues.some((i) => i.code === "no_apply_fence")).toBe(false);
   });
+
+  it("normalizes remove, clear, reorder, and select actions", () => {
+    expect(normalizeCueAction({ type: "remove_panels", panelIds: ["a"] })).toEqual({
+      type: "remove_panels",
+      panelIds: ["a"],
+    });
+    expect(normalizeCueAction({ type: "clear_artboard" })).toEqual({ type: "clear_artboard" });
+    expect(normalizeCueAction({ type: "reorder_panels", orderedIds: ["b", "a"] })).toEqual({
+      type: "reorder_panels",
+      orderedIds: ["b", "a"],
+      parentId: undefined,
+    });
+    expect(normalizeCueAction({ type: "select_panel", panelId: "a" })).toEqual({
+      type: "select_panel",
+      panelId: "a",
+    });
+  });
+
+  it("accepts clear_artboard as valid apply output", () => {
+    const md = '```json lavash-actions\n[{"type":"clear_artboard"}]\n```';
+    const result = validateCueAssistantOutput(md, "agent");
+    expect(result.issues.some((i) => i.code === "no_apply_fence")).toBe(false);
+  });
 });
 
 describe("cueSendMode", () => {
@@ -382,5 +407,51 @@ describe("cueApplyLogExport", () => {
 
     const filtered = filterCueApplyLogEntries(readCueApplyLog(10), { validationOkOnly: true });
     expect(filtered).toHaveLength(1);
+  });
+});
+
+describe("artboard cue apply", () => {
+  const samplePanel = (): ArtboardPanel => ({
+    id: "panel-1",
+    title: "Card",
+    x: 0,
+    y: 0,
+    width: 200,
+    height: 120,
+    zIndex: 1,
+    isVisible: true,
+    isLocked: false,
+    lockAspectRatio: false,
+    importedVisualKind: "html",
+    importedTextContent: "<div>Keep me</div>",
+  });
+
+  beforeEach(() => {
+    useConstructStore.setState({
+      artboardPanels: [samplePanel()],
+      selectedPanelId: "panel-1",
+      past: [],
+      future: [],
+    });
+  });
+
+  it("patches partial fields without wiping panel content", () => {
+    const md = [
+      "```json lavash-actions",
+      '[{"type":"patch_artboard","merge":true,"artboardPanels":[{"id":"panel-1","x":400}]}]',
+      "```",
+    ].join("\n");
+    const result = runCueApplyPipeline(md, { mode: "agent", validate: false });
+    expect(result.applied).toBe(true);
+    const panel = useConstructStore.getState().artboardPanels.find((p) => p.id === "panel-1");
+    expect(panel?.x).toBe(400);
+    expect(panel?.importedTextContent).toContain("Keep me");
+  });
+
+  it("clears artboard via clear_artboard action", () => {
+    const md = '```json lavash-actions\n[{"type":"clear_artboard"}]\n```';
+    const result = runCueApplyPipeline(md, { mode: "agent", validate: false });
+    expect(result.applied).toBe(true);
+    expect(useConstructStore.getState().artboardPanels).toHaveLength(0);
   });
 });

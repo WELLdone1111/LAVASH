@@ -31,6 +31,7 @@ import { formatConstructChatErrorDetail } from "@/features/lavashconstruct/chat/
 import { runConstructChatStream } from "@/features/lavashconstruct/chat/model/constructChatStreamClient";
 import { ollamaModelDisplayLabel } from "@/features/lavashconstruct/chat/model/constructChatModelCatalog";
 import { improvePrompt } from "@/features/lavashconstruct/chat/model/improvePrompt";
+import type { ImprovePromptIconMode } from "@/features/lavashconstruct/chat/ui/ConstructChatImprovePromptIcon";
 import type { ConstructChatThreadTurn } from "@/features/lavashconstruct/chat/model/constructChatThread";
 import type { CueValidationResult } from "@/features/lavashconstruct/cue/model/cueTypes";
 import {
@@ -62,6 +63,7 @@ import { useConstructStore } from "@/features/lavashconstruct/artboard/model/sto
 import {
   getTabModelExplicit,
   readConstructChatApiKey,
+  readConstructChatModel,
 } from "@/features/lavashconstruct/chat/model/constructChatSettings";
 import {
   getConstructProviderDef,
@@ -114,6 +116,8 @@ export function useConstructChatSend({
 
   const [isSending, setIsSending] = useState(false);
   const [isImprovingPrompt, setIsImprovingPrompt] = useState(false);
+  const [improvePromptBeforeDraft, setImprovePromptBeforeDraft] = useState<string | null>(null);
+  const [isImprovePromptReverting, setIsImprovePromptReverting] = useState(false);
   const [editingUserMessage, setEditingUserMessage] = useState<{
     draft: string;
     attachments?: ChatAttachment[];
@@ -151,6 +155,8 @@ export function useConstructChatSend({
 
   useEffect(() => {
     setEditingUserMessage(null);
+    setImprovePromptBeforeDraft(null);
+    setIsImprovePromptReverting(false);
   }, [activeTabId]);
 
   useEffect(() => {
@@ -244,6 +250,9 @@ export function useConstructChatSend({
       const text = (override?.text ?? tab.draft).trim();
       const snapshot = override?.attachments ? [...override.attachments] : [...tab.pendingAttachments];
       if (!text && snapshot.length === 0) return;
+
+      setImprovePromptBeforeDraft(null);
+      setIsImprovePromptReverting(false);
 
       const { provider } = tab;
       const modelLabel = getTabModelExplicit(tab, provider);
@@ -877,25 +886,59 @@ export function useConstructChatSend({
     [cancelEditUserMessage, submitEditedUserMessage],
   );
 
+  const improvePromptIconMode: ImprovePromptIconMode = isImprovingPrompt
+    ? "improving"
+    : isImprovePromptReverting
+      ? "reverting"
+      : improvePromptBeforeDraft !== null
+        ? "undo"
+        : "idle";
+
+  const handleImprovePromptClick = useCallback(() => {
+    if (isImprovingPrompt || isSending) return;
+
+    if (improvePromptBeforeDraft !== null) {
+      setIsImprovePromptReverting(true);
+      patchActiveTab({ draft: improvePromptBeforeDraft });
+      setImprovePromptBeforeDraft(null);
+      window.setTimeout(() => setIsImprovePromptReverting(false), 380);
+      return;
+    }
+
+    void (async () => {
+      const current = tabsRef.current.find((x) => x.id === activeTabIdRef.current);
+      const text = current?.draft?.trim();
+      if (!text) return;
+
+      setIsImprovingPrompt(true);
+      try {
+        const improved = await improvePrompt(text, {
+          provider: current!.provider,
+          model:
+            getTabModelExplicit(current!, current!.provider) ?? readConstructChatModel(current!.provider),
+        });
+        setImprovePromptBeforeDraft(text);
+        patchActiveTab({ draft: improved });
+      } catch (error) {
+        console.warn("[chat] improve prompt failed", error);
+      } finally {
+        setIsImprovingPrompt(false);
+      }
+    })();
+  }, [
+    activeTabIdRef,
+    improvePromptBeforeDraft,
+    isImprovingPrompt,
+    isSending,
+    patchActiveTab,
+    tabsRef,
+  ]);
+
   const onComposerKeyDown = useCallback(
     (e: ReactKeyboardEvent<HTMLTextAreaElement>) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "i") {
         e.preventDefault();
-        if (isSending || isImprovingPrompt) return;
-        void (async () => {
-          const current = tabsRef.current.find((x) => x.id === activeTabIdRef.current);
-          const text = current?.draft?.trim();
-          if (!text) return;
-          setIsImprovingPrompt(true);
-          try {
-            const improved = await improvePrompt(text);
-            patchActiveTab({ draft: improved });
-          } catch (error) {
-            console.warn("[chat] improve prompt failed", error);
-          } finally {
-            setIsImprovingPrompt(false);
-          }
-        })();
+        handleImprovePromptClick();
         return;
       }
       if (e.key !== "Enter") return;
@@ -905,13 +948,15 @@ export function useConstructChatSend({
       e.preventDefault();
       void send();
     },
-    [editingUserMessage, isImprovingPrompt, isSending, patchActiveTab, send, tabsRef, activeTabIdRef],
+    [editingUserMessage, handleImprovePromptClick, isSending, send],
   );
 
   return {
     isSending,
     isImprovingPrompt,
-    setIsImprovingPrompt,
+    improvePromptBeforeDraft,
+    improvePromptIconMode,
+    handleImprovePromptClick,
     editingUserMessage,
     setEditingUserMessage,
     thinkingSessionKey,
