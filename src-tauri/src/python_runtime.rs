@@ -185,7 +185,7 @@ fn extract_zip(archive_path: &Path, dest_dir: &Path) -> Result<(), String> {
         let Some(name) = entry.enclosed_name().map(|path| path.to_owned()) else {
             continue;
         };
-        let out_path = dest_dir.join(name);
+        let out_path = dest_dir.join(&name);
         if entry.is_dir() {
             fs::create_dir_all(&out_path).map_err(|e| e.to_string())?;
         } else {

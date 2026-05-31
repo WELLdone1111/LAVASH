@@ -231,7 +231,7 @@ mod platform {
 
     pub fn delete_secret(key: &str) -> Result<(), String> {
         let k = sanitize_key(key)?;
-        match keyring_entry(&k)?.delete_password() {
+        match keyring_entry(&k)?.delete_credential() {
             Ok(()) => Ok(()),
             Err(keyring::Error::NoEntry) => Ok(()),
             Err(e) => Err(e.to_string()),
