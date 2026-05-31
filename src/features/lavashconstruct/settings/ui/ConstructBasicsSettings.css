@@ -247,8 +247,14 @@
 }
 
 .lc-basics-settings__refresh {
+  flex: 0 0 auto;
   width: 28px;
   height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
   border: none;
   border-radius: 8px;
   background: transparent;

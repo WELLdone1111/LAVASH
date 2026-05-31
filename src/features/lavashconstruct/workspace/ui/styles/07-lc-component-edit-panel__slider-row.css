@@ -219,6 +219,10 @@
 }
 
 .lc-layer-actions button {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: auto;
+  margin: 0;
   border: 1px solid var(--theme-border);
   background: color-mix(in srgb, white 16%, transparent);
   color: var(--theme-text-primary);

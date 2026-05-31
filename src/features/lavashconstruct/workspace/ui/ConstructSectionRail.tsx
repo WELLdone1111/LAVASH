@@ -2,6 +2,7 @@ import { FolderTree, Library, Settings } from "lucide-react";
 import type { ComponentType, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n/context";
+import IdeWebBrowserButton from "@/features/ide-browser/ui/IdeWebBrowserButton";
 
 export type ConstructSectionId = "artboard" | "userLib" | "project";
 
@@ -66,7 +67,7 @@ export default function ConstructSectionRail({
           const active = id === "userLib" ? userLibOpen : projectOpen;
           return (
             <RailIconButton key={id} label={label} active={active} onClick={() => onSelectSection(id)}>
-              <Icon size={20} strokeWidth={1.75} aria-hidden />
+              <Icon size={18} strokeWidth={1.75} aria-hidden />
             </RailIconButton>
           );
         })}
@@ -75,8 +76,9 @@ export default function ConstructSectionRail({
       <div className="lc-section-rail__spacer" aria-hidden />
 
       <div className="lc-section-rail__footer">
+        <IdeWebBrowserButton variant="rail" />
         <RailIconButton label={t("construct.settings.title")} active={settingsOpen} onClick={onToggleSettings}>
-          <Settings size={20} strokeWidth={1.75} aria-hidden />
+          <Settings size={18} strokeWidth={1.75} aria-hidden />
         </RailIconButton>
       </div>
     </nav>

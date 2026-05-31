@@ -1,4 +1,4 @@
-import { Bookmark, Layers2, Search, Sparkles } from "lucide-react";
+import { Bookmark, Layers2, RefreshCw, Search } from "lucide-react";
 import type { ComponentType } from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n/context";
@@ -14,7 +14,7 @@ const TOOLS: ToolDef[] = [
   { id: "search", Icon: Search, labelKey: "construct.rail.search" },
   { id: "layers", Icon: Layers2, labelKey: "construct.rail.layers" },
   { id: "mark", Icon: Bookmark, labelKey: "construct.rail.mark" },
-  { id: "regenerate", Icon: Sparkles, labelKey: "construct.rail.regenerate", accent: true },
+  { id: "regenerate", Icon: RefreshCw, labelKey: "construct.rail.regenerate" },
 ];
 
 type ConstructArtboardToolbarProps = {

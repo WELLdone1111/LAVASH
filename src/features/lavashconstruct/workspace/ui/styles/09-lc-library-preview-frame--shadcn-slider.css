@@ -390,6 +390,8 @@
 
 .lc-preset-save-button {
   flex-shrink: 0;
+  box-sizing: border-box;
+  margin: 0;
   border: 1px solid var(--color-accent-primary);
   background: var(--color-accent-primary);
   color: var(--palette-on-accent);

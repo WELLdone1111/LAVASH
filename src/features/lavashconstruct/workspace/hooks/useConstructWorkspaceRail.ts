@@ -55,17 +55,6 @@ export function useConstructWorkspaceRail() {
     setProjectOpen(false);
   }, [closeTransientRailPopovers]);
 
-  const handleOpenSettingsFromSearch = useCallback(
-    (section: ConstructSettingsSection) => {
-      closeTransientRailPopovers();
-      setUserLibOpen(false);
-      setProjectOpen(false);
-      setSettingsSection(section);
-      setIsArtboardSettingsOpen(true);
-    },
-    [closeTransientRailPopovers],
-  );
-
   const handleToggleSearch = useCallback(() => {
     setSearchOpen((open) => {
       const next = !open;
@@ -125,7 +114,6 @@ export function useConstructWorkspaceRail() {
     settingsSection,
     setSettingsSection,
     handleSelectSection,
-    handleOpenSettingsFromSearch,
     handleToggleSearch,
     handleToggleLayers,
     handleToggleMark,

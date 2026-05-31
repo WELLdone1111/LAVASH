@@ -272,26 +272,6 @@ The app will reload. This cannot be undone.`,
 
   "window.dock.expand": "Expand dock",
 
-  "appSearch.placeholder": "Search LAVASH…",
-
-  "appSearch.aria": "Search the app",
-
-  "appSearch.shortcut": "Ctrl+K",
-
-  "appSearch.resultsAria": "Search results",
-
-  "appSearch.empty": "No results",
-
-  "appSearch.action.newChat": "New chat",
-
-  "appSearch.group.commands": "Commands",
-
-  "appSearch.group.settings": "Settings",
-
-  "appSearch.group.navigate": "Navigate",
-
-  "appSearch.group.panels": "Artboard panels",
-
   "ideBrowser.openButton": "Web browser (Google)",
 
   "ideBrowser.openShortcut": "Ctrl+⇧L",
@@ -483,7 +463,7 @@ The app will reload. This cannot be undone.`,
 
   "construct.rail.markModeHint": "Click a panel on the artboard to pin it in chat",
 
-  "construct.rail.regenerate": "Regenerate",
+  "construct.rail.regenerate": "Refresh",
 
   "construct.rail.searchPlaceholder": "Search panels…",
 

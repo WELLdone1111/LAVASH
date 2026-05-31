@@ -13,6 +13,8 @@ mod workspace;
 
 use tauri::Manager;
 
+const LAVASH_DEV_URL: &str = "http://127.0.0.1:1421/";
+
 #[tauri::command]
 fn secrets_get(key: String) -> Result<Option<String>, String> {
     secrets_store::get_secret(key)
@@ -39,6 +41,17 @@ pub fn run() {
                 }
                 #[cfg(debug_assertions)]
                 {
+                    // WebView2 інколи відкриває tauri.localhost / dist — navigate лише якщо не dev URL.
+                    if let Ok(current) = window.url() {
+                        let on_dev = current.as_str() == LAVASH_DEV_URL
+                            || current.as_str().starts_with("http://127.0.0.1:1421")
+                            || current.as_str().starts_with("http://localhost:1421");
+                        if !on_dev {
+                            if let Ok(url) = LAVASH_DEV_URL.parse() {
+                                let _ = window.navigate(url);
+                            }
+                        }
+                    }
                     let _ = window.open_devtools();
                 }
             }
@@ -50,6 +63,7 @@ pub fn run() {
             secrets_set,
             window_chrome::set_window_caption_color,
             window_chrome::set_window_rounded_corners,
+            window_chrome::set_window_hit_region,
             window_chrome::lavash_reclaim_window_input,
             workspace::workspace_get_root,
             workspace::workspace_get_project_root,

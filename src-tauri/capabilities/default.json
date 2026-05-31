@@ -4,6 +4,12 @@
   "description": "LAVASH main window",
   "windows": ["main", "lavash-resources"],
   "webviews": ["main", "ide-browser-panel", "lavash-resources"],
+  "remote": {
+    "urls": [
+      "http://127.0.0.1:1421/*",
+      "http://localhost:1421/*"
+    ]
+  },
   "permissions": [
     "core:webview:default",
     "core:default",
@@ -29,6 +35,7 @@
     "core:event:default",
     "core:event:allow-listen",
     "core:event:allow-emit",
-    "dialog:default"
+    "dialog:default",
+    "lavash-commands"
   ]
 }

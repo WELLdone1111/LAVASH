@@ -7,9 +7,10 @@ import "./IdeWebBrowserButton.css";
 
 type IdeWebBrowserButtonProps = {
   className?: string;
+  variant?: "titlebar" | "rail";
 };
 
-export default function IdeWebBrowserButton({ className }: IdeWebBrowserButtonProps) {
+export default function IdeWebBrowserButton({ className, variant = "titlebar" }: IdeWebBrowserButtonProps) {
   const { t } = useI18n();
   const openHome = useIdeBrowserStore((s) => s.openHome);
   const browserOpen = useIdeBrowserStore((s) => s.open);
@@ -30,18 +31,26 @@ export default function IdeWebBrowserButton({ className }: IdeWebBrowserButtonPr
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [openHome]);
 
+  const isRail = variant === "rail";
+  const label = t("ideBrowser.openButton");
+  const tooltip = isRail ? label : `${label} (${t("ideBrowser.openShortcut")})`;
+
   return (
     <button
       type="button"
-      className={cn("ide-web-browser-btn", browserOpen && "ide-web-browser-btn--active", className)}
-      aria-label={t("ideBrowser.openButton")}
+      className={cn(
+        isRail ? "lc-section-rail__btn" : "ide-web-browser-btn",
+        browserOpen && (isRail ? "lc-section-rail__btn--active" : "ide-web-browser-btn--active"),
+        className,
+      )}
+      aria-label={label}
       aria-pressed={browserOpen}
-      data-tauri-drag-region="false"
-      title={`${t("ideBrowser.openButton")} (${t("ideBrowser.openShortcut")})`}
-      data-tooltip={`${t("ideBrowser.openButton")} · ${t("ideBrowser.openShortcut")}`}
+      data-tauri-drag-region={isRail ? undefined : "false"}
+      title={isRail ? undefined : tooltip}
+      data-tooltip={tooltip}
       onClick={onClick}
     >
-      <Globe size={16} strokeWidth={1.75} aria-hidden />
+      <Globe size={isRail ? 18 : 16} strokeWidth={1.75} aria-hidden />
     </button>
   );
 }

@@ -6,11 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LAVASH</title>
   </head>
-  <body style="background-color: #1e1e1e">
+  <body>
+    <script src="/lavash-build-id.js"></script>
     <script>
-      if (window.__TAURI_INTERNALS__ || window.__TAURI__) {
-        document.documentElement.dataset.lavashRoundedWindow = "1";
-      }
+      (function () {
+        var isTauri = !!(window.__TAURI_INTERNALS__ || window.__TAURI__);
+        if (isTauri) {
+          document.documentElement.dataset.lavashRoundedWindow = "1";
+        }
+        var buildId = window.__LAVASH_UI_BUILD_ID__ || "";
+        if (!isTauri || !buildId) return;
+        document.documentElement.dataset.lavashUiBuild = buildId;
+        var syncKey = "lavash-ui-sync";
+        var synced = sessionStorage.getItem(syncKey);
+        if (synced === buildId) return;
+        sessionStorage.setItem(syncKey, buildId);
+        location.replace(location.href);
+      })();
     </script>
     <div
       id="lavash-boot"
@@ -42,7 +54,7 @@
           font-family: system-ui, sans-serif;
           font-size: 13px;
           color: #9a9a9a;
-          background: #1e1e1e;
+        background: transparent;
         "
       >
         LAVASH…

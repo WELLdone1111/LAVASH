@@ -31,6 +31,13 @@ export const ARTBOARD_FIT_MARGIN_PX = 48;
  */
 export const ARTBOARD_INFINITE_PX = 8192;
 
+/** Щільність сітки крапок (площа ∝ value; pitch = 14/√value world px). */
+export const ARTBOARD_GRID_DENSITY = 5.6;
+/** Цільовий крок сітки на екрані (px) перед pow2-нормалізацією зуму. */
+export const ARTBOARD_GRID_SCREEN_PITCH_TARGET = 13;
+/** Bump при зміні сітки — форсує reload Tauri webview у dev. */
+export const ARTBOARD_GRID_REVISION = 3;
+
 export const DEFAULT_PRESET_VERSIONS = ["v1.0.0", "v1.0.1", "v1.1.0"] as const;
 
 export const DEFAULT_EXPORT_FORMAT: ExportFormat = ".lavash-theme";

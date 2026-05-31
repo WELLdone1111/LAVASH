@@ -5,10 +5,14 @@
 .lc-resources-btn {
   display: inline-grid;
   place-items: center;
+  flex: 0 0 auto;
   width: 22px;
   height: 18px;
+  min-width: 22px;
+  min-height: 18px;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   border: 1px solid color-mix(in srgb, var(--theme-border) 70%, transparent);
   border-radius: 5px;
   background: color-mix(in srgb, var(--palette-surface-2) 88%, transparent);

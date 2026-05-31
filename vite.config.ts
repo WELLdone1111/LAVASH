@@ -5,6 +5,8 @@ import path from "node:path";
 
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
+// @ts-expect-error process is a nodejs global
+const tauriDev = process.env.LAVASH_TAURI_DEV === "1";
 
 export default defineConfig(async () => ({
   plugins: [react(), tailwindcss()],
@@ -25,14 +27,24 @@ export default defineConfig(async () => ({
   server: {
     port: 1421,
     strictPort: true,
-    host: host || false,
+    host: host || (tauriDev ? "127.0.0.1" : false),
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      Pragma: "no-cache",
+    },
     hmr: host
       ? {
           protocol: "ws",
           host,
           port: 1422,
         }
-      : undefined,
+      : tauriDev
+        ? {
+            protocol: "ws",
+            host: "127.0.0.1",
+            port: 1422,
+          }
+        : undefined,
     watch: {
       ignored: ["**/src-tauri/**"],
     },

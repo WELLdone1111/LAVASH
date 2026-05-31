@@ -101,6 +101,65 @@ pub fn sync_window_rounded_corners(window: &WebviewWindow, round: bool) -> Resul
     apply_rounded_corners(window, round)
 }
 
+/// Win32 SetWindowRgn — прозорі кути + click-through поза заокругленням (CSS radius).
+#[cfg(windows)]
+fn apply_hit_region(window: &WebviewWindow, round: bool, radius_logical: f64) -> Result<(), String> {
+    use windows::Win32::Foundation::HWND;
+    use windows::Win32::Graphics::Gdi::{CreateRoundRectRgn, SetWindowRgn};
+
+    let hwnd: HWND = window.hwnd().map_err(|e| format!("window hwnd: {e}"))?;
+    let size = window.inner_size().map_err(|e| format!("inner_size: {e}"))?;
+    let scale = window.scale_factor().map_err(|e| format!("scale_factor: {e}"))?;
+
+    let width = size.width as i32;
+    let height = size.height as i32;
+
+    unsafe {
+        if !round || width <= 0 || height <= 0 {
+            let ok = SetWindowRgn(hwnd, None, true);
+            if ok == 0 {
+                return Err("SetWindowRgn(clear) failed".into());
+            }
+            return Ok(());
+        }
+
+        let radius = (radius_logical * scale).round().clamp(1.0, 256.0) as i32;
+        let diameter = radius * 2;
+        let rgn = CreateRoundRectRgn(0, 0, width + 1, height + 1, diameter, diameter);
+        if rgn.is_invalid() {
+            return Err("CreateRoundRectRgn failed".into());
+        }
+        let ok = SetWindowRgn(hwnd, Some(rgn), true);
+        if ok == 0 {
+            return Err("SetWindowRgn failed".into());
+        }
+    }
+
+    Ok(())
+}
+
+#[cfg(not(windows))]
+fn apply_hit_region(_window: &WebviewWindow, _round: bool, _radius_logical: f64) -> Result<(), String> {
+    Ok(())
+}
+
+pub fn sync_window_hit_region(
+    window: &WebviewWindow,
+    round: bool,
+    radius_logical: f64,
+) -> Result<(), String> {
+    apply_hit_region(window, round, radius_logical)
+}
+
+#[tauri::command]
+pub fn set_window_hit_region(
+    window: WebviewWindow,
+    round: bool,
+    radius: Option<f64>,
+) -> Result<(), String> {
+    sync_window_hit_region(&window, round, radius.unwrap_or(16.0))
+}
+
 #[tauri::command]
 pub fn lavash_reclaim_window_input() -> Result<(), String> {
     Ok(())

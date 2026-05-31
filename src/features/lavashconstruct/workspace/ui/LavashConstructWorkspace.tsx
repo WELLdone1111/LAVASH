@@ -14,7 +14,6 @@ import type { ArtboardPanel } from "@/features/lavashconstruct/artboard/ui/types
 import { useConstructArtboardInteraction } from "@/features/lavashconstruct/artboard/ui/useConstructArtboardInteraction";
 import { useProjectWorkspaceStore } from "@/features/lavashconstruct/project/model/projectWorkspaceStore";
 import { isProjectFilePreviewable } from "@/features/lavashconstruct/project/model/projectArtboardLink";
-import { useRegisterConstructAppSearch } from "@/features/lavashconstruct/workspace/hooks/useRegisterConstructAppSearch";
 import { useConstructUnifiedLayoutDrag } from "@/features/lavashconstruct/workspace/hooks/useConstructUnifiedLayoutDrag";
 import { useConstructWorkspaceRail } from "@/features/lavashconstruct/workspace/hooks/useConstructWorkspaceRail";
 import { useConstructWorkspaceBrowserSplit } from "@/features/lavashconstruct/workspace/hooks/useConstructWorkspaceBrowserSplit";
@@ -175,17 +174,6 @@ export default function LavashConstructWorkspace({ animationState, dockPulseKey 
       if (root) rail.setProjectOpen(true);
     });
   }, [pickProjectFolder, rail.setProjectOpen]);
-
-  useRegisterConstructAppSearch({
-    panels: artboardPanels,
-    onSelectPanel: (id) => {
-      setSelectedPanelId(id);
-      setSelectedPanelIds([id]);
-    },
-    onFocusPanel: focusPanelInView,
-    onNavigateSection: rail.handleSelectSection,
-    onOpenSettings: rail.handleOpenSettingsFromSearch,
-  });
 
   const projectOpenFile = useProjectWorkspaceStore((s) => s.openFile);
   const projectViewMode = useProjectWorkspaceStore((s) => s.viewMode);

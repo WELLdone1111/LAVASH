@@ -8,10 +8,16 @@ import { I18nProvider } from "./i18n/context";
 import { initSecretsVault } from "@/features/secrets/model/secretsVault";
 import AppErrorBoundary from "@/shared/components/AppErrorBoundary";
 import { RESOURCES_WINDOW_LABEL } from "@/features/resources/model/openResourcesWindow";
+import { LAVASH_UI_BUILD_ID } from "./lavash-ui-build-id";
 import "@/styles/globals.css";
 
 function dismissBootSplash(): void {
   document.getElementById("lavash-boot")?.remove();
+}
+
+/** Позначає build id після раннього reload у index.html. */
+function markUiBuildId(): void {
+  document.documentElement.dataset.lavashUiBuild = LAVASH_UI_BUILD_ID;
 }
 
 async function resolveRootComponent(): Promise<React.ComponentType> {
@@ -26,6 +32,8 @@ async function resolveRootComponent(): Promise<React.ComponentType> {
 }
 
 async function bootstrap(): Promise<void> {
+  markUiBuildId();
+
   const rootEl = document.getElementById("root");
   if (!rootEl) throw new Error("Missing #root element");
 

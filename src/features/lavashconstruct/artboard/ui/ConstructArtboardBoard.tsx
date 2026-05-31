@@ -601,18 +601,6 @@ export default function ConstructArtboardBoard({
   };
 
   const z = Math.max(ARTBOARD_ZOOM_MIN, Math.min(ARTBOARD_ZOOM_MAX, artboardZoom));
-  /** ~20% denser grid than pitch 14 (pitch ∝ 1/√density). */
-  const basePitchWorld = 14 / Math.sqrt(1.2);
-  const rawPitchScreen = basePitchWorld * z;
-  const normalizePow2 = Math.round(Math.log2(24 / rawPitchScreen));
-  const screenPitch = rawPitchScreen * Math.pow(2, normalizePow2);
-  const majorPitch = screenPitch * 5;
-  const gridOffsetX = ((pxPanX % screenPitch) + screenPitch) % screenPitch;
-  const gridOffsetY = ((pxPanY % screenPitch) + screenPitch) % screenPitch;
-  const majorOffsetX = ((pxPanX % majorPitch) + majorPitch) % majorPitch;
-  const majorOffsetY = ((pxPanY % majorPitch) + majorPitch) % majorPitch;
-
-  const roundPx = (n: number) => Math.round(n * 1000) / 1000;
 
   const boardContentStyle = {
     transform: `translate3d(${pxPanX}px, ${pxPanY}px, 0) scale(${z})`,
@@ -696,12 +684,9 @@ export default function ConstructArtboardBoard({
         {isArtboardGridDotsVisible ? (
           <div className="lavash-artboard-grid-overlay" aria-hidden>
             <ConstructArtboardGridDots
-              pitch={roundPx(screenPitch)}
-              majorPitch={roundPx(majorPitch)}
-              offsetX={roundPx(gridOffsetX)}
-              offsetY={roundPx(gridOffsetY)}
-              majorOffsetX={roundPx(majorOffsetX)}
-              majorOffsetY={roundPx(majorOffsetY)}
+              artboardZoom={artboardZoom}
+              panX={pxPanX}
+              panY={pxPanY}
               pointerRef={gridPointerRef}
               themeRootRef={artboardBoardRef}
             />

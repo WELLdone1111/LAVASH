@@ -272,26 +272,6 @@ export const STRINGS_UK: Record<string, string> = {
 
   "window.dock.expand": "Розгорнути док",
 
-  "appSearch.placeholder": "Пошук по LAVASH…",
-
-  "appSearch.aria": "Пошук по додатку",
-
-  "appSearch.shortcut": "Ctrl+K",
-
-  "appSearch.resultsAria": "Результати пошуку",
-
-  "appSearch.empty": "Нічого не знайдено",
-
-  "appSearch.action.newChat": "Новий чат",
-
-  "appSearch.group.commands": "Команди",
-
-  "appSearch.group.settings": "Налаштування",
-
-  "appSearch.group.navigate": "Навігація",
-
-  "appSearch.group.panels": "Панелі артборда",
-
   "ideBrowser.openButton": "Веб-браузер (Google)",
 
   "ideBrowser.openShortcut": "Ctrl+⇧L",
@@ -484,7 +464,7 @@ export const STRINGS_UK: Record<string, string> = {
 
   "construct.rail.markModeHint": "Клікніть панель на артборді, щоб закріпити її в чаті",
 
-  "construct.rail.regenerate": "Перегенерувати",
+  "construct.rail.regenerate": "Оновити",
 
   "construct.rail.searchPlaceholder": "Шукати панелі…",
 

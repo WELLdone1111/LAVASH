@@ -1,17 +1,21 @@
+import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useCallback, useEffect, useState } from "react";
 import { useI18n } from "@/i18n/context";
 import lavashBrandIcon from "@/assets/brand/lavash-icon.png";
-import { cn } from "@/lib/utils";
 import { isTauriRuntime } from "@/lib/isTauriRuntime";
 import { useWindowDragPointerDown } from "@/shared/lib/useWindowDrag";
-import AppSearchBar from "@/features/app-search/ui/AppSearchBar";
-import IdeWebBrowserButton from "@/features/ide-browser/ui/IdeWebBrowserButton";
 import WindowFileMenu from "@/shared/components/WindowFileMenu";
 import WindowEditMenu from "@/shared/components/WindowEditMenu";
 import WindowDragSpacer from "@/shared/components/WindowDragSpacer";
+import {
+  CaptionCloseIcon,
+  CaptionMaximizeIcon,
+  CaptionMinimizeIcon,
+  CaptionRestoreIcon,
+} from "@/shared/components/WindowCaptionIcons";
 
-/** Кастомний title bar: меню зліва, пошук по центру, кнопки вікна справа (Tauri). */
+/** Кастомний title bar: меню зліва, кнопки вікна справа (Tauri). */
 export default function WindowFrameControls() {
   const { t } = useI18n();
   const isTauri = isTauriRuntime();
@@ -42,6 +46,7 @@ export default function WindowFrameControls() {
         } else {
           delete document.documentElement.dataset.windowMaximized;
         }
+        void invoke("set_window_rounded_corners", { round: !maximized }).catch(() => {});
       } catch {
         /* window gone */
       }
@@ -49,14 +54,19 @@ export default function WindowFrameControls() {
 
     void syncMaximized();
 
-    const unlistenPromise = win.onResized(() => {
-      void syncMaximized();
-    });
+    const unlistenPromise = win
+      .onResized(() => {
+        void syncMaximized();
+      })
+      .catch((error) => {
+        console.warn("[window] onResized listen failed", error);
+        return null;
+      });
 
     return () => {
       disposed = true;
       delete document.documentElement.dataset.lavashCustomTitlebar;
-      void unlistenPromise.then((unlisten) => unlisten());
+      void unlistenPromise.then((unlisten) => unlisten?.()).catch(() => {});
     };
   }, [isTauri]);
 
@@ -85,17 +95,10 @@ export default function WindowFrameControls() {
           data-tauri-drag-region={isTauri ? "" : undefined}
           onPointerDown={isTauri ? onTitlebarPointerDown : undefined}
         >
-          <img className="app-window-titlebar__icon" src={lavashBrandIcon} alt="" width={16} height={16} />
+          <img className="app-window-titlebar__brand-icon" src={lavashBrandIcon} alt="" />
         </div>
         <WindowFileMenu />
         <WindowEditMenu />
-      </div>
-
-      {isTauri ? <WindowDragSpacer className="app-window-titlebar__drag" /> : null}
-
-      <div className="app-window-titlebar__search-row" data-tauri-drag-region="false">
-        <IdeWebBrowserButton />
-        <AppSearchBar className="app-window-titlebar__search" />
       </div>
 
       {isTauri ? <WindowDragSpacer className="app-window-titlebar__drag" /> : null}
@@ -109,7 +112,7 @@ export default function WindowFrameControls() {
             data-tauri-drag-region="false"
             onClick={minimize}
           >
-            <span className="app-window-titlebar__glyph app-window-titlebar__glyph--min" aria-hidden />
+            <CaptionMinimizeIcon className="app-window-titlebar__caption-icon app-window-titlebar__caption-icon--min" />
           </button>
           <button
             type="button"
@@ -118,13 +121,11 @@ export default function WindowFrameControls() {
             data-tauri-drag-region="false"
             onClick={toggleMaximize}
           >
-            <span
-              className={cn(
-                "app-window-titlebar__glyph",
-                isMaximized ? "app-window-titlebar__glyph--restore" : "app-window-titlebar__glyph--max",
-              )}
-              aria-hidden
-            />
+            {isMaximized ? (
+              <CaptionRestoreIcon className="app-window-titlebar__caption-icon" />
+            ) : (
+              <CaptionMaximizeIcon className="app-window-titlebar__caption-icon" />
+            )}
           </button>
           <button
             type="button"
@@ -133,7 +134,7 @@ export default function WindowFrameControls() {
             data-tauri-drag-region="false"
             onClick={close}
           >
-            <span className="app-window-titlebar__glyph app-window-titlebar__glyph--close" aria-hidden />
+            <CaptionCloseIcon className="app-window-titlebar__caption-icon" />
           </button>
         </div>
       ) : (

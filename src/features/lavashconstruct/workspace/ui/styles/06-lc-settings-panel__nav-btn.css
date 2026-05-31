@@ -3,6 +3,8 @@
 .lc-settings-panel__nav-btn {
   flex: 0 0 auto;
   width: auto;
+  box-sizing: border-box;
+  margin: 0;
   padding: 10px 12px;
   margin-bottom: -1px;
   border: none;

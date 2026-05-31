@@ -272,26 +272,6 @@ export const STRINGS_RU: Record<string, string> = {
 
   "window.dock.expand": "Развернуть панель",
 
-  "appSearch.placeholder": "Поиск по LAVASH…",
-
-  "appSearch.aria": "Поиск по приложению",
-
-  "appSearch.shortcut": "Ctrl+K",
-
-  "appSearch.resultsAria": "Результаты поиска",
-
-  "appSearch.empty": "Ничего не найдено",
-
-  "appSearch.action.newChat": "Новый чат",
-
-  "appSearch.group.commands": "Команды",
-
-  "appSearch.group.settings": "Настройки",
-
-  "appSearch.group.navigate": "Навигация",
-
-  "appSearch.group.panels": "Панели артборда",
-
   "ideBrowser.openButton": "Веб-браузер (Google)",
 
   "ideBrowser.openShortcut": "Ctrl+⇧L",
@@ -483,7 +463,7 @@ export const STRINGS_RU: Record<string, string> = {
 
   "construct.rail.markModeHint": "Кликните панель на артборде, чтобы закрепить её в чате",
 
-  "construct.rail.regenerate": "Regenerate",
+  "construct.rail.regenerate": "Обновить",
 
   "construct.rail.searchPlaceholder": "Искать панели…",
 

@@ -1,4 +1,6 @@
-﻿import { useEffect, useRef, type MutableRefObject } from "react";
+import { useEffect, useRef, type MutableRefObject } from "react";
+import { computeArtboardGridPitch } from "@/features/lavashconstruct/artboard/model/artboardGridPitch";
+import { ARTBOARD_GRID_REVISION } from "@/features/lavashconstruct/shared/model/constants";
 
 export type ConstructArtboardGridPointer = {
   x: number;
@@ -7,12 +9,9 @@ export type ConstructArtboardGridPointer = {
 };
 
 type ConstructArtboardGridDotsProps = {
-  pitch: number;
-  majorPitch: number;
-  offsetX: number;
-  offsetY: number;
-  majorOffsetX: number;
-  majorOffsetY: number;
+  artboardZoom: number;
+  panX: number;
+  panY: number;
   pointerRef: MutableRefObject<ConstructArtboardGridPointer>;
   themeRootRef: MutableRefObject<HTMLElement | null>;
 };
@@ -103,12 +102,9 @@ function drawDotHighlight(ctx: CanvasRenderingContext2D, dot: DotDraw, ar: numbe
 }
 
 export default function ConstructArtboardGridDots({
-  pitch,
-  majorPitch,
-  offsetX,
-  offsetY,
-  majorOffsetX,
-  majorOffsetY,
+  artboardZoom,
+  panX,
+  panY,
   pointerRef,
   themeRootRef,
 }: ConstructArtboardGridDotsProps) {
@@ -121,7 +117,6 @@ export default function ConstructArtboardGridDots({
     if (!canvas || !host) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const hitRadius = Math.max(9, pitch * 0.46);
 
     let rafId = 0;
     let accentRgb: [number, number, number] = [255, 184, 0];
@@ -163,6 +158,19 @@ export default function ConstructArtboardGridDots({
 
       const ptr = pointerRef.current;
       const [ar, ag, ab] = accentRgb;
+
+      const {
+        pitch,
+        majorPitch,
+        offsetX,
+        offsetY,
+        majorOffsetX,
+        majorOffsetY,
+      } = computeArtboardGridPitch(artboardZoom, panX, panY);
+      const hitRadius = Math.max(9, pitch * 0.46);
+
+      canvas.dataset.lavashGridPitch = String(pitch);
+      canvas.dataset.lavashGridRev = String(ARTBOARD_GRID_REVISION);
 
       const startCol = Math.floor(-offsetX / pitch) - 1;
       const endCol = Math.ceil((w - offsetX) / pitch) + 1;
@@ -236,7 +244,7 @@ export default function ConstructArtboardGridDots({
       cancelAnimationFrame(rafId);
       ro.disconnect();
     };
-  }, [pitch, majorPitch, offsetX, offsetY, majorOffsetX, majorOffsetY, pointerRef, themeRootRef]);
+  }, [artboardZoom, panX, panY, pointerRef, themeRootRef]);
 
   return <canvas ref={canvasRef} className="lavash-artboard-grid-canvas" aria-hidden />;
 }

@@ -1,4 +1,4 @@
-﻿export const CONSTRUCT_UNIFIED_LAYOUT_STORAGE_KEY = "lavash.construct.unifiedLayout.v1";
+export const CONSTRUCT_UNIFIED_LAYOUT_STORAGE_KEY = "lavash.construct.unifiedLayout.v1";
 
 export type ConstructUnifiedLayout = {
   libW: number;
@@ -10,7 +10,7 @@ export type ConstructUnifiedLayout = {
   chatCollapsed?: boolean;
 };
 
-export const CONSTRUCT_RAIL_WIDTH_PX = 48;
+export const CONSTRUCT_RAIL_WIDTH_PX = 38;
 
 /** Ширина смуги «розгорнути чат», коли панель згорнута. */
 export const CONSTRUCT_CHAT_COLLAPSED_RAIL_PX = 32;
@@ -39,7 +39,7 @@ export function readConstructUnifiedLayout(): ConstructUnifiedLayout {
     if (!raw) return { ...d };
     const o = JSON.parse(raw) as Partial<ConstructUnifiedLayout>;
     const rawLibW = Number(o.libW) || d.libW;
-    const libW = rawLibW > 96 ? CONSTRUCT_RAIL_WIDTH_PX : clamp(rawLibW, 48, 72);
+    const libW = rawLibW > 96 ? CONSTRUCT_RAIL_WIDTH_PX : clamp(rawLibW, 38, 58);
     return {
       libW,
       chatW: clamp(Number(o.chatW) || d.chatW, CONSTRUCT_CHAT_PANEL_MIN_WIDTH_PX, 620),

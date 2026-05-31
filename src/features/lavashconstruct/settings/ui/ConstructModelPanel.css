@@ -26,9 +26,15 @@
 }
 
 .lc-model-panel__refresh {
+  flex: 0 0 auto;
   flex-shrink: 0;
   width: 32px;
   height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
   border-radius: 8px;
   border: 1px solid color-mix(in srgb, var(--theme-border) 80%, transparent);
   background: color-mix(in srgb, var(--window-surface-bg, #fff) 92%, transparent);

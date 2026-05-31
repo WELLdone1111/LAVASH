@@ -28,9 +28,9 @@
   --window-surface-soft-bg: var(--palette-surface-2);
   --window-surface-alpha: 96%;
   --app-workspace-chrome: var(--palette-bg);
-  --app-chrome-radius: 16px;
+  --app-chrome-radius: 8px;
   --app-window-resize-edge-size: 5px;
-  --app-window-resize-corner-size: 10px;
+  --app-window-resize-corner-size: 8px;
   --lavash-status-bar-height: 22px;
   --window-frame-controls-inline-reserve: 0px;
 
@@ -63,19 +63,32 @@ body,
   background-color: var(--palette-surface);
 }
 
+html[data-lavash-rounded-window="1"],
+html[data-lavash-rounded-window="1"] body,
+html[data-lavash-rounded-window="1"] #root {
+  background-color: var(--palette-surface);
+}
+
 body {
   font-family: var(--font-family-base);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-regular);
   color: var(--theme-text-primary);
-  background-color: var(--palette-surface);
 }
 
 #root {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background-color: var(--palette-surface);
+}
+
+html[data-lavash-rounded-window="1"] .app-root.lavash-app {
+  overflow: hidden;
+  isolation: isolate;
+}
+
+html[data-lavash-rounded-window="1"] .app-window-titlebar {
+  overflow: hidden;
 }
 
 .app-root {
@@ -87,7 +100,11 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  --lavash-titlebar-height: 32px;
+  --lavash-titlebar-height: 27px;
+  --lavash-titlebar-brand-size: 14px;
+  --lavash-titlebar-caption-size: 9px;
+  --lavash-titlebar-menu-font-size: 10px;
+  --lavash-titlebar-btn-width: 40px;
   color: var(--theme-text-primary);
   background-color: var(--palette-surface);
   background-image: var(--lavash-app-wallpaper, none);
@@ -96,39 +113,6 @@ body {
   background-attachment: scroll;
 }
 
-html[data-lavash-rounded-window="1"] .app-root {
-  border-radius: var(--app-chrome-radius);
-  overflow: hidden;
-  isolation: isolate;
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--theme-border) 55%, transparent),
-    0 18px 48px rgba(0, 0, 0, 0.5);
-}
-
-html[data-lavash-rounded-window="1"][data-window-maximized="1"] .app-root {
-  border-radius: 0;
-  box-shadow: none;
-}
-
-html[data-lavash-rounded-window="1"] .app-window-titlebar {
-  border-top-left-radius: var(--app-chrome-radius);
-  border-top-right-radius: var(--app-chrome-radius);
-}
-
-html[data-lavash-rounded-window="1"][data-window-maximized="1"] .app-window-titlebar {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-
-html[data-lavash-rounded-window="1"] .lavash-status-bar {
-  border-bottom-left-radius: var(--app-chrome-radius);
-  border-bottom-right-radius: var(--app-chrome-radius);
-}
-
-html[data-lavash-rounded-window="1"][data-window-maximized="1"] .lavash-status-bar {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
 
 .lavash-main {
   flex: 1;
@@ -154,7 +138,7 @@ html[data-lavash-rounded-window="1"][data-window-maximized="1"] .lavash-status-b
   border: none;
   border-top: 1px solid color-mix(in srgb, var(--theme-border) 88%, transparent);
   background: color-mix(in srgb, var(--palette-surface) 94%, var(--palette-bg));
-  box-shadow: 0 -1px 0 color-mix(in srgb, white 4%, transparent) inset;
+  box-shadow: none;
   box-sizing: border-box;
   -webkit-app-region: no-drag;
   pointer-events: auto;
@@ -237,8 +221,12 @@ html[data-lavash-rounded-window="1"][data-window-maximized="1"] .lavash-status-b
 }
 
 .app-window-frame-controls__btn {
+  box-sizing: border-box;
+  flex: 0 0 auto;
   width: 26px;
   height: 22px;
+  min-width: 26px;
+  min-height: 22px;
   padding: 0;
   margin: 0;
   border: none;
@@ -365,10 +353,10 @@ html[data-window-resizing="1"] .lavash-artboard-cinematic-overlay {
   flex-shrink: 0;
   height: var(--lavash-titlebar-height);
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(260px, 520px) minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: stretch;
   gap: 0;
-  padding: 0 4px;
+  padding: 0 0 0 4px;
   background: var(--palette-surface);
   border-bottom: 1px solid color-mix(in srgb, var(--theme-border) 88%, transparent);
   user-select: none;
@@ -391,48 +379,23 @@ html[data-lavash-custom-titlebar="1"] .app-window-titlebar {
   justify-self: start;
 }
 
-.app-window-titlebar__search-row {
-  grid-column: 3;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  max-width: 520px;
-  justify-self: center;
-  align-self: center;
-  min-width: 0;
-  -webkit-app-region: no-drag;
-}
-
-.app-window-titlebar__search-row .app-search-bar {
-  flex: 1 1 220px;
-  min-width: 0;
-  max-width: none;
-  justify-self: stretch;
-}
-
-.app-window-titlebar__search {
-  grid-column: unset;
-  justify-self: stretch;
-  width: auto;
-  align-self: center;
-}
-
 .app-window-titlebar__controls {
-  grid-column: 5;
+  grid-column: 3;
   display: inline-flex;
-  align-items: center;
+  align-items: stretch;
   flex-shrink: 0;
   justify-self: end;
-  align-self: center;
+  align-self: stretch;
   gap: 0;
-  height: 22px;
-  padding: 2px;
-  margin-inline-end: 2px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--theme-border) 72%, transparent);
-  background: color-mix(in srgb, var(--palette-surface-2) 82%, var(--palette-bg));
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
 }
 
 .app-window-titlebar__controls--web {
@@ -444,14 +407,14 @@ html[data-lavash-custom-titlebar="1"] .app-window-titlebar {
 .app-window-titlebar__brand {
   display: flex;
   align-items: center;
-  padding: 0 8px 0 10px;
+  padding: 0 6px 0 8px;
   flex-shrink: 0;
 }
 
-.app-window-titlebar__icon {
+.app-window-titlebar__brand-icon {
   display: block;
-  width: 16px;
-  height: 16px;
+  width: var(--lavash-titlebar-brand-size);
+  height: var(--lavash-titlebar-brand-size);
   object-fit: contain;
   pointer-events: none;
 }
@@ -463,26 +426,32 @@ html[data-lavash-custom-titlebar="1"] .app-window-titlebar {
 }
 
 .app-window-titlebar__btn {
-  width: 24px;
-  min-width: 24px;
-  height: 18px;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: var(--lavash-titlebar-btn-width);
+  min-width: var(--lavash-titlebar-btn-width);
+  height: 100%;
+  min-height: 100%;
   padding: 0;
   margin: 0;
   border: none;
-  border-radius: 999px;
+  border-radius: 0;
   background: transparent;
-  color: color-mix(in srgb, var(--theme-text-primary) 78%, transparent);
-  cursor: pointer;
+  color: rgba(255, 255, 255, 0.78);
+  cursor: default;
   display: grid;
   place-items: center;
-  transition:
-    background-color 120ms ease,
-    color 120ms ease;
+  transition: background-color 100ms ease, color 100ms ease;
 }
 
 .app-window-titlebar__btn:hover {
-  background: color-mix(in srgb, #fff 10%, transparent);
-  color: var(--theme-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.app-window-titlebar__btn:active {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
 }
 
 .app-window-titlebar__btn--close:hover {
@@ -490,61 +459,21 @@ html[data-lavash-custom-titlebar="1"] .app-window-titlebar {
   color: #fff;
 }
 
-.app-window-titlebar__glyph {
+.app-window-titlebar__btn--close:active {
+  background: #f1707a;
+  color: #fff;
+}
+
+.app-window-titlebar__caption-icon {
   display: block;
-  box-sizing: border-box;
+  width: var(--lavash-titlebar-caption-size);
+  height: var(--lavash-titlebar-caption-size);
+  flex-shrink: 0;
+  pointer-events: none;
 }
 
-.app-window-titlebar__glyph--min {
-  width: 8px;
+.app-window-titlebar__caption-icon--min {
   height: 1px;
-  background: currentColor;
-  border-radius: 1px;
-}
-
-.app-window-titlebar__glyph--max {
-  width: 8px;
-  height: 8px;
-  border: 1px solid currentColor;
-  border-radius: 1px;
-}
-
-.app-window-titlebar__glyph--restore {
-  width: 8px;
-  height: 8px;
-  border: 1px solid currentColor;
-  border-radius: 1px;
-  box-shadow: 2px -2px 0 0 color-mix(in srgb, var(--palette-surface-2) 82%, var(--palette-bg));
-}
-
-.app-window-titlebar__btn--close:hover .app-window-titlebar__glyph--close {
-  background: #fff;
-}
-
-.app-window-titlebar__glyph--close {
-  position: relative;
-  width: 10px;
-  height: 10px;
-}
-
-.app-window-titlebar__glyph--close::before,
-.app-window-titlebar__glyph--close::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 1px;
-  background: currentColor;
-  border-radius: 1px;
-}
-
-.app-window-titlebar__glyph--close::before {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.app-window-titlebar__glyph--close::after {
-  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .app-window-titlebar__btn:focus-visible {
@@ -561,13 +490,13 @@ html[data-lavash-custom-titlebar="1"] .app-window-titlebar {
 
 .app-window-file-menu__trigger {
   height: 100%;
-  padding: 0 12px;
+  padding: 0 10px;
   border: none;
   border-radius: 0;
   background: transparent;
   color: color-mix(in srgb, var(--theme-text-primary) 88%, transparent);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--lavash-titlebar-menu-font-size);
   font-weight: 500;
   cursor: pointer;
 }
